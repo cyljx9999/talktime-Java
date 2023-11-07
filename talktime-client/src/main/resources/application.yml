@@ -1,0 +1,19 @@
+server:
+  port: 8081
+spring:
+  profiles:
+    #运行的环境
+    active: test
+  application:
+    name: mallchat
+  datasource:
+    url: jdbc:mysql://${mallchat.mysql.ip}:${mallchat.mysql.port}/${mallchat.mysql.db}?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+    username: ${mallchat.mysql.username}
+    password: ${mallchat.mysql.password}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  mvc:
+    pathmatch:
+      matching-strategy: ANT_PATH_MATCHER
+  jackson:
+    serialization:
+      write-dates-as-timestamps: true
