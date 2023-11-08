@@ -51,6 +51,9 @@
         <logstash-logback.version>7.2</logstash-logback.version>
         <sensitive-word.version>0.2.1</sensitive-word.version>
         <alibabacloud.version>2.0.23</alibabacloud.version>
+        <spring-boot-test.version>2.6.7</spring-boot-test.version>
+        <junit.version>4.13.2</junit.version>
+        <spring-test.version>5.3.19</spring-test.version>
     </properties>
 
     <dependencyManagement>
@@ -182,6 +185,22 @@
                 <groupId>com.aliyun</groupId>
                 <artifactId>alibabacloud-dysmsapi20170525</artifactId>
                 <version>${alibabacloud.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-test</artifactId>
+                <version>${spring-boot-test.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${junit.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-test</artifactId>
+                <version>${spring-test.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

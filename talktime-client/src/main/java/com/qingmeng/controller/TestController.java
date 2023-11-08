@@ -1,7 +1,7 @@
 package com.qingmeng.controller;
 
-import com.qingmeng.entity.User;
-import com.qingmeng.mapper.UserMapper;
+import com.qingmeng.entity.SysUser;
+import com.qingmeng.mapper.SysUserMapper;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,11 +16,18 @@ import javax.annotation.Resource;
 @RestController
 public class TestController {
     @Resource
-    private UserMapper userMapper;
+    private SysUserMapper sysUserMapper;
 
-    @GetMapping("/getUserInfo")
-    public User getUserInfo(){
-        return userMapper.selectById(11007);
+
+    /**
+     * @Description:
+     * @param id
+     * @return {@link SysUser }
+     * @author qingmeng
+     * @createTime: 2023/11/08 11:52:42
+     */
+    @GetMapping("test")
+    public SysUser getUser(Long id){
+        return null;
     }
-
 }

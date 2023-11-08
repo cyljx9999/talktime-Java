@@ -122,4 +122,12 @@ sa-token:
   # 是否输出操作日志
   is-log: false
   is-print: false
+thread:
+  pool:
+    executor:
+        corePoolSize: 10 # 核心线程数量
+        maxPoolSize: 30 # 最大线程数量
+        queueCapacity: 100 # 队列长度
+        keepAliveSeconds: 60 # 存活时间
+        prefixName: "talktime-" # 线程名称前缀
 
