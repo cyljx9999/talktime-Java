@@ -130,4 +130,3 @@ thread:
         queueCapacity: 100 # 队列长度
         keepAliveSeconds: 60 # 存活时间
         prefixName: "talktime-" # 线程名称前缀
-
