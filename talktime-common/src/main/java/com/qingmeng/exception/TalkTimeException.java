@@ -1,5 +1,6 @@
 package com.qingmeng.exception;
 
+import com.qingmeng.enums.CommonEnum;
 import com.qingmeng.enums.ResultEnums;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -20,12 +21,12 @@ public class TalkTimeException extends RuntimeException{
 
     /**
      * 自定义异常消息处理
-     * @param resultEnums 异常枚举值
+     * @param commonEnum 异常枚举值
      */
-    public TalkTimeException(ResultEnums resultEnums) {
+    public TalkTimeException(CommonEnum commonEnum) {
         super();
-        this.code = resultEnums.getCode();
-        this.message = resultEnums.getMsg();
+        this.code = commonEnum.getCode();
+        this.message = commonEnum.getMsg();
     }
 
     /**
@@ -41,13 +42,25 @@ public class TalkTimeException extends RuntimeException{
     /**
      * 自定义异常消息处理
      *
-     * @param resultEnums 异常枚举值
+     * @param code 异常码
+     * @param message 异常信息
+     */
+    public TalkTimeException(int code,String message) {
+        super();
+        this.code = code;
+        this.message = message;
+    }
+
+    /**
+     * 自定义异常消息处理
+     *
+     * @param commonEnum 异常枚举值
      * @param data 异常数据
      */
-    public TalkTimeException(ResultEnums resultEnums,Object data) {
+    public TalkTimeException(CommonEnum commonEnum, Object data) {
         super();
-        this.code = resultEnums.getCode();
-        this.message = resultEnums.getMsg();
+        this.code = commonEnum.getCode();
+        this.message = commonEnum.getMsg();
         this.data = data;
     }
 }
