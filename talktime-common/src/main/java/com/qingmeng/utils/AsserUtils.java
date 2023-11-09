@@ -119,7 +119,7 @@ public class AsserUtils {
      * @param groups  待校验的组
      * @throws TalkTimeException 如果校验不通过
      */
-    public void validateEntity(Object object, Boolean isGroup, Class<?>... groups) {
+    public static void validateEntity(Object object, Boolean isGroup, Class<?>... groups) {
         Set<ConstraintViolation<Object>> validate;
         if (isGroup) {
             validate = SPRING_VALIDATOR_ADAPTER.validate(object, groups);
