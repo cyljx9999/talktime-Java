@@ -6,7 +6,6 @@ import com.qingmeng.annotation.SysLog;
 import com.qingmeng.entity.SysOperateLog;
 import com.qingmeng.enums.OperateEnums;
 import com.qingmeng.event.SysOperateLogEvent;
-import com.qingmeng.utils.IpUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.*;
 import org.aspectj.lang.reflect.MethodSignature;
@@ -72,7 +71,7 @@ public class OperateLogAspect {
         try {
             SysOperateLog sysOperateLog = buildSysOperateLogEntity(request,result,joinPoint,null,true);
             // 发送事件
-            applicationEventPublisher.publishEvent(new SysOperateLogEvent(this,sysOperateLog));
+            applicationEventPublisher.publishEvent(new SysOperateLogEvent(this,sysOperateLog,request));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -91,7 +90,7 @@ public class OperateLogAspect {
         try {
             SysOperateLog sysOperateLog = buildSysOperateLogEntity(request,null,joinPoint,e,false);
             // 发送事件
-            applicationEventPublisher.publishEvent(new SysOperateLogEvent(this,sysOperateLog));
+            applicationEventPublisher.publishEvent(new SysOperateLogEvent(this,sysOperateLog,request));
         } catch (Exception e2) {
             e2.printStackTrace();
         }
@@ -105,7 +104,7 @@ public class OperateLogAspect {
         for (StackTraceElement stet : elements) {
             stringBuilder.append(stet).append("\n");
         }
-        String message = exceptionName + ":" + exceptionMessage + "\n\t" + stringBuilder.toString();
+        String message = exceptionName + ":" + exceptionMessage + "\n\t" + stringBuilder;
         message = substring(message,0 ,2000);
         return message;
     }
@@ -201,11 +200,11 @@ public class OperateLogAspect {
         // 请求参数
         sysOperateLog.setRequestParam(params);
         // 获取用户名
-        sysOperateLog.setOperateName(StpUtil.getExtra("userName").toString());
-        // IP地址
-        sysOperateLog.setIp(IpUtils.getIpAddr(request));
-        // todo: IP归属地（真是环境中可以调用第三方API根据IP地址，查询归属地）
-        sysOperateLog.setIpLocation("");
+        String name = "游客";
+        if(StpUtil.isLogin()){
+            name = StpUtil.getExtra("userName").toString();
+        }
+        sysOperateLog.setOperateName(name);
         // 请求URI
         sysOperateLog.setRequestUrl(request.getRequestURI());
         if (normal){

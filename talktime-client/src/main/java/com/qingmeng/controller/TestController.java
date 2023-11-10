@@ -1,5 +1,6 @@
 package com.qingmeng.controller;
 
+import com.qingmeng.annotation.SysLog;
 import com.qingmeng.entity.SysUser;
 import com.qingmeng.mapper.SysUserMapper;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +28,7 @@ public class TestController {
      * @createTime: 2023/11/08 11:52:42
      */
     @GetMapping("test")
+    @SysLog(title = "用户模块",content = "获取用户111")
     public SysUser getUser(Long id){
         return null;
     }

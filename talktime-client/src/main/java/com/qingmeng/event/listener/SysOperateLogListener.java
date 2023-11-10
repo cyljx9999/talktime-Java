@@ -3,11 +3,13 @@ package com.qingmeng.event.listener;
 import com.qingmeng.entity.SysOperateLog;
 import com.qingmeng.event.SysOperateLogEvent;
 import com.qingmeng.service.SysOperateLogService;
+import com.qingmeng.utils.IpUtils;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author 清梦
@@ -20,10 +22,15 @@ public class SysOperateLogListener {
     @Resource
     private SysOperateLogService sysOperateLogService;
 
-    @Async
+    @Async("visibleTaskExecutor")
     @EventListener(classes = SysOperateLogEvent.class)
     public void saveLog(SysOperateLogEvent event) {
         SysOperateLog sysOperateLog = event.getSysOperateLog();
+        HttpServletRequest request = event.getRequest();
+        // IP地址
+        sysOperateLog.setIp(IpUtils.getIpAddr(request));
+        // IP归属地
+        sysOperateLog.setIpLocation(IpUtils.getIpHomeLocal(request));
         sysOperateLogService.save(sysOperateLog);
     }
 }

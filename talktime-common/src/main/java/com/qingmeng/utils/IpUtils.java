@@ -1,11 +1,16 @@
 package com.qingmeng.utils;
 
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.http.HttpUtil;
+import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
+import com.qingmeng.constant.SystemConstan;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.http.HttpServletRequest;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Map;
 
 /**
  * @author 清梦
@@ -22,9 +27,9 @@ public class IpUtils {
 
     /**
      * 获取IP公网地址
-     * <p>
      * 使用Nginx等反向代理软件， 则不能通过request.getRemoteAddr()获取IP地址
-     * 如果使用了多级反向代理的话，X-Forwarded-For的值并不止一个，而是一串IP地址，X-Forwarded-For中第一个非unknown的有效IP字符串，则为真实IP地址
+     * 如果使用了多级反向代理的话，X-Forwarded-For的值并不止一个，
+     * 而是一串IP地址，X-Forwarded-For中第一个非unknown的有效IP字符串，则为真实IP地址
      */
     public static String getIpAddr(HttpServletRequest request) {
         String ip = null;
@@ -59,7 +64,7 @@ public class IpUtils {
                     try {
                         iNet = InetAddress.getLocalHost();
                     } catch (UnknownHostException e) {
-                        log.error("getClientIp error: {}", e);
+                        log.error("getClientIp error: {}", e.getMessage());
                     }
                     assert iNet != null;
                     ip = iNet.getHostAddress();
@@ -72,7 +77,25 @@ public class IpUtils {
         if (!StrUtil.isEmpty(ip) && ip.indexOf(IP_UTILS_FLAG) > 0) {
             ip = ip.substring(0, ip.indexOf(IP_UTILS_FLAG));
         }
-
         return ip;
+    }
+
+    /**
+     * 获取ip归属地
+     *
+     * @param request request
+     * @return {@link String }
+     * @author qingmeng
+     * @createTime: 2023/11/10 21:36:52
+     */
+    public static String getIpHomeLocal(HttpServletRequest request){
+        String ip = getIpAddr(request);
+        if (SystemConstan.LOCAL_IP.equals(ip)){
+            return "内网ip";
+        }
+        String result= HttpUtil.get("https://api.vore.top/api/IPdata?ip="+ip);
+        JSONObject object = JSONUtil.parseObj(result);
+        Map entity = (Map) object.get("adcode");
+        return entity.get("n").toString();
     }
 }
