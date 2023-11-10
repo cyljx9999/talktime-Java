@@ -1,5 +1,6 @@
 package com.qingmeng.utils;
 
+import cn.hutool.core.collection.CollUtil;
 import org.springframework.data.redis.connection.DataType;
 import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.ScanOptions;
@@ -8,6 +9,7 @@ import org.springframework.data.redis.core.ZSetOperations.TypedTuple;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * @author 清梦
@@ -200,6 +202,22 @@ public class RedisUtils {
         REDIS_TEMPLATE.opsForValue().set(key, value, timeout, unit);
     }
 
+    public static <T> void multiset(Map<String, T> map, long time) {
+        Map<String, String> collect = map.entrySet()
+                .stream()
+                .collect(
+                        Collectors.toMap(Map.Entry::getKey,
+                                (e) -> JsonUtils.toStr(e.getValue())
+                        )
+                );
+        REDIS_TEMPLATE.opsForValue().multiSet(collect);
+        map.forEach((key, value) -> {
+            expire(key, time,TimeUnit.SECONDS);
+        });
+    }
+
+
+
     /**
      * 获取指定 key 的值
      *
@@ -252,6 +270,20 @@ public class RedisUtils {
      */
     public static List<String> multiGet(Collection<String> keys) {
         return REDIS_TEMPLATE.opsForValue().multiGet(keys);
+    }
+
+    /**
+     * 批量获取
+     *
+     * @param keys 多个键
+     * @return 多个值
+     */
+    public static <T> List<T> multiGet(Collection<String> keys, Class<T> className) {
+        List<String> list = REDIS_TEMPLATE.opsForValue().multiGet(keys);
+        if (CollUtil.isEmpty(list)){
+            return new ArrayList<>();
+        }
+        return list.stream().map(o -> JsonUtils.toBeanOrNull(o, className)).collect(Collectors.toList());
     }
 
     /**
