@@ -1,8 +1,5 @@
 package com.qingmeng.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
-import com.qingmeng.entity.SysUserGroupRole;
-
 /**
  * <p>
  *  服务类
@@ -11,6 +8,6 @@ import com.qingmeng.entity.SysUserGroupRole;
  * @author qingmeng
  * @since 2023-11-08 10:43:38
  */
-public interface SysUserGroupRoleService extends IService<SysUserGroupRole> {
+public interface SysUserGroupRoleService{
 
 }
