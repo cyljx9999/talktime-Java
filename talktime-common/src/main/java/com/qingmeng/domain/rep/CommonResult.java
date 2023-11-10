@@ -1,7 +1,7 @@
 package com.qingmeng.domain.rep;
 
 import com.qingmeng.enums.CommonEnum;
-import com.qingmeng.enums.ResultEnums;
+import com.qingmeng.enums.ResultEnum;
 import lombok.Data;
 
 /**
@@ -54,15 +54,15 @@ public class CommonResult<T> {
 
 
     public static <T> CommonResult<T> success() {
-        return new CommonResult<>(ResultEnums.REQUEST_SUCCESS.getCode(), ResultEnums.REQUEST_SUCCESS.getMsg());
+        return new CommonResult<>(ResultEnum.REQUEST_SUCCESS.getCode(), ResultEnum.REQUEST_SUCCESS.getMsg());
     }
 
     public static <T> CommonResult<T> success(String msg) {
-        return new CommonResult<>(ResultEnums.REQUEST_SUCCESS.getCode(), msg);
+        return new CommonResult<>(ResultEnum.REQUEST_SUCCESS.getCode(), msg);
     }
 
     public static <T> CommonResult<T> success(T data) {
-        return new CommonResult<>(ResultEnums.REQUEST_SUCCESS.getCode(), ResultEnums.REQUEST_SUCCESS.getMsg(),data);
+        return new CommonResult<>(ResultEnum.REQUEST_SUCCESS.getCode(), ResultEnum.REQUEST_SUCCESS.getMsg(),data);
     }
 
     public static <T> CommonResult<T> success(CommonEnum commonEnum)
@@ -71,7 +71,7 @@ public class CommonResult<T> {
     }
 
     public static <T> CommonResult<T> success(String msg,T data) {
-        return new CommonResult<>(ResultEnums.REQUEST_SUCCESS.getCode(), msg,data);
+        return new CommonResult<>(ResultEnum.REQUEST_SUCCESS.getCode(), msg,data);
     }
 
 
@@ -82,11 +82,11 @@ public class CommonResult<T> {
 
 
     public static <T> CommonResult<T> error() {
-        return new CommonResult<>(ResultEnums.REQUEST_ERROR.getCode(), ResultEnums.REQUEST_ERROR.getMsg());
+        return new CommonResult<>(ResultEnum.REQUEST_ERROR.getCode(), ResultEnum.REQUEST_ERROR.getMsg());
     }
 
     public static <T> CommonResult<T> error(String msg) {
-        return new CommonResult<>(ResultEnums.REQUEST_ERROR.getCode(), msg);
+        return new CommonResult<>(ResultEnum.REQUEST_ERROR.getCode(), msg);
     }
 
     public static <T> CommonResult<T> error(Integer code ,String msg) {
@@ -104,7 +104,7 @@ public class CommonResult<T> {
     }
 
     public static <T> CommonResult<T> error(String msg, T data) {
-        return new CommonResult<>(ResultEnums.REQUEST_ERROR.getCode(), msg, data);
+        return new CommonResult<>(ResultEnum.REQUEST_ERROR.getCode(), msg, data);
     }
 
     public static <T> CommonResult<T> error(CommonEnum commonEnum, T data) {

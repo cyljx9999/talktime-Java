@@ -3,7 +3,7 @@ package com.qingmeng.utils;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.qingmeng.enums.CommonEnum;
-import com.qingmeng.enums.ResultEnums;
+import com.qingmeng.enums.ResultEnum;
 import com.qingmeng.exception.TalkTimeException;
 import org.springframework.validation.beanvalidation.SpringValidatorAdapter;
 
@@ -128,7 +128,7 @@ public class AsserUtils {
         }
         Map<Path, String> errorMap = validate.stream().collect(Collectors.toMap(ConstraintViolation::getPropertyPath, ConstraintViolation::getMessage));
         if (CollUtil.isNotEmpty(errorMap)) {
-            throw new TalkTimeException(ResultEnums.REQUEST_PARAM_ILLEGAL, errorMap);
+            throw new TalkTimeException(ResultEnum.REQUEST_PARAM_ILLEGAL, errorMap);
         }
     }
 
@@ -141,7 +141,7 @@ public class AsserUtils {
      */
     private static void throwException(CommonEnum commonEnum, Object... arg) {
         if (Objects.isNull(commonEnum)) {
-            commonEnum = ResultEnums.REQUEST_ERROR;
+            commonEnum = ResultEnum.REQUEST_ERROR;
         }
         throw new TalkTimeException(commonEnum.getCode(), MessageFormat.format(commonEnum.getMsg(), arg));
     }

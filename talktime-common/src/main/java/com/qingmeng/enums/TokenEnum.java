@@ -11,7 +11,7 @@ import lombok.Getter;
  */
 @Getter
 @AllArgsConstructor
-public enum TokenEnums implements CommonEnum {
+public enum TokenEnum implements CommonEnum {
 
     /**
      * token异常

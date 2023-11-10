@@ -1,7 +1,7 @@
 package com.qingmeng.exception;
 
 import com.qingmeng.enums.CommonEnum;
-import com.qingmeng.enums.ResultEnums;
+import com.qingmeng.enums.ResultEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -35,7 +35,7 @@ public class TalkTimeException extends RuntimeException{
      */
     public TalkTimeException(String message) {
         super();
-        this.code = ResultEnums.REQUEST_ERROR.getCode();
+        this.code = ResultEnum.REQUEST_ERROR.getCode();
         this.message = message;
     }
 

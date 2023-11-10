@@ -11,7 +11,7 @@ import lombok.Getter;
  */
 @Getter
 @AllArgsConstructor
-public enum ResultEnums implements CommonEnum {
+public enum ResultEnum implements CommonEnum {
 
     /**
      * 请求状态枚举

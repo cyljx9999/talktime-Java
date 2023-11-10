@@ -11,7 +11,7 @@ import lombok.Getter;
  */
 @Getter
 @AllArgsConstructor
-public enum OperateEnums {
+public enum OperateEnum {
     /**
      * 操作状态
      */

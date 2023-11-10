@@ -4,7 +4,7 @@ import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.json.JSONUtil;
 import com.qingmeng.annotation.SysLog;
 import com.qingmeng.entity.SysOperateLog;
-import com.qingmeng.enums.OperateEnums;
+import com.qingmeng.enums.OperateEnum;
 import com.qingmeng.event.SysOperateLogEvent;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.*;
@@ -214,12 +214,12 @@ public class OperateLogAspect {
             Long takeTime = System.currentTimeMillis() - startTime.get();
             sysOperateLog.setTakeTime(takeTime);
             // 操作状态（0正常 1异常）
-            sysOperateLog.setStatus(OperateEnums.SUCCESS.getCode());
+            sysOperateLog.setStatus(OperateEnum.SUCCESS.getCode());
         }else {
             // 记录异常信息
             sysOperateLog.setErrorMsg(stackTraceToString(e.getClass().getName(), e.getMessage(), e.getStackTrace()));
             // 操作状态（0正常 1异常）
-            sysOperateLog.setStatus(OperateEnums.ERROR.getCode());
+            sysOperateLog.setStatus(OperateEnum.ERROR.getCode());
         }
         startTime.remove();
         return sysOperateLog;
