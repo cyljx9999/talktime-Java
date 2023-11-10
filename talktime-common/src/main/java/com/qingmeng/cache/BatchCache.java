@@ -11,22 +11,32 @@ import java.util.Map;
  */
 public interface BatchCache<IN, OUT> {
     /**
-     * 获取单个
+     * 获取单个缓存数据。
+     *
+     * @param param 输入对象
+     * @return 缓存数据
      */
-    OUT get(IN req);
+    OUT get(IN param);
 
     /**
-     * 获取批量
+     * 批量获取缓存数据。
+     *
+     * @param params 批量请求列表
+     * @return 缓存数据映射
      */
-    Map<IN, OUT> getBatch(List<IN> req);
+    Map<IN, OUT> getBatch(List<IN> params);
 
     /**
-     * 修改删除单个
+     * 删除单个缓存数据。
+     *
+     * @param param 输入对象
      */
-    void delete(IN req);
+    void delete(IN param);
 
     /**
-     * 修改删除多个
+     * 批量删除缓存数据。
+     *
+     * @param params 批量请求列表
      */
-    void deleteBatch(List<IN> req);
+    void deleteBatch(List<IN> params);
 }

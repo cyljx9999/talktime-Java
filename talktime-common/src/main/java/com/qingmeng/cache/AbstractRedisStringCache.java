@@ -18,38 +18,70 @@ public abstract class AbstractRedisStringCache<IN, OUT> implements BatchCache<IN
 
     private final Class<OUT> outClass;
 
+    /**
+     * 构造函数，用于获取泛型参数的类型信息。
+     */
     protected AbstractRedisStringCache() {
         ParameterizedType genericSuperclass = (ParameterizedType) this.getClass().getGenericSuperclass();
         this.outClass = (Class<OUT>) genericSuperclass.getActualTypeArguments()[1];
     }
 
+    /**
+     * 根据输入对象获取缓存的键。
+     *
+     * @param req 输入对象
+     * @return 缓存键
+     */
     protected abstract String getKey(IN req);
 
+    /**
+     * 获取缓存的过期时间（秒）。
+     *
+     * @return 过期时间（秒）
+     */
     protected abstract Long getExpireSeconds();
 
+    /**
+     * 批量加载缓存数据。
+     *
+     * @param req 批量请求列表
+     * @return 加载的缓存数据映射
+     */
     protected abstract Map<IN, OUT> load(List<IN> req);
 
+    /**
+     * 获取单个缓存数据。
+     *
+     * @param param 输入对象
+     * @return 缓存数据
+     */
     @Override
-    public OUT get(IN req) {
-        return getBatch(Collections.singletonList(req)).get(req);
+    public OUT get(IN param) {
+        return getBatch(Collections.singletonList(param)).get(param);
     }
 
+    /**
+     * 批量获取缓存数据。
+     *
+     * @param params 批量请求列表
+     * @return 缓存数据映射
+     */
     @Override
-    public Map<IN, OUT> getBatch(List<IN> req) {
-        if (CollectionUtil.isEmpty(req)) {
+    public Map<IN, OUT> getBatch(List<IN> params) {
+        if (CollectionUtil.isEmpty(params)) {
             return new HashMap<>();
         }
         //去重
-        req = req.stream().distinct().collect(Collectors.toList());
+        params = params.stream().distinct().collect(Collectors.toList());
         //组装key
-        List<String> keys = req.stream().map(this::getKey).collect(Collectors.toList());
+        List<String> keys = params.stream().map(this::getKey).collect(Collectors.toList());
         //批量get
         List<OUT> valueList = RedisUtils.multiGet(keys, outClass);
         //差集计算
         List<IN> loadReqs = new ArrayList<>();
         for (int i = 0; i < valueList.size(); i++) {
             if (Objects.isNull(valueList.get(i))) {
-                loadReqs.add(req.get(i));
+                loadReqs.add(params.get(i));
             }
         }
         Map<IN, OUT> load = new HashMap<>();
@@ -65,8 +97,8 @@ public abstract class AbstractRedisStringCache<IN, OUT> implements BatchCache<IN
 
         //组装最后的结果
         Map<IN, OUT> resultMap = new HashMap<>();
-        for (int i = 0; i < req.size(); i++) {
-            IN in = req.get(i);
+        for (int i = 0; i < params.size(); i++) {
+            IN in = params.get(i);
             OUT out = Optional.ofNullable(valueList.get(i))
                     .orElse(load.get(in));
             resultMap.put(in, out);
@@ -74,14 +106,24 @@ public abstract class AbstractRedisStringCache<IN, OUT> implements BatchCache<IN
         return resultMap;
     }
 
+    /**
+     * 删除单个缓存数据。
+     *
+     * @param param 输入对象
+     */
     @Override
-    public void delete(IN req) {
-        deleteBatch(Collections.singletonList(req));
+    public void delete(IN param) {
+        deleteBatch(Collections.singletonList(param));
     }
 
+    /**
+     * 批量删除缓存数据。
+     *
+     * @param params 批量请求列表
+     */
     @Override
-    public void deleteBatch(List<IN> req) {
-        List<String> keys = req.stream().map(this::getKey).collect(Collectors.toList());
+    public void deleteBatch(List<IN> params) {
+        List<String> keys = params.stream().map(this::getKey).collect(Collectors.toList());
         RedisUtils.delete(keys);
     }
 }
