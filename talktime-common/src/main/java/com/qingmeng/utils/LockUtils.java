@@ -1,6 +1,6 @@
 package com.qingmeng.utils;
 
-import com.qingmeng.enums.ResultEnums;
+import com.qingmeng.enums.ResultEnum;
 import com.qingmeng.exception.TalkTimeException;
 import lombok.SneakyThrows;
 import org.redisson.api.RLock;
@@ -37,7 +37,7 @@ public class LockUtils {
         RLock lock = redissonClient.getLock(key);
         boolean lockSuccess = lock.tryLock(waitTime, unit);
         if (!lockSuccess) {
-            throw new TalkTimeException(ResultEnums.REQUEST_FREQUENT);
+            throw new TalkTimeException(ResultEnum.REQUEST_FREQUENT);
         }
         try {
             // 执行锁内的代码逻辑

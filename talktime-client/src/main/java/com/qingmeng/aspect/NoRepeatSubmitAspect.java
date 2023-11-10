@@ -4,7 +4,7 @@ import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.crypto.digest.DigestUtil;
 import cn.hutool.json.JSONUtil;
 import com.qingmeng.annotation.NoRepeatSubmit;
-import com.qingmeng.enums.ResultEnums;
+import com.qingmeng.enums.ResultEnum;
 import com.qingmeng.exception.TalkTimeException;
 import com.qingmeng.utils.RedisUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +17,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
 import java.util.Objects;
@@ -84,7 +83,7 @@ public class NoRepeatSubmitAspect  {
             }
         } else {
             // 重复提交了抛出异常，如果是在项目中，根据具体情况处理。
-            throw new TalkTimeException(ResultEnums.REQUEST_REPEAT);
+            throw new TalkTimeException(ResultEnum.REQUEST_REPEAT);
         }
         return null;
     }

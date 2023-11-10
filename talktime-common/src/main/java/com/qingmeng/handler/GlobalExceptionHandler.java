@@ -3,10 +3,9 @@ package com.qingmeng.handler;
 import cn.dev33.satoken.exception.DisableServiceException;
 import cn.dev33.satoken.exception.NotLoginException;
 import cn.dev33.satoken.exception.NotPermissionException;
-import cn.dev33.satoken.exception.NotSafeException;
 import com.qingmeng.domain.rep.CommonResult;
-import com.qingmeng.enums.ResultEnums;
-import com.qingmeng.enums.TokenEnums;
+import com.qingmeng.enums.ResultEnum;
+import com.qingmeng.enums.TokenEnum;
 import com.qingmeng.exception.TalkTimeException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -46,7 +45,7 @@ public class GlobalExceptionHandler {
         Map<Path, String> errorMap = constraintViolations.stream().collect(Collectors.toMap(ConstraintViolation::getPropertyPath, ConstraintViolation::getMessage));
         log.info("Error--->{}",errorMap);
         // 返回校验失败信息
-        return CommonResult.error(ResultEnums.REQUEST_PARAM_ILLEGAL,errorMap);
+        return CommonResult.error(ResultEnum.REQUEST_PARAM_ILLEGAL,errorMap);
     }
 
     /**
@@ -60,7 +59,7 @@ public class GlobalExceptionHandler {
         // 将校验错误字段和错误信息提取到map中
         bindingResult.getFieldErrors().forEach(item -> errorMap.put(item.getField(),item.getDefaultMessage()));
         log.error(String.valueOf(errorMap));
-        return CommonResult.error(ResultEnums.REQUEST_PARAM_ILLEGAL,errorMap);
+        return CommonResult.error(ResultEnum.REQUEST_PARAM_ILLEGAL,errorMap);
 
     }
 
@@ -75,7 +74,7 @@ public class GlobalExceptionHandler {
         // 将校验错误字段和错误信息提取到map中
         bindingResult.getFieldErrors().forEach(item -> errorMap.put(item.getField(),item.getDefaultMessage()));
 
-        return CommonResult.error(ResultEnums.REQUEST_PARAM_ILLEGAL,errorMap);
+        return CommonResult.error(ResultEnum.REQUEST_PARAM_ILLEGAL,errorMap);
 
     }
 
@@ -95,25 +94,25 @@ public class GlobalExceptionHandler {
         // 判断场景值，定制化异常信息
         String message;
         if(notLoginException.getType().equals(NotLoginException.NOT_TOKEN)) {
-            return CommonResult.error(TokenEnums.NOT_TOKEN);
+            return CommonResult.error(TokenEnum.NOT_TOKEN);
         }
         else if(notLoginException.getType().equals(NotLoginException.INVALID_TOKEN)) {
-            return CommonResult.error(TokenEnums.INVALID_TOKEN);
+            return CommonResult.error(TokenEnum.INVALID_TOKEN);
         }
         else if(notLoginException.getType().equals(NotLoginException.TOKEN_TIMEOUT)) {
-            return CommonResult.error(TokenEnums.TOKEN_TIMEOUT);
+            return CommonResult.error(TokenEnum.TOKEN_TIMEOUT);
         }
         else if(notLoginException.getType().equals(NotLoginException.BE_REPLACED)) {
-            return CommonResult.error(TokenEnums.BE_REPLACED);
+            return CommonResult.error(TokenEnum.BE_REPLACED);
         }
         else if(notLoginException.getType().equals(NotLoginException.KICK_OUT)) {
-            return CommonResult.error(TokenEnums.KICK_OUT);
+            return CommonResult.error(TokenEnum.KICK_OUT);
         }
         else {
             message = "未登录";
         }
 
-        return CommonResult.error(TokenEnums.TOKEN_ERROR.getCode(), message);
+        return CommonResult.error(TokenEnum.TOKEN_ERROR.getCode(), message);
     }
 
     /**
@@ -138,7 +137,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler({MethodArgumentTypeMismatchException.class})
     public CommonResult<MethodArgumentTypeMismatchException> methodArgumentTypeMismatchExceptionHandler(MethodArgumentTypeMismatchException err) {
-        return CommonResult.error(ResultEnums.REQUEST_ERROR,err);
+        return CommonResult.error(ResultEnum.REQUEST_ERROR,err);
     }
 
     /**
@@ -146,7 +145,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler({HttpMessageNotReadableException.class})
     public CommonResult<HttpMessageNotReadableException> httpMessageNotReadableExceptionHandler(HttpMessageNotReadableException e) {
-        return CommonResult.error(ResultEnums.REQUEST_ERROR,e);
+        return CommonResult.error(ResultEnum.REQUEST_ERROR,e);
     }
 
 
