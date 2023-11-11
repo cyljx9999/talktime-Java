@@ -4,7 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
-import com.qingmeng.constant.SystemConstan;
+import com.qingmeng.constant.SystemConstant;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.http.HttpServletRequest;
@@ -90,7 +90,7 @@ public class IpUtils {
      */
     public static String getIpHomeLocal(HttpServletRequest request){
         String ip = getIpAddr(request);
-        if (SystemConstan.LOCAL_IP.equals(ip)){
+        if (SystemConstant.LOCAL_IP.equals(ip)){
             return "内网ip";
         }
         String result= HttpUtil.get("https://api.vore.top/api/IPdata?ip="+ip);

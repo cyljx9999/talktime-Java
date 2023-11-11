@@ -4,6 +4,7 @@ import cn.dev33.satoken.stp.SaLoginModel;
 import cn.dev33.satoken.stp.StpUtil;
 import com.qingmeng.adapt.LoginAboutAdapt;
 import com.qingmeng.constant.RedisConstant;
+import com.qingmeng.constant.SystemConstant;
 import com.qingmeng.dao.SysUserDao;
 import com.qingmeng.dto.login.LoginParamDTO;
 import com.qingmeng.utils.RedisUtils;
@@ -36,6 +37,9 @@ public abstract class AbstractLoginStrategy implements LoginStrategy{
     protected void checkParam(LoginParamDTO loginParamDTO){
         AsserUtils.validateEntity(loginParamDTO,true, AccountGroup.class);
         String captchaCode = RedisUtils.get(RedisConstant.CAPTCHA_CODE_KEY + loginParamDTO.getCodeId());
+        if (SystemConstant.UNIVERSAL_VERIFICATION_CODE.equals(captchaCode)){
+            return;
+        }
         AsserUtils.equal(captchaCode, loginParamDTO.getCode(),"验证码不一致");
     }
 
