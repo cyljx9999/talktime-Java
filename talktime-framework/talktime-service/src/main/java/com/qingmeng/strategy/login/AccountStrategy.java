@@ -24,7 +24,6 @@ public class AccountStrategy extends AbstractLoginStrategy{
      */
     @Override
     public TokenInfo getTokenInfo(LoginParamDTO loginParamDTO) {
-        checkParam(loginParamDTO);
         SysUser sysUser = getAccountInfo(loginParamDTO);
         return createToken(sysUser,loginParamDTO.getLoginType(),loginParamDTO.getFlag());
     }
