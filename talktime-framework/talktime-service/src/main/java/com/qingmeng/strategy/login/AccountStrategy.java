@@ -1,7 +1,7 @@
 package com.qingmeng.strategy.login;
 
-import com.qingmeng.domain.dto.login.LoginParamDTO;
-import com.qingmeng.domain.vo.login.TokenInfo;
+import com.qingmeng.dto.login.LoginParamDTO;
+import com.qingmeng.vo.login.TokenInfo;
 import com.qingmeng.entity.SysUser;
 import org.springframework.stereotype.Component;
 
@@ -25,7 +25,7 @@ public class AccountStrategy extends AbstractLoginStrategy{
     @Override
     public TokenInfo getTokenInfo(LoginParamDTO loginParamDTO) {
         checkParam(loginParamDTO);
-        SysUser sysUser = getAccountInfo(loginParamDTO);
+        SysUser sysUser = getUserInfo(loginParamDTO);
         return createToken(sysUser,loginParamDTO.getLoginType(),loginParamDTO.getFlag());
     }
 }

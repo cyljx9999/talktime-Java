@@ -1,7 +1,7 @@
 package com.qingmeng.strategy.login;
 
-import com.qingmeng.domain.dto.login.LoginParamDTO;
-import com.qingmeng.domain.vo.login.TokenInfo;
+import com.qingmeng.dto.login.LoginParamDTO;
+import com.qingmeng.vo.login.TokenInfo;
 
 /**
  * @author 清梦

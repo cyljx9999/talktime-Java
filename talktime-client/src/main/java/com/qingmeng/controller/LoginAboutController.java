@@ -1,8 +1,8 @@
 package com.qingmeng.controller;
 
-import com.qingmeng.domain.dto.login.LoginParamDTO;
+import com.qingmeng.dto.login.LoginParamDTO;
 import com.qingmeng.domain.rep.CommonResult;
-import com.qingmeng.domain.vo.login.TokenInfo;
+import com.qingmeng.vo.login.TokenInfo;
 import com.qingmeng.service.SysUserService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

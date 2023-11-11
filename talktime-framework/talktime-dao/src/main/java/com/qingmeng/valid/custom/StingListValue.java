@@ -14,12 +14,12 @@ import java.lang.annotation.*;
 @Constraint(validatedBy = { IntListValueConstraint.class})
 @Target({ElementType.METHOD, ElementType.FIELD, ElementType.ANNOTATION_TYPE, ElementType.CONSTRUCTOR, ElementType.PARAMETER, ElementType.TYPE_USE})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface IntListValue {
-    String message() default "该字段只能传置顶类型数据";
+public @interface StingListValue {
+    String message() default "该字段只能传指定类型数据";
 
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};
 
-    int[] values() default {};
+    String[] values() default {};
 }

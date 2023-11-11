@@ -1,7 +1,7 @@
 package com.qingmeng.adapt;
 
 import cn.dev33.satoken.stp.SaTokenInfo;
-import com.qingmeng.domain.vo.login.TokenInfo;
+import com.qingmeng.vo.login.TokenInfo;
 
 /**
  * @author 清梦

@@ -2,12 +2,10 @@ package com.qingmeng.strategy.login;
 
 import cn.dev33.satoken.stp.SaLoginModel;
 import cn.dev33.satoken.stp.StpUtil;
-import cn.hutool.core.util.StrUtil;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.qingmeng.adapt.TokenInfoAdapt;
 import com.qingmeng.dao.SysUserDao;
-import com.qingmeng.domain.dto.login.LoginParamDTO;
-import com.qingmeng.domain.vo.login.TokenInfo;
+import com.qingmeng.dto.login.LoginParamDTO;
+import com.qingmeng.vo.login.TokenInfo;
 import com.qingmeng.entity.SysUser;
 import com.qingmeng.utils.AsserUtils;
 import com.qingmeng.valid.AccountGroup;
@@ -45,11 +43,8 @@ public abstract class AbstractLoginStrategy implements LoginStrategy{
      * @author qingmeng
      * @createTime: 2023/11/10 22:42:54
      */
-    protected SysUser getAccountInfo(LoginParamDTO loginParamDTO) {
-        LambdaQueryWrapper<SysUser> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(StrUtil.isNotBlank(loginParamDTO.getAccount()),SysUser::getUserAccount, loginParamDTO.getAccount());
-        wrapper.eq(StrUtil.isNotBlank(loginParamDTO.getPassword()),SysUser::getUserPassword, loginParamDTO.getPassword());
-        return sysUserDao.getOne(wrapper);
+    protected SysUser getUserInfo(LoginParamDTO loginParamDTO) {
+        return sysUserDao.getUserInfoByAccount(loginParamDTO);
     }
 
 

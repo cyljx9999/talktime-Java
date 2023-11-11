@@ -1,4 +1,4 @@
-package com.qingmeng.domain.dto.login;
+package com.qingmeng.dto.login;
 
 import com.qingmeng.enums.user.LoginMethodEnum;
 import com.qingmeng.valid.AccountGroup;

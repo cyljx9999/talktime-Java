@@ -1,7 +1,7 @@
 package com.qingmeng.service.impl;
 
-import com.qingmeng.domain.dto.login.LoginParamDTO;
-import com.qingmeng.domain.vo.login.TokenInfo;
+import com.qingmeng.dto.login.LoginParamDTO;
+import com.qingmeng.vo.login.TokenInfo;
 import com.qingmeng.enums.user.LoginMethodEnum;
 import com.qingmeng.service.SysUserService;
 import com.qingmeng.strategy.login.LoginFactory;

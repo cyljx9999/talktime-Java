@@ -1,4 +1,4 @@
-package com.qingmeng.domain.vo.login;
+package com.qingmeng.vo.login;
 
 import lombok.Data;
 

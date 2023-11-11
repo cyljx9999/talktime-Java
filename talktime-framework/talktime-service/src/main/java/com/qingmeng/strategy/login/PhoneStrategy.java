@@ -1,13 +1,11 @@
 package com.qingmeng.strategy.login;
 
-import cn.hutool.core.util.StrUtil;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.qingmeng.dao.SysUserDao;
-import com.qingmeng.domain.dto.login.LoginParamDTO;
-import com.qingmeng.domain.vo.login.TokenInfo;
+import com.qingmeng.dto.login.LoginParamDTO;
 import com.qingmeng.entity.SysUser;
 import com.qingmeng.utils.AsserUtils;
 import com.qingmeng.valid.PhoneGroup;
+import com.qingmeng.vo.login.TokenInfo;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -44,10 +42,8 @@ public class PhoneStrategy extends AbstractLoginStrategy{
      * @createTime: 2023/11/10 22:42:54
      */
     @Override
-    protected SysUser getAccountInfo(LoginParamDTO loginParamDTO) {
-        LambdaQueryWrapper<SysUser> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(StrUtil.isNotBlank(loginParamDTO.getPhone()),SysUser::getUserPhone, loginParamDTO.getPhone());
-        return sysUserDao.getOne(wrapper);
+    protected SysUser getUserInfo(LoginParamDTO loginParamDTO) {
+        return sysUserDao.getUserInfoByPhone(loginParamDTO);
     }
 
     /**
@@ -61,7 +57,7 @@ public class PhoneStrategy extends AbstractLoginStrategy{
     @Override
     public TokenInfo getTokenInfo(LoginParamDTO loginParamDTO) {
         checkParam(loginParamDTO);
-        SysUser sysUser = getAccountInfo(loginParamDTO);
+        SysUser sysUser = getUserInfo(loginParamDTO);
         return createToken(sysUser,loginParamDTO.getLoginType(),loginParamDTO.getFlag());
     }
 }

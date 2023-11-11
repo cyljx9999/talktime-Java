@@ -1,7 +1,7 @@
 package com.qingmeng.service;
 
-import com.qingmeng.domain.dto.login.LoginParamDTO;
-import com.qingmeng.domain.vo.login.TokenInfo;
+import com.qingmeng.dto.login.LoginParamDTO;
+import com.qingmeng.vo.login.TokenInfo;
 
 /**
  * <p>
