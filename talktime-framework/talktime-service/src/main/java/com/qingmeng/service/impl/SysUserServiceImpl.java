@@ -2,7 +2,7 @@ package com.qingmeng.service.impl;
 
 import com.qingmeng.domain.dto.login.LoginParamDTO;
 import com.qingmeng.domain.vo.login.TokenInfo;
-import com.qingmeng.enums.LoginTypeEnum;
+import com.qingmeng.enums.LoginMethodEnum;
 import com.qingmeng.service.SysUserService;
 import com.qingmeng.strategy.login.LoginFactory;
 import com.qingmeng.strategy.login.LoginStrategy;
@@ -31,7 +31,7 @@ public class SysUserServiceImpl implements SysUserService {
      */
     @Override
     public TokenInfo login(LoginParamDTO paramDTO) {
-        LoginTypeEnum typeEnum = LoginTypeEnum.get(paramDTO.getLoginMethod());
+        LoginMethodEnum typeEnum = LoginMethodEnum.get(paramDTO.getLoginMethod());
         LoginStrategy loginStrategy = loginFactory.getStrategyWithType(typeEnum.getValue());
         return loginStrategy.getTokenInfo(paramDTO);
     }

@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 /**
  * @author 清梦
  * @version 1.0.0
- * @Description 登陆方法枚举
+ * @Description 登陆枚举
  * @createTime 2023年11月11日 00:23:00
  */
 @Getter

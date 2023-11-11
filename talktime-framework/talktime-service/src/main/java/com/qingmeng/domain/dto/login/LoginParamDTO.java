@@ -48,6 +48,7 @@ public class LoginParamDTO {
 
     /**
      * 登录方法
+     * @see com.qingmeng.enums.LoginMethodEnum
      */
     @NotNull(groups = {PhoneGroup.class, AccountGroup.class})
     @StingListValue(values = {"account", "password"}, groups = {PhoneGroup.class, AccountGroup.class})

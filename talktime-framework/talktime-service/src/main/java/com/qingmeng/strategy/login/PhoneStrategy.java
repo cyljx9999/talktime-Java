@@ -6,6 +6,8 @@ import com.qingmeng.dao.SysUserDao;
 import com.qingmeng.domain.dto.login.LoginParamDTO;
 import com.qingmeng.domain.vo.login.TokenInfo;
 import com.qingmeng.entity.SysUser;
+import com.qingmeng.utils.AsserUtils;
+import com.qingmeng.valid.PhoneGroup;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -20,6 +22,18 @@ import javax.annotation.Resource;
 public class PhoneStrategy extends AbstractLoginStrategy{
     @Resource
     private SysUserDao sysUserDao;
+
+    /**
+     * 校验参数
+     *
+     * @param loginParamDTO 登陆参数
+     * @author qingmeng
+     * @createTime: 2023/11/11 11:16:16
+     */
+    @Override
+    protected void checkParam(LoginParamDTO loginParamDTO) {
+        AsserUtils.validateEntity(loginParamDTO,true, PhoneGroup.class);
+    }
 
     /**
      * 查询账号信息
@@ -46,6 +60,7 @@ public class PhoneStrategy extends AbstractLoginStrategy{
      */
     @Override
     public TokenInfo getTokenInfo(LoginParamDTO loginParamDTO) {
+        checkParam(loginParamDTO);
         SysUser sysUser = getAccountInfo(loginParamDTO);
         return createToken(sysUser,loginParamDTO.getLoginType(),loginParamDTO.getFlag());
     }
