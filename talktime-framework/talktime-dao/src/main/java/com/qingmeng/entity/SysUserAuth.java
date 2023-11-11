@@ -3,8 +3,7 @@ package com.qingmeng.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import java.io.Serializable;
 
@@ -16,8 +15,7 @@ import java.io.Serializable;
  * @author qingmeng
  * @since 2023-11-08 10:43:38
  */
-@Getter
-@Setter
+@Data
 @TableName("sys_user_auth")
 public class SysUserAuth implements Serializable {
 

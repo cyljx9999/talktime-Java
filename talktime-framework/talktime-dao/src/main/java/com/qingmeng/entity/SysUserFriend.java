@@ -3,11 +3,10 @@ package com.qingmeng.entity;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
-import lombok.Getter;
-import lombok.Setter;
+import com.qingmeng.enums.user.FriendStausEnum;
+import lombok.Data;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -18,8 +17,7 @@ import java.util.Date;
  * @author qingmeng
  * @since 2023-11-08 10:43:38
  */
-@Getter
-@Setter
+@Data
 @TableName("sys_user_friend")
 public class SysUserFriend implements Serializable {
 
@@ -39,6 +37,7 @@ public class SysUserFriend implements Serializable {
 
     /**
      * 好友状态 0正常 1删除
+     * @see FriendStausEnum
      */
     private Integer friendStatus;
 

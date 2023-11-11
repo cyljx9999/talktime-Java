@@ -2,7 +2,7 @@ package com.qingmeng.annotation;
 
 import com.fasterxml.jackson.annotation.JacksonAnnotationsInside;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.qingmeng.enums.DesensitizationEnum;
+import com.qingmeng.enums.system.DesensitizationEnum;
 import com.qingmeng.serialize.DesensitizationSerialize;
 
 import java.lang.annotation.ElementType;

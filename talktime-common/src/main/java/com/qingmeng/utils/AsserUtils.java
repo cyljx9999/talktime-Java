@@ -2,8 +2,8 @@ package com.qingmeng.utils;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
-import com.qingmeng.enums.CommonEnum;
-import com.qingmeng.enums.ResultEnum;
+import com.qingmeng.enums.system.CommonEnum;
+import com.qingmeng.enums.system.ResultEnum;
 import com.qingmeng.exception.TalkTimeException;
 import org.springframework.validation.beanvalidation.SpringValidatorAdapter;
 

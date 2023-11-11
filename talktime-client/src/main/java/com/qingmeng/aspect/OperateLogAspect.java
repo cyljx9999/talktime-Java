@@ -4,7 +4,7 @@ import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.json.JSONUtil;
 import com.qingmeng.annotation.SysLog;
 import com.qingmeng.entity.SysOperateLog;
-import com.qingmeng.enums.OperateEnum;
+import com.qingmeng.enums.system.OperateEnum;
 import com.qingmeng.event.SysOperateLogEvent;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.*;

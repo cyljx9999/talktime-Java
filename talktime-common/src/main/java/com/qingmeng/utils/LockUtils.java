@@ -1,6 +1,6 @@
 package com.qingmeng.utils;
 
-import com.qingmeng.enums.ResultEnum;
+import com.qingmeng.enums.system.ResultEnum;
 import com.qingmeng.exception.TalkTimeException;
 import lombok.SneakyThrows;
 import org.redisson.api.RLock;

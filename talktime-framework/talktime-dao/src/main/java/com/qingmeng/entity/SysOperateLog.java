@@ -1,6 +1,7 @@
 package com.qingmeng.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
+import com.qingmeng.enums.system.OperateEnum;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -78,6 +79,7 @@ public class SysOperateLog implements Serializable {
 
     /**
      * 操作状态（0正常 1异常）
+     * @see OperateEnum
      */
     private Integer status;
 

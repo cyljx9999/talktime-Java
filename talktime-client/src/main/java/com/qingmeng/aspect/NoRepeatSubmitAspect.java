@@ -4,7 +4,7 @@ import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.crypto.digest.DigestUtil;
 import cn.hutool.json.JSONUtil;
 import com.qingmeng.annotation.NoRepeatSubmit;
-import com.qingmeng.enums.ResultEnum;
+import com.qingmeng.enums.system.ResultEnum;
 import com.qingmeng.exception.TalkTimeException;
 import com.qingmeng.utils.RedisUtils;
 import lombok.extern.slf4j.Slf4j;

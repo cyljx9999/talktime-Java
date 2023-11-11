@@ -1,12 +1,11 @@
 package com.qingmeng.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
+import com.qingmeng.enums.article.ArticleTypeEnum;
+import com.qingmeng.enums.system.LogicDeleteEnum;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -31,6 +30,7 @@ public class SysArticle implements Serializable {
 
     /**
      * 物品类型 0 改名卡 1徽章 2头像边框
+     * @see ArticleTypeEnum
      */
     private Integer articleType;
 
@@ -68,6 +68,7 @@ public class SysArticle implements Serializable {
 
     /**
      * 逻辑删除
+     * @see LogicDeleteEnum
      */
     @TableLogic
     @TableField(fill = FieldFill.INSERT)

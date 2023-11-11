@@ -1,13 +1,14 @@
 package com.qingmeng.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
-import jdk.nashorn.internal.runtime.logging.Logger;
-import lombok.Getter;
-import lombok.Setter;
+import com.qingmeng.enums.system.LogicDeleteEnum;
+import com.qingmeng.enums.user.AccountStatusEnum;
+import com.qingmeng.enums.user.SexEnum;
+import com.qingmeng.enums.user.UsageStatusEnum;
+import lombok.Data;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -18,8 +19,7 @@ import java.util.Date;
  * @author qingmeng
  * @since 2023-11-08 10:43:38
  */
-@Getter
-@Setter
+@Data
 @TableName("sys_user")
 public class SysUser implements Serializable {
 
@@ -55,6 +55,7 @@ public class SysUser implements Serializable {
 
     /**
      * 用户性别 0女 1男
+     * @see SexEnum
      */
     private Integer userSex;
 
@@ -65,6 +66,7 @@ public class SysUser implements Serializable {
 
     /**
      * 0 不在线 1在线
+     * @see UsageStatusEnum
      */
     private Integer onlineStatus;
 
@@ -75,6 +77,7 @@ public class SysUser implements Serializable {
 
     /**
      * 账号状态 0正常 1封禁
+     * @see  AccountStatusEnum
      */
     private Integer accountStatus;
 
@@ -117,6 +120,7 @@ public class SysUser implements Serializable {
 
     /**
      * 逻辑删除 0未删除 1删除
+     * @see LogicDeleteEnum
      */
     @TableLogic
     @TableField(fill = FieldFill.INSERT)

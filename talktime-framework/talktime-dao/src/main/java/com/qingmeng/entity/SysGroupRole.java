@@ -1,12 +1,11 @@
 package com.qingmeng.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
+import com.qingmeng.enums.chat.GroupRoleEnum;
+import com.qingmeng.enums.system.LogicDeleteEnum;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -28,6 +27,7 @@ public class SysGroupRole implements Serializable {
 
     /**
      * 群组角色名称
+     * @see GroupRoleEnum
      */
     private String groupRoleName;
 
@@ -55,6 +55,7 @@ public class SysGroupRole implements Serializable {
 
     /**
      * 逻辑删除
+     * @see LogicDeleteEnum
      */
     @TableLogic
     @TableField(fill = FieldFill.INSERT)

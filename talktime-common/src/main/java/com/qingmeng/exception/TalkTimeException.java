@@ -1,7 +1,7 @@
 package com.qingmeng.exception;
 
-import com.qingmeng.enums.CommonEnum;
-import com.qingmeng.enums.ResultEnum;
+import com.qingmeng.enums.system.CommonEnum;
+import com.qingmeng.enums.system.ResultEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

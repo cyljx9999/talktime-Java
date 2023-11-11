@@ -1,11 +1,11 @@
 package com.qingmeng.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
-import lombok.Getter;
-import lombok.Setter;
+import com.qingmeng.enums.system.LogicDeleteEnum;
+import com.qingmeng.enums.user.ApplyEnum;
+import lombok.Data;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -16,8 +16,7 @@ import java.util.Date;
  * @author qingmeng
  * @since 2023-11-08 10:43:38
  */
-@Getter
-@Setter
+@Data
 @TableName("sys_user_apply")
 public class SysUserApply implements Serializable {
 
@@ -43,6 +42,7 @@ public class SysUserApply implements Serializable {
 
     /**
      * 申请状态 0 申请中 1已通过 2已拒绝
+     * @see ApplyEnum
      */
     private Integer applyStatus;
 
@@ -60,6 +60,7 @@ public class SysUserApply implements Serializable {
 
     /**
      * 逻辑删除 0未删除 1删除
+     * @see LogicDeleteEnum
      */
     @TableLogic
     @TableField(fill = FieldFill.INSERT)
