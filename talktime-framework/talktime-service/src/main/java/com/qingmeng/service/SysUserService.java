@@ -1,7 +1,8 @@
 package com.qingmeng.service;
 
 import com.qingmeng.dto.login.LoginParamDTO;
-import com.qingmeng.vo.login.TokenInfo;
+import com.qingmeng.vo.login.CaptchaVO;
+import com.qingmeng.vo.login.TokenInfoVO;
 
 /**
  * <p>
@@ -17,9 +18,18 @@ public interface SysUserService{
      * 登陆
      *
      * @param paramDTO 登陆参数对象
-     * @return {@link TokenInfo }
+     * @return {@link TokenInfoVO }
      * @author qingmeng
      * @createTime: 2023/11/11 00:49:54
      */
-    TokenInfo login(LoginParamDTO paramDTO);
+    TokenInfoVO login(LoginParamDTO paramDTO);
+
+    /**
+     * 获取验证码
+     *
+     * @return {@link CaptchaVO }
+     * @author qingmeng
+     * @createTime: 2023/11/11 14:27:50
+     */
+    CaptchaVO getCaptcha();
 }

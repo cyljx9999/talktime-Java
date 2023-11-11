@@ -36,6 +36,12 @@ public class LoginParamDTO {
     private String code;
 
     /**
+     * 验证码绑定id
+     */
+    @NotBlank(groups = {AccountGroup.class})
+    private String codeId;
+
+    /**
      * 是否使用  记住我  模式
      */
     @NotNull(groups = {PhoneGroup.class, AccountGroup.class})

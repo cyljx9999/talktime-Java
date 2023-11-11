@@ -1,7 +1,7 @@
 package com.qingmeng.strategy.login;
 
 import com.qingmeng.dto.login.LoginParamDTO;
-import com.qingmeng.vo.login.TokenInfo;
+import com.qingmeng.vo.login.TokenInfoVO;
 
 /**
  * @author 清梦
@@ -17,9 +17,9 @@ public interface LoginStrategy {
      * 登陆获取token方法
      *
      * @param loginParamDTO 登陆参数
-     * @return {@link TokenInfo }
+     * @return {@link TokenInfoVO }
      * @author qingmeng
      * @createTime: 2023/11/10 22:40:40
      */
-    TokenInfo getTokenInfo(LoginParamDTO loginParamDTO);
+    TokenInfoVO getTokenInfo(LoginParamDTO loginParamDTO);
 }

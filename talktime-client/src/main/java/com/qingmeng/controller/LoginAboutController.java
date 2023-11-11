@@ -1,13 +1,11 @@
 package com.qingmeng.controller;
 
-import com.qingmeng.dto.login.LoginParamDTO;
 import com.qingmeng.domain.rep.CommonResult;
-import com.qingmeng.vo.login.TokenInfo;
+import com.qingmeng.dto.login.LoginParamDTO;
 import com.qingmeng.service.SysUserService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.qingmeng.vo.login.CaptchaVO;
+import com.qingmeng.vo.login.TokenInfoVO;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
@@ -27,14 +25,27 @@ public class LoginAboutController {
      * 登陆
      *
      * @param paramDTO 登陆参数
-     * @return {@link CommonResult }<{@link TokenInfo }>
+     * @return {@link CommonResult }<{@link TokenInfoVO }>
      * @author qingmeng
      * @createTime: 2023/11/11 11:17:45
      */
     @PostMapping("/login")
-    public CommonResult<TokenInfo> login( @RequestBody LoginParamDTO paramDTO){
-        TokenInfo info = sysUserService.login(paramDTO);
+    public CommonResult<TokenInfoVO> login(@RequestBody LoginParamDTO paramDTO){
+        TokenInfoVO info = sysUserService.login(paramDTO);
         return CommonResult.success(info);
+    }
+
+    /**
+     * 获取验证码
+     *
+     * @return {@link CommonResult }<{@link CaptchaVO }>
+     * @author qingmeng
+     * @createTime: 2023/11/11 14:51:40
+     */
+    @GetMapping("/getCaptcha")
+    public CommonResult<CaptchaVO> getCaptcha(){
+        CaptchaVO captchaVO = sysUserService.getCaptcha();
+        return CommonResult.success(captchaVO);
     }
 
 }

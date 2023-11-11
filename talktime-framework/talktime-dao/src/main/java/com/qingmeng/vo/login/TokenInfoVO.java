@@ -9,7 +9,7 @@ import lombok.Data;
  * @createTime 2023年11月10日 22:38:00
  */
 @Data
-public class TokenInfo {
+public class TokenInfoVO {
 
     /**
      * token名字
