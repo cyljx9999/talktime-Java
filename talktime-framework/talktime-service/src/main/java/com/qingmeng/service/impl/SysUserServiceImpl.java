@@ -102,7 +102,7 @@ public class SysUserServiceImpl implements SysUserService {
             throw new TalkTimeException("验证码生成失败");
         }
         //输出流转换为Base64
-        String encode = Base64.encode(os.toByteArray());
+        String encode = "data:image/jpeg;base64," + Base64.encode(os.toByteArray());
         return LoginAboutAdapt.buildCaptchaVO(encode,uuid);
     }
 }
