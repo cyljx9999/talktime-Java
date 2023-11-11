@@ -1,5 +1,6 @@
 package com.qingmeng.domain.dto.login;
 
+import com.qingmeng.enums.LoginMethodEnum;
 import com.qingmeng.valid.AccountGroup;
 import com.qingmeng.valid.PhoneGroup;
 import com.qingmeng.valid.custom.StingListValue;
@@ -48,6 +49,7 @@ public class LoginParamDTO {
 
     /**
      * 登录方法
+     * @see LoginMethodEnum
      */
     @NotNull(groups = {PhoneGroup.class, AccountGroup.class})
     @StingListValue(values = {"account", "password"}, groups = {PhoneGroup.class, AccountGroup.class})

@@ -11,12 +11,12 @@ import java.util.stream.Collectors;
 /**
  * @author 清梦
  * @version 1.0.0
- * @Description 登陆枚举
+ * @Description 登陆方法枚举
  * @createTime 2023年11月11日 00:23:00
  */
 @Getter
 @AllArgsConstructor
-public enum LoginTypeEnum {
+public enum LoginMethodEnum {
     /**
      * 登陆类型
      */
@@ -30,11 +30,11 @@ public enum LoginTypeEnum {
     /**
      * 枚举值的缓存映射。
      */
-    private static final Map<String, LoginTypeEnum> CACHE;
+    private static final Map<String, LoginMethodEnum> CACHE;
 
     static {
         // 构建角色ID到枚举值的映射缓存
-        CACHE = Arrays.stream(LoginTypeEnum.values()).collect(Collectors.toMap(LoginTypeEnum::getType, Function.identity()));
+        CACHE = Arrays.stream(LoginMethodEnum.values()).collect(Collectors.toMap(LoginMethodEnum::getType, Function.identity()));
     }
 
     /**
@@ -43,7 +43,7 @@ public enum LoginTypeEnum {
      * @param type 登陆类型
      * @return 对应的登陆类型枚举值，如果未找到则返回null
      */
-    public static LoginTypeEnum get(String type) {
+    public static LoginMethodEnum get(String type) {
         return CACHE.get(type);
     }
 }
