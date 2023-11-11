@@ -1,6 +1,11 @@
 package com.qingmeng.service.impl;
 
 import cn.hutool.core.codec.Base64;
+import cn.hutool.core.util.RandomUtil;
+import com.aliyun.auth.credentials.Credential;
+import com.aliyun.auth.credentials.provider.StaticCredentialProvider;
+import com.aliyun.sdk.service.dysmsapi20170525.AsyncClient;
+import com.aliyun.sdk.service.dysmsapi20170525.models.SendSmsRequest;
 import com.google.code.kaptcha.Producer;
 import com.qingmeng.adapt.LoginAboutAdapt;
 import com.qingmeng.constant.RedisConstant;
@@ -10,10 +15,14 @@ import com.qingmeng.exception.TalkTimeException;
 import com.qingmeng.service.SysUserService;
 import com.qingmeng.strategy.login.LoginFactory;
 import com.qingmeng.strategy.login.LoginStrategy;
+import com.qingmeng.utils.AsserUtils;
 import com.qingmeng.utils.IdUtils;
 import com.qingmeng.utils.RedisUtils;
+import com.qingmeng.utils.RegexUtils;
 import com.qingmeng.vo.login.CaptchaVO;
 import com.qingmeng.vo.login.TokenInfoVO;
+import darabonba.core.client.ClientOverrideConfiguration;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FastByteArrayOutputStream;
 
@@ -34,6 +43,11 @@ import java.util.concurrent.TimeUnit;
 public class SysUserServiceImpl implements SysUserService {
     public static final String MATH = "math";
     public static final String CHAR = "char";
+    @Value("${alibaba.sms.accessKeyId}")
+    private String aliAccessKeyId;
+    @Value("${alibaba.sms.accessKeySecret}")
+    private String aliAccessKeySecret;
+
     @Resource
     private LoginFactory loginFactory;
     @Resource(name = "captchaProducer")
@@ -104,5 +118,41 @@ public class SysUserServiceImpl implements SysUserService {
         //输出流转换为Base64
         String encode = "data:image/jpeg;base64," + Base64.encode(os.toByteArray());
         return LoginAboutAdapt.buildCaptchaVO(encode,uuid);
+    }
+
+    /**
+     * 发送手机验证码
+     *
+     * @param phone 手机号
+     * @author qingmeng
+     * @createTime: 2023/11/11 21:14:04
+     */
+    @Override
+    public void sendPhone(String phone) {
+        AsserUtils.isTrue(RegexUtils.checkPhone(phone),"手机号格式错误");
+        StaticCredentialProvider provider = StaticCredentialProvider.create(Credential.builder()
+                .accessKeyId(aliAccessKeyId)
+                .accessKeySecret(aliAccessKeySecret)
+                .build());
+
+        AsyncClient client = AsyncClient.builder()
+                .region("cn-hangzhou")
+                .credentialsProvider(provider)
+                .overrideConfiguration(
+                        ClientOverrideConfiguration.create()
+                                .setEndpointOverride("dysmsapi.aliyuncs.com")
+                )
+                .build();
+        Integer phoneCode = Integer.parseInt(RandomUtil.randomNumbers(4));
+        String key = RedisConstant.PHONE_CODE_KEY + phone;
+        RedisUtils.set(key, String.valueOf(phoneCode),RedisConstant.PHONE_CODE_EXPIRE, TimeUnit.MINUTES);
+        String code = "{\"code\":\""+phoneCode+"\"}";
+        SendSmsRequest sendSmsRequest = SendSmsRequest.builder()
+                .signName("阿里云短信测试")
+                .templateCode("SMS_154950909")
+                .phoneNumbers(phone)
+                .templateParam(code)
+                .build();
+        client.sendSms(sendSmsRequest);
     }
 }

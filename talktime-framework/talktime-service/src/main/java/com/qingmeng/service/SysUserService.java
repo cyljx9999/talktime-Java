@@ -32,4 +32,13 @@ public interface SysUserService{
      * @createTime: 2023/11/11 14:27:50
      */
     CaptchaVO getCaptcha();
+
+    /**
+     * 发送手机验证码
+     *
+     * @param phone 手机号
+     * @author qingmeng
+     * @createTime: 2023/11/11 21:14:04
+     */
+    void sendPhone(String phone);
 }

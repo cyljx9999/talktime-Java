@@ -48,4 +48,18 @@ public class LoginAboutController {
         return CommonResult.success(captchaVO);
     }
 
+    /**
+     * 发手机验证码
+     *
+     * @param phone 手机号
+     * @return {@link CommonResult }<{@link String }>
+     * @author qingmeng
+     * @createTime: 2023/11/11 21:23:41
+     */
+    @PostMapping("/sendPhoneCode/{phone}")
+    public CommonResult<String> sendPhoneCode(@PathVariable String phone){
+        sysUserService.sendPhone(phone);
+        return CommonResult.success();
+    }
+
 }

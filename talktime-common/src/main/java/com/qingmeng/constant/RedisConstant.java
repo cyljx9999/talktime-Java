@@ -13,4 +13,10 @@ public class RedisConstant {
      */
     public static final String CAPTCHA_CODE_KEY = "captcha:code:";
     public static final long CAPTCHA_CODE_EXPIRE = 2L;
+
+    /**
+     * 手机验证码key以及对应的过期时间
+     */
+    public static final String PHONE_CODE_KEY = "phone:";
+    public static final long PHONE_CODE_EXPIRE = 2L;
 }
