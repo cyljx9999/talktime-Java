@@ -11,8 +11,21 @@ import io.netty.channel.Channel;
 public interface WebSocketService {
 
     /**
-     * 处理所有ws连接的事件
+     * ws连接的事件
      * @param channel 连接的通道
      */
     void connect(Channel channel);
+
+    /**
+     * 处理用户登录请求，需要返回一张带code的二维码
+     *
+     * @param channel 连接的通道
+     */
+    void getLoginQrcode(Channel channel);
+
+    /**
+     * 移除ws连接的事件
+     * @param channel 连接的通道
+     */
+    void removeConnect(Channel channel);
 }

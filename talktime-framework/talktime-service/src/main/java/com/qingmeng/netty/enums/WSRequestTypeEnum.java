@@ -21,7 +21,7 @@ public enum WSRequestTypeEnum {
     /**
      * 请求登录二维码
      */
-    LOGIN("qrcode", "请求登录二维码"),
+    QR_CODE("qrcode", "请求登录二维码"),
 
     /**
      * 心跳状态

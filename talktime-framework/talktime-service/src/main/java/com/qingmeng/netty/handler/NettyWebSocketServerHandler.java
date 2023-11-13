@@ -26,6 +26,15 @@ public class NettyWebSocketServerHandler extends SimpleChannelInboundHandler<Tex
     private WebSocketService webSocketService;
 
     /**
+     * 客户端主动关闭事件
+     * @param ctx ChannelHandlerContext对象
+     */
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) {
+        userOffLine(ctx);
+    }
+
+    /**
      * 在处理程序添加到管道时，初始化 WebSocket 服务。
      *
      * @param ctx ChannelHandlerContext 上下文
@@ -50,10 +59,7 @@ public class NettyWebSocketServerHandler extends SimpleChannelInboundHandler<Tex
             // 空闲状态事件
             IdleStateEvent event = (IdleStateEvent) evt;
             if (event.state() == IdleState.READER_IDLE) {
-                // 读空闲事件，可以处理用户下线等逻辑
-                log.info("读空闲");
-                // todo: 用户下线处理，例如关闭通道
-                ctx.channel().close();
+                userOffLine(ctx);
             }
         }
     }
@@ -67,14 +73,14 @@ public class NettyWebSocketServerHandler extends SimpleChannelInboundHandler<Tex
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, TextWebSocketFrame textWebSocketFrame) {
         // 获取前端传递的登陆类型数据并转化为对应的实体类对象
-        WsBaseDTO wsBaseReq = JSONUtil.toBean(textWebSocketFrame.text(), WsBaseDTO.class);
+        WsBaseDTO wsBaseDTO = JSONUtil.toBean(textWebSocketFrame.text(), WsBaseDTO.class);
         // 通过查询枚举获取具体的请求类型
-        WSRequestTypeEnum wsReqTypeEnum = WSRequestTypeEnum.of(wsBaseReq.getType());
+        WSRequestTypeEnum wsReqTypeEnum = WSRequestTypeEnum.of(wsBaseDTO.getType());
         // 匹配类型进行具体的操作
         switch (wsReqTypeEnum) {
-            case LOGIN:
+            case QR_CODE:
                 // 登陆
-                log.info("请求二维码 = " + textWebSocketFrame.text());
+                webSocketService.getLoginQrcode(channelHandlerContext.channel());
                 break;
             case HEARTBEAT:
                 // 心跳检测
@@ -94,5 +100,13 @@ public class NettyWebSocketServerHandler extends SimpleChannelInboundHandler<Tex
         return SpringUtil.getBean(WebSocketService.class);
     }
 
+    /**
+     * 用户下线
+     * @param ctx ChannelHandlerContext对象
+     */
+    private void userOffLine(ChannelHandlerContext ctx) {
+        this.webSocketService.removeConnect(ctx.channel());
+        ctx.channel().close();
+    }
 }
 
