@@ -1,5 +1,6 @@
 package com.qingmeng.event.listener;
 
+import com.qingmeng.dao.SysOperateLogDao;
 import com.qingmeng.entity.SysOperateLog;
 import com.qingmeng.event.SysOperateLogEvent;
 import com.qingmeng.service.SysOperateLogService;
@@ -20,7 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 @Component
 public class SysOperateLogListener {
     @Resource
-    private SysOperateLogService sysOperateLogService;
+    private SysOperateLogDao sysOperateLogDao;
 
     @Async("visibleTaskExecutor")
     @EventListener(classes = SysOperateLogEvent.class)
@@ -31,6 +32,6 @@ public class SysOperateLogListener {
         sysOperateLog.setIp(IpUtils.getIpAddr(request));
         // IP归属地
         sysOperateLog.setIpLocation(IpUtils.getIpHomeLocal(request));
-        sysOperateLogService.save(sysOperateLog);
+        sysOperateLogDao.save(sysOperateLog);
     }
 }

@@ -5,6 +5,8 @@ import com.qingmeng.dto.login.RegisterDTO;
 import com.qingmeng.vo.login.CaptchaVO;
 import com.qingmeng.vo.login.TokenInfoVO;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * <p>
  * 用户信息表 服务类
@@ -47,8 +49,9 @@ public interface SysUserService{
      * 注册
      *
      * @param paramDTO 参数对象
+     * @param request 请求
      * @author qingmeng
      * @createTime: 2023/11/13 07:51:11
      */
-    void register(RegisterDTO paramDTO);
+    void register(RegisterDTO paramDTO, HttpServletRequest request);
 }

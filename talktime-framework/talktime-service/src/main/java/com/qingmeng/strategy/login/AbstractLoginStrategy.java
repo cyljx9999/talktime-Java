@@ -1,5 +1,6 @@
 package com.qingmeng.strategy.login;
 
+import cn.dev33.satoken.secure.SaSecureUtil;
 import cn.dev33.satoken.stp.SaLoginModel;
 import cn.dev33.satoken.stp.StpUtil;
 import com.qingmeng.adapt.LoginAboutAdapt;
@@ -52,7 +53,10 @@ public abstract class AbstractLoginStrategy implements LoginStrategy{
      * @createTime: 2023/11/10 22:42:54
      */
     protected SysUser getUserInfo(LoginParamDTO loginParamDTO) {
-        return sysUserDao.getUserInfoByAccount(loginParamDTO);
+        SysUser sysUser = sysUserDao.getUserInfoByAccount(loginParamDTO);
+        String encryptPassword = SaSecureUtil.md5BySalt(loginParamDTO.getPassword(), SystemConstant.MD5_SALT);
+        AsserUtils.equal(encryptPassword,sysUser.getUserPassword(),"密码不一致");
+        return sysUser;
     }
 
 

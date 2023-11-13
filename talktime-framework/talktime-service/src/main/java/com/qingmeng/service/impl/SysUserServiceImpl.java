@@ -16,6 +16,7 @@ import com.qingmeng.dto.login.LoginParamDTO;
 import com.qingmeng.dto.login.RegisterDTO;
 import com.qingmeng.entity.SysUser;
 import com.qingmeng.enums.user.LoginMethodEnum;
+import com.qingmeng.event.SysUserRegisterEvent;
 import com.qingmeng.exception.TalkTimeException;
 import com.qingmeng.service.SysUserService;
 import com.qingmeng.strategy.login.LoginFactory;
@@ -28,11 +29,13 @@ import com.qingmeng.vo.login.CaptchaVO;
 import com.qingmeng.vo.login.TokenInfoVO;
 import darabonba.core.client.ClientOverrideConfiguration;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FastByteArrayOutputStream;
 
 import javax.annotation.Resource;
 import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletRequest;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Random;
@@ -61,6 +64,8 @@ public class SysUserServiceImpl implements SysUserService {
     private Producer captchaProducerMath;
     @Resource
     private SysUserDao sysUserDao;
+    @Resource
+    private ApplicationEventPublisher applicationEventPublisher;
 
     /**
      * 验证码类型
@@ -167,15 +172,23 @@ public class SysUserServiceImpl implements SysUserService {
      * 注册
      *
      * @param paramDTO 参数对象
+     * @param request 请求
      * @author qingmeng
      * @createTime: 2023/11/13 07:51:11
      */
     @Override
-    public void register(RegisterDTO paramDTO) {
+    public void register(RegisterDTO paramDTO, HttpServletRequest request) {
         // 密码加盐加密
         String encryptPassword = SaSecureUtil.md5BySalt(paramDTO.getPassword(), SystemConstant.MD5_SALT);
         paramDTO.setPassword(encryptPassword);
         SysUser sysUser = LoginAboutAdapt.buildRegister(paramDTO);
-        sysUserDao.save(sysUser);
+        boolean save = sysUserDao.save(sysUser);
+        if (save){
+            /*
+            获取ip归属地比较耗时，所以采用异步更新
+            更新采用根据主键更新，需要更新插入成功再发布事件
+             */
+            applicationEventPublisher.publishEvent(new SysUserRegisterEvent(this,sysUser,request));
+        }
     }
 }

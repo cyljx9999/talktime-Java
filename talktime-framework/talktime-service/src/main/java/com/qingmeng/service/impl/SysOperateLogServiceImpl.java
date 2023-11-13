@@ -15,18 +15,4 @@ import javax.annotation.Resource;
  */
 @Service
 public class SysOperateLogServiceImpl implements SysOperateLogService {
-    @Resource
-    private SysOperateLogDao sysOperateLogDao;
-
-    /**
-     * 保存日志
-     *
-     * @param sysOperateLog 日志对象数据
-     * @author qingmeng
-     * @createTime: 2023/11/10 15:18:05
-     */
-    @Override
-    public void save(SysOperateLog sysOperateLog) {
-        sysOperateLogDao.save(sysOperateLog);
-    }
 }
