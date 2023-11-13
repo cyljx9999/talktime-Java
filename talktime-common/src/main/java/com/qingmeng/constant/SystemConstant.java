@@ -21,4 +21,9 @@ public class SystemConstant {
      * 密码加盐
      */
     public static final String MD5_SALT = "talktime";
+
+    /**
+     *  WebSocket 服务器监听的端口号
+     */
+    public static final int WEB_SOCKET_PORT = 9111;
 }
