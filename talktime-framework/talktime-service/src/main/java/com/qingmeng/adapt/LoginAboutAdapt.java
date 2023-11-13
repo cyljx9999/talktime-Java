@@ -1,6 +1,10 @@
 package com.qingmeng.adapt;
 
 import cn.dev33.satoken.stp.SaTokenInfo;
+import com.qingmeng.dto.login.RegisterDTO;
+import com.qingmeng.entity.SysUser;
+import com.qingmeng.enums.user.AccountStatusEnum;
+import com.qingmeng.enums.user.SexEnum;
 import com.qingmeng.vo.login.CaptchaVO;
 import com.qingmeng.vo.login.TokenInfoVO;
 
@@ -42,6 +46,29 @@ public class LoginAboutAdapt {
         captchaVO.setCode(captcha);
         captchaVO.setCodeId(uuid);
         return captchaVO;
+    }
+
+    /**
+     * 构建注册对象
+     *
+     * @param param 注册账号参数
+     * @return {@link SysUser }
+     * @author qingmeng
+     * @createTime: 2023/11/13 08:02:20
+     */
+    public static SysUser buildRegister(RegisterDTO param){
+        SysUser sysUser = new SysUser();
+        sysUser.setUserName(param.getUserName());
+        sysUser.setUserAccount(param.getAccount());
+        sysUser.setUserPassword(param.getPassword());
+        sysUser.setUserPhone(param.getPhone());
+        sysUser.setUserSex(SexEnum.UNKNOWN.getCode());
+        sysUser.setAccountStatus(AccountStatusEnum.NORMAL.getCode());
+        sysUser.setAlterAccountCount(1);
+        sysUser.setLatitude(param.getLatitude());
+        sysUser.setLongitude(param.getLongitude());
+        sysUser.setIpLocation(param.getIpLocation());
+        return sysUser;
     }
 
 }

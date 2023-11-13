@@ -1,5 +1,6 @@
 package com.qingmeng.service.impl;
 
+import cn.dev33.satoken.secure.SaSecureUtil;
 import cn.hutool.core.codec.Base64;
 import cn.hutool.core.util.RandomUtil;
 import com.aliyun.auth.credentials.Credential;
@@ -9,7 +10,11 @@ import com.aliyun.sdk.service.dysmsapi20170525.models.SendSmsRequest;
 import com.google.code.kaptcha.Producer;
 import com.qingmeng.adapt.LoginAboutAdapt;
 import com.qingmeng.constant.RedisConstant;
+import com.qingmeng.constant.SystemConstant;
+import com.qingmeng.dao.SysUserDao;
 import com.qingmeng.dto.login.LoginParamDTO;
+import com.qingmeng.dto.login.RegisterDTO;
+import com.qingmeng.entity.SysUser;
 import com.qingmeng.enums.user.LoginMethodEnum;
 import com.qingmeng.exception.TalkTimeException;
 import com.qingmeng.service.SysUserService;
@@ -54,6 +59,8 @@ public class SysUserServiceImpl implements SysUserService {
     private Producer captchaProducer;
     @Resource(name = "captchaProducerMath")
     private Producer captchaProducerMath;
+    @Resource
+    private SysUserDao sysUserDao;
 
     /**
      * 验证码类型
@@ -154,5 +161,21 @@ public class SysUserServiceImpl implements SysUserService {
                 .templateParam(code)
                 .build();
         client.sendSms(sendSmsRequest);
+    }
+
+    /**
+     * 注册
+     *
+     * @param paramDTO 参数对象
+     * @author qingmeng
+     * @createTime: 2023/11/13 07:51:11
+     */
+    @Override
+    public void register(RegisterDTO paramDTO) {
+        // 密码加盐加密
+        String encryptPassword = SaSecureUtil.md5BySalt(paramDTO.getPassword(), SystemConstant.MD5_SALT);
+        paramDTO.setPassword(encryptPassword);
+        SysUser sysUser = LoginAboutAdapt.buildRegister(paramDTO);
+        sysUserDao.save(sysUser);
     }
 }

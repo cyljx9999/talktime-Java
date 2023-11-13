@@ -5,9 +5,11 @@ import com.qingmeng.valid.AccountGroup;
 import com.qingmeng.valid.PhoneGroup;
 import com.qingmeng.valid.custom.StingListValue;
 import lombok.Data;
+import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 /**
  * @author 清梦
@@ -21,6 +23,7 @@ public class LoginParamDTO {
      * 账号
      */
     @NotBlank(groups = {AccountGroup.class})
+    @Length(min = 4, max = 10, groups = {AccountGroup.class})
     private String account;
 
     /**
@@ -65,6 +68,9 @@ public class LoginParamDTO {
      * 手机
      */
     @NotBlank(groups = {PhoneGroup.class})
+    @Pattern(regexp = "^(0|86|17951)?(13[0-9]|15[012356789]|166|17[3678]|18[0-9]|14[57])[0-9]{8}$",
+            message = "手机号格式不正确",
+            groups = {PhoneGroup.class})
     private String phone;
 
     /**

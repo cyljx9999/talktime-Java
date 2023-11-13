@@ -2,12 +2,14 @@ package com.qingmeng.controller;
 
 import com.qingmeng.domain.rep.CommonResult;
 import com.qingmeng.dto.login.LoginParamDTO;
+import com.qingmeng.dto.login.RegisterDTO;
 import com.qingmeng.service.SysUserService;
 import com.qingmeng.vo.login.CaptchaVO;
 import com.qingmeng.vo.login.TokenInfoVO;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.validation.Valid;
 
 /**
  * @author 清梦
@@ -59,6 +61,20 @@ public class LoginAboutController {
     @PostMapping("/sendPhoneCode/{phone}")
     public CommonResult<String> sendPhoneCode(@PathVariable String phone){
         sysUserService.sendPhone(phone);
+        return CommonResult.success();
+    }
+
+    /**
+     * 注册账号
+     *
+     * @param paramDTO 参数对象
+     * @return {@link CommonResult }<{@link String }>
+     * @author qingmeng
+     * @createTime: 2023/11/13 07:50:51
+     */
+    @PostMapping("register")
+    public CommonResult<String> register(@Valid @RequestBody RegisterDTO paramDTO){
+        sysUserService.register(paramDTO);
         return CommonResult.success();
     }
 

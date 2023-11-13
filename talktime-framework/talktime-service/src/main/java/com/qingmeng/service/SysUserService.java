@@ -1,6 +1,7 @@
 package com.qingmeng.service;
 
 import com.qingmeng.dto.login.LoginParamDTO;
+import com.qingmeng.dto.login.RegisterDTO;
 import com.qingmeng.vo.login.CaptchaVO;
 import com.qingmeng.vo.login.TokenInfoVO;
 
@@ -41,4 +42,13 @@ public interface SysUserService{
      * @createTime: 2023/11/11 21:14:04
      */
     void sendPhone(String phone);
+
+    /**
+     * 注册
+     *
+     * @param paramDTO 参数对象
+     * @author qingmeng
+     * @createTime: 2023/11/13 07:51:11
+     */
+    void register(RegisterDTO paramDTO);
 }

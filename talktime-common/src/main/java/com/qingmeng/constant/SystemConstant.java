@@ -17,4 +17,8 @@ public class SystemConstant {
      */
     public static final String UNIVERSAL_VERIFICATION_CODE = "qingmeng";
 
+    /**
+     * 密码加盐
+     */
+    public static final String MD5_SALT = "talktime";
 }
