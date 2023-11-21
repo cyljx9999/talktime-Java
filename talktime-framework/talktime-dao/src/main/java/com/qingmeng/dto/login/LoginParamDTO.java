@@ -52,8 +52,10 @@ public class LoginParamDTO {
 
     /**
      * 登录设备类型
+     * @see com.qingmeng.enums.user.LoginDeviceEnum
      */
     @NotBlank(groups = {PhoneGroup.class, AccountGroup.class})
+    @StingListValue(values = {"pc", "h5", "app", "miniProgram"}, groups = {PhoneGroup.class, AccountGroup.class})
     private String loginType;
 
     /**

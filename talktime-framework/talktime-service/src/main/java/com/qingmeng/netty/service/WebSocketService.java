@@ -1,5 +1,6 @@
 package com.qingmeng.netty.service;
 
+import com.qingmeng.dto.login.WsAuthorizeDTO;
 import io.netty.channel.Channel;
 
 /**
@@ -28,4 +29,34 @@ public interface WebSocketService {
      * @param channel 连接的通道
      */
     void removeConnect(Channel channel);
+
+    /**
+     * 扫描登录成功
+     *
+     * @param loginCode 登录代码
+     * @param userId    用户 ID
+     * @author qingmeng
+     * @createTime: 2023/11/20 09:00:45
+     */
+    void scanLoginSuccess(Integer loginCode, Long userId);
+
+    /**
+     * 扫描成功
+     *
+     * @param loginCode 登录代码
+     * @author qingmeng
+     * @createTime: 2023/11/20 09:57:07
+     */
+    void scanSuccess(Integer loginCode);
+
+    /**
+     * 授权
+     *
+     * @param channel      渠道
+     * @param authorizeDTO 授权 DTO
+     * @author qingmeng
+     * @createTime: 2023/11/21 19:35:25
+     */
+    void authorize(Channel channel, WsAuthorizeDTO authorizeDTO);
 }
+

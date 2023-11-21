@@ -1,10 +1,13 @@
 package com.qingmeng.netty.handler;
 
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import cn.hutool.json.JSONUtil;
+import com.qingmeng.dto.login.WsAuthorizeDTO;
 import com.qingmeng.netty.dto.WsBaseDTO;
 import com.qingmeng.netty.enums.WSRequestTypeEnum;
 import com.qingmeng.netty.service.WebSocketService;
+import com.qingmeng.utils.NettyUtil;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -55,6 +58,10 @@ public class NettyWebSocketServerHandler extends SimpleChannelInboundHandler<Tex
         if (evt instanceof WebSocketServerProtocolHandler.HandshakeComplete) {
             // WebSocket 握手完成事件
             webSocketService.connect(ctx.channel());
+            String token = NettyUtil.getAttr(ctx.channel(), NettyUtil.TOKEN);
+            if (StrUtil.isNotBlank(token)) {
+                this.webSocketService.authorize(ctx.channel(), new WsAuthorizeDTO(token));
+            }
         } else if (evt instanceof IdleStateEvent) {
             // 空闲状态事件
             IdleStateEvent event = (IdleStateEvent) evt;

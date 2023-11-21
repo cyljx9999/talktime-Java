@@ -2,6 +2,7 @@ package com.qingmeng.service;
 
 import com.qingmeng.dto.login.LoginParamDTO;
 import com.qingmeng.dto.login.RegisterDTO;
+import com.qingmeng.entity.SysUser;
 import com.qingmeng.vo.login.CaptchaVO;
 import com.qingmeng.vo.login.TokenInfoVO;
 
@@ -54,4 +55,33 @@ public interface SysUserService{
      * @createTime: 2023/11/13 07:51:11
      */
     void register(RegisterDTO paramDTO, HttpServletRequest request);
+
+    /**
+     * 使用 ID 获取用户信息
+     *
+     * @param userId 用户 ID
+     * @return {@link SysUser }
+     * @author qingmeng
+     * @createTime: 2023/11/20 08:39:08
+     */
+    SysUser getUserInfoWithId(Long userId);
+
+    /**
+     * 保存
+     *
+     * @param saveUser 用户
+     * @return boolean
+     * @author qingmeng
+     * @createTime: 2023/11/20 08:41:14
+     */
+    boolean save(SysUser saveUser);
+
+    /**
+     * 使用 ID 更新
+     *
+     * @param update 更新
+     * @author qingmeng
+     * @createTime: 2023/11/20 08:53:22
+     */
+    void updateWithId(SysUser update);
 }

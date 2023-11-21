@@ -28,6 +28,36 @@ public class AsserUtils {
      */
     public static final SpringValidatorAdapter SPRING_VALIDATOR_ADAPTER = SpringUtils.getBean(SpringValidatorAdapter.class);
 
+
+    /**
+     * 为 null
+     *
+     * @param object  对象
+     * @param message 消息
+     * @author qingmeng
+     * @createTime: 2023/11/21 23:04:01
+     */
+    public static void isNull(Object object, String message) {
+        if (Objects.isNull(object)) {
+            throwException(null, message);
+        }
+    }
+
+    /**
+     * 不为 null
+     *
+     * @param object  对象
+     * @param message 消息
+     * @author qingmeng
+     * @createTime: 2023/11/21 23:04:18
+     */
+    public static void isNotNull(Object object, String message) {
+        if (Objects.nonNull(object)) {
+            throwException(null, message);
+        }
+    }
+
+
     /**
      * 判断条件是否为真，如果不为真则抛出异常。
      *

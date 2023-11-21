@@ -1,5 +1,7 @@
 package com.qingmeng.controller;
 
+import cn.dev33.satoken.stp.SaLoginModel;
+import cn.dev33.satoken.stp.StpUtil;
 import com.qingmeng.annotation.SysLog;
 import com.qingmeng.entity.SysUser;
 import com.qingmeng.mapper.SysUserMapper;
@@ -29,7 +31,20 @@ public class TestController {
      */
     @GetMapping("test")
     @SysLog(title = "用户模块",content = "获取用户111")
-    public SysUser getUser(Long id){
-        return null;
+    public Boolean getUser(Long id){
+        return StpUtil.isLogin();
     }
+
+    @GetMapping("test1")
+    @SysLog(title = "用户模块",content = "获取用户111")
+    public Boolean getUser1(){
+        StpUtil.login(5, new SaLoginModel()
+                .setDevice("pc")
+                .setIsLastingCookie(true)
+                .setExtra("userName", "name")
+        );
+        return true;
+    }
+
+
 }

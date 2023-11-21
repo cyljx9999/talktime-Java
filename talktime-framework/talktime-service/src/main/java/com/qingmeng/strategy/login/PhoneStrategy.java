@@ -39,6 +39,7 @@ public class PhoneStrategy extends AbstractLoginStrategy{
             return;
         }
         AsserUtils.equal(phoneCode, loginParamDTO.getCode(),"验证码不一致");
+        // todo: 手机唯一性校验
     }
 
     /**

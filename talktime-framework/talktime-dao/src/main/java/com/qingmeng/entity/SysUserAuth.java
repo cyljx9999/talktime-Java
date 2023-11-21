@@ -32,7 +32,7 @@ public class SysUserAuth implements Serializable {
     /**
      * 第三方应用登陆类型(微信，qq等)
      */
-    private Byte loginType;
+    private String loginType;
 
     /**
      * 第三方应用的唯一标识

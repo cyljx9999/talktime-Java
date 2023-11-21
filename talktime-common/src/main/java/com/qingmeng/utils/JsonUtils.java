@@ -1,7 +1,10 @@
 package com.qingmeng.utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.util.List;
 
 /**
  * @author 清梦
@@ -54,5 +57,22 @@ public class JsonUtils {
      */
     static <T> T toBeanOrNull(String json, Class<T> tClass) {
         return json == null ? null : JsonUtils.toObj(json, tClass);
+    }
+
+    /**
+     * 列出
+     *
+     * @param str str
+     * @return {@link List }<{@link T }>
+     * @author qingmeng
+     * @createTime: 2023/11/20 15:43:10
+     */
+    public static <T> List<T> toList(String str) {
+        try {
+            return OBJECT_MAPPER.readValue(str, new TypeReference<List<T>>() {
+            });
+        } catch (JsonProcessingException e) {
+            throw new UnsupportedOperationException(e);
+        }
     }
 }

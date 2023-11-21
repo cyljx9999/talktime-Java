@@ -1,12 +1,17 @@
 package com.qingmeng.adapt;
 
+import cn.dev33.satoken.secure.SaSecureUtil;
 import cn.dev33.satoken.stp.SaTokenInfo;
+import cn.hutool.core.util.RandomUtil;
+import com.qingmeng.constant.SystemConstant;
 import com.qingmeng.dto.login.RegisterDTO;
 import com.qingmeng.entity.SysUser;
+import com.qingmeng.entity.SysUserAuth;
 import com.qingmeng.enums.user.AccountStatusEnum;
 import com.qingmeng.enums.user.SexEnum;
 import com.qingmeng.vo.login.CaptchaVO;
 import com.qingmeng.vo.login.TokenInfoVO;
+import me.chanjar.weixin.common.bean.WxOAuth2UserInfo;
 
 /**
  * @author 清梦
@@ -71,4 +76,62 @@ public class LoginAboutAdapt {
         return sysUser;
     }
 
+    /**
+     * 构造只有openId的用户授权对象
+     *
+     * @param openId 第三方应用唯一凭证
+     * @param userId 用户id
+     * @return {@link SysUserAuth }
+     * @author qingmeng
+     * @createTime: 2023/11/13 15:10:13
+     */
+    public static SysUserAuth buildUserAuthWithOpenId(String openId,Long userId){
+        SysUserAuth auth = new SysUserAuth();
+        auth.setOpenId(openId);
+        auth.setUserId(userId);
+        auth.setLoginType("微信公众号");
+        return auth;
+    }
+
+    /**
+     * 构建默认注册对象
+     *
+     * @return {@link SysUser }
+     * @author qingmeng
+     * @createTime: 2023/11/13 08:02:20
+     */
+    public static SysUser buildDefaultRegister(){
+        SysUser sysUser = new SysUser();
+        sysUser.setUserName(RandomUtil.randomString(8));
+        sysUser.setUserAccount(RandomUtil.randomString(8));
+        String randomPassword = RandomUtil.randomString(8);
+        sysUser.setUserPassword(SaSecureUtil.md5BySalt(randomPassword, SystemConstant.MD5_SALT));
+        sysUser.setUserSex(SexEnum.UNKNOWN.getCode());
+        sysUser.setAccountStatus(AccountStatusEnum.NORMAL.getCode());
+        sysUser.setAlterAccountCount(1);
+        return sysUser;
+    }
+
+    /**
+     * 构建授权用户
+     *
+     * @param userId   用户 ID
+     * @param userInfo 用户信息
+     * @return {@link SysUser }
+     * @author qingmeng
+     * @createTime: 2023/11/20 08:48:09
+     */
+    public static SysUser buildAuthorizeUser(Long userId, WxOAuth2UserInfo userInfo) {
+        SysUser user = new SysUser();
+        user.setId(userId);
+        user.setUserAvatar(userInfo.getHeadImgUrl());
+        user.setUserName(userInfo.getNickname());
+        user.setUserSex(userInfo.getSex());
+        if (userInfo.getNickname().length() > 10) {
+            user.setUserName(RandomUtil.randomString(8));
+        } else {
+            user.setUserName(userInfo.getNickname());
+        }
+        return user;
+    }
 }

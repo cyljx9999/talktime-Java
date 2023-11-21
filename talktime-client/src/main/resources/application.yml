@@ -53,10 +53,10 @@ spring:
     listener:
       simple:
         acknowledge-mode: manual
-        prefetch: 100
+        prefetch: 1
       direct:
         acknowledge-mode: manual
-        prefetch: 100
+        prefetch: 1
   servlet:
     # 设置上传文件大小
     multipart:

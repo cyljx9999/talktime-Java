@@ -124,5 +124,5 @@ public class SysUser implements Serializable {
      */
     @TableLogic
     @TableField(fill = FieldFill.INSERT)
-    private Boolean isDeleted;
+    private Integer isDeleted;
 }

@@ -19,4 +19,10 @@ public class RedisConstant {
      */
     public static final String PHONE_CODE_KEY = "phone:";
     public static final long PHONE_CODE_EXPIRE = 2L;
+
+    /**
+     * 扫码用户登陆code
+     */
+    public static final String OPEN_ID_CODE = "openId:code";
+    public static final int OPEN_ID_CODE_EXPIRE = 60;
 }

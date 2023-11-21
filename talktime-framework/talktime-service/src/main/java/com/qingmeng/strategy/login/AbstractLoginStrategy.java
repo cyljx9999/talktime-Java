@@ -42,6 +42,7 @@ public abstract class AbstractLoginStrategy implements LoginStrategy{
             return;
         }
         AsserUtils.equal(captchaCode, loginParamDTO.getCode(),"验证码不一致");
+        // todo: 账号唯一性校验
     }
 
     /**

@@ -1,6 +1,7 @@
 package com.qingmeng.netty.config;
 
 import com.qingmeng.constant.SystemConstant;
+import com.qingmeng.netty.handler.HttpHeadersHandler;
 import com.qingmeng.netty.handler.NettyWebSocketServerHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelInitializer;
@@ -103,7 +104,7 @@ public class NettyWebSocketServerConfig {
                          */
                         pipeline.addLast(new HttpObjectAggregator(8192));
                         // 保存用户 IP 地址
-                        // pipeline.addLast(new HttpHeadersHandler());
+                         pipeline.addLast(new HttpHeadersHandler());
                         /*
                          * 说明：
                          *  1. 对于 WebSocket，它的数据是以帧 frame 的形式传递的；

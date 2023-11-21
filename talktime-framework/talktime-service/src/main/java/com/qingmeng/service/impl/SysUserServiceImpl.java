@@ -191,4 +191,42 @@ public class SysUserServiceImpl implements SysUserService {
             applicationEventPublisher.publishEvent(new SysUserRegisterEvent(this,sysUser,request));
         }
     }
+
+    /**
+     * 使用 ID 获取用户信息
+     *
+     * @param userId 用户 ID
+     * @return {@link SysUser }
+     * @author qingmeng
+     * @createTime: 2023/11/20 08:39:08
+     */
+    @Override
+    public SysUser getUserInfoWithId(Long userId) {
+        return sysUserDao.getById(userId);
+    }
+
+    /**
+     * 保存
+     *
+     * @param saveUser 用户
+     * @return boolean
+     * @author qingmeng
+     * @createTime: 2023/11/20 08:41:14
+     */
+    @Override
+    public boolean save(SysUser saveUser) {
+        return sysUserDao.save(saveUser);
+    }
+
+    /**
+     * 使用 ID 更新
+     *
+     * @param update 更新
+     * @author qingmeng
+     * @createTime: 2023/11/20 08:53:22
+     */
+    @Override
+    public void updateWithId(SysUser update) {
+        sysUserDao.updateById(update);
+    }
 }

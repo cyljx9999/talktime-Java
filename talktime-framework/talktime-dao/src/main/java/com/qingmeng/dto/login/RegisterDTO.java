@@ -20,7 +20,7 @@ public class RegisterDTO {
      * 用户名
      */
     @NotBlank(groups = {AddGroup.class})
-    @Length(min = 4, max = 10, groups = {AddGroup.class})
+    @Length(min = 1, max = 10, groups = {AddGroup.class})
     private String userName;
 
     /**

@@ -1,7 +1,10 @@
 package com.qingmeng.wxMp.controller;
 
+import com.qingmeng.wxMp.service.WxMsgService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import me.chanjar.weixin.common.bean.WxOAuth2UserInfo;
+import me.chanjar.weixin.common.bean.oauth2.WxOAuth2AccessToken;
 import me.chanjar.weixin.mp.api.WxMpMessageRouter;
 import me.chanjar.weixin.mp.api.WxMpService;
 import me.chanjar.weixin.mp.bean.message.WxMpXmlMessage;
@@ -24,7 +27,8 @@ public class WxPortalController {
 
     private final WxMpService wxService;
     private final WxMpMessageRouter messageRouter;
-    //private final WxMsgService wxMsgService;
+    private final WxMsgService wxMsgService;
+
     /**
      * 处理微信服务器认证消息的GET请求。
      *
@@ -64,9 +68,9 @@ public class WxPortalController {
     public RedirectView callBack(@RequestParam String code) {
         try {
             // 执行微信回调操作
-            // WxOAuth2AccessToken accessToken = wxService.getOAuth2Service().getAccessToken(code);
-            // WxOAuth2UserInfo userInfo = wxService.getOAuth2Service().getUserInfo(accessToken, "zh_CN");
-            // wxMsgService.authorize(userInfo);
+             WxOAuth2AccessToken accessToken = wxService.getOAuth2Service().getAccessToken(code);
+             WxOAuth2UserInfo userInfo = wxService.getOAuth2Service().getUserInfo(accessToken, "zh_CN");
+             wxMsgService.authorize(userInfo);
         } catch (Exception e) {
             log.error("callBack error", e);
         }

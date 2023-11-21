@@ -4,13 +4,14 @@ import com.qingmeng.domain.rep.CommonResult;
 import com.qingmeng.dto.login.LoginParamDTO;
 import com.qingmeng.dto.login.RegisterDTO;
 import com.qingmeng.service.SysUserService;
+import com.qingmeng.valid.AddGroup;
 import com.qingmeng.vo.login.CaptchaVO;
 import com.qingmeng.vo.login.TokenInfoVO;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
 
 /**
  * @author 清梦
@@ -74,8 +75,8 @@ public class LoginAboutController {
      * @author qingmeng
      * @createTime: 2023/11/13 07:50:51
      */
-    @PostMapping("register")
-    public CommonResult<String> register(@Valid @RequestBody RegisterDTO paramDTO, HttpServletRequest request){
+    @PostMapping("/register")
+    public CommonResult<String> register(@Validated({AddGroup.class}) @RequestBody RegisterDTO paramDTO, HttpServletRequest request){
         sysUserService.register(paramDTO,request);
         return CommonResult.success();
     }

@@ -27,9 +27,14 @@ public class WsLoginSuccessVO {
     private String avatar;
 
     /**
+     * 用户登录成功后生成的令牌名字。
+     */
+    private String tokenName;
+
+    /**
      * 用户登录成功后生成的令牌。
      */
-    private String token;
+    private String tokenValue;
 
     /**
      * 用户名字。

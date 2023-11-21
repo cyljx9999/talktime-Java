@@ -26,4 +26,14 @@ public class SystemConstant {
      *  WebSocket 服务器监听的端口号
      */
     public static final int WEB_SOCKET_PORT = 9111;
+
+    /**
+     * 重试间隔分钟
+     */
+    public static final double RETRY_INTERVAL_MINUTES = 2D;
+
+    /**
+     * 最大重试次数
+     */
+    public static final int MAX_RETRY_COUNT = 3;
 }
