@@ -6,13 +6,14 @@ import cn.dev33.satoken.stp.StpUtil;
 import com.qingmeng.adapt.LoginAboutAdapt;
 import com.qingmeng.constant.RedisConstant;
 import com.qingmeng.constant.SystemConstant;
-import com.qingmeng.dao.SysUserDao;
 import com.qingmeng.dto.login.LoginParamDTO;
-import com.qingmeng.utils.RedisUtils;
-import com.qingmeng.vo.login.TokenInfoVO;
 import com.qingmeng.entity.SysUser;
+import com.qingmeng.enums.system.BannedEnum;
+import com.qingmeng.service.SysUserService;
 import com.qingmeng.utils.AsserUtils;
+import com.qingmeng.utils.RedisUtils;
 import com.qingmeng.valid.AccountGroup;
+import com.qingmeng.vo.login.TokenInfoVO;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -26,7 +27,7 @@ import javax.annotation.Resource;
 @Component
 public abstract class AbstractLoginStrategy implements LoginStrategy{
     @Resource
-    private SysUserDao sysUserDao;
+    private SysUserService sysUserService;
 
     /**
      * 校验参数
@@ -42,7 +43,6 @@ public abstract class AbstractLoginStrategy implements LoginStrategy{
             return;
         }
         AsserUtils.equal(captchaCode, loginParamDTO.getCode(),"验证码不一致");
-        // todo: 账号唯一性校验
     }
 
     /**
@@ -54,7 +54,7 @@ public abstract class AbstractLoginStrategy implements LoginStrategy{
      * @createTime: 2023/11/10 22:42:54
      */
     protected SysUser getUserInfo(LoginParamDTO loginParamDTO) {
-        SysUser sysUser = sysUserDao.getUserInfoByAccount(loginParamDTO);
+        SysUser sysUser = sysUserService.getUserInfoByAccount(loginParamDTO);
         String encryptPassword = SaSecureUtil.md5BySalt(loginParamDTO.getPassword(), SystemConstant.MD5_SALT);
         AsserUtils.equal(encryptPassword,sysUser.getUserPassword(),"密码不一致");
         return sysUser;
@@ -72,6 +72,8 @@ public abstract class AbstractLoginStrategy implements LoginStrategy{
      * @createTime: 2023/11/11 00:33:31
      */
     protected TokenInfoVO createToken(SysUser sysUser, String loginType, boolean flag) {
+        // 账号是否封禁
+        StpUtil.checkDisable(sysUser.getId(), BannedEnum.LOGIN.getStatus());
         StpUtil.login(sysUser.getId(), new SaLoginModel()
                 .setDevice(loginType)
                 .setIsLastingCookie(flag)

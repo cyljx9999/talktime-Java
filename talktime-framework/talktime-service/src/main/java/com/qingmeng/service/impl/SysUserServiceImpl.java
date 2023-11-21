@@ -182,6 +182,7 @@ public class SysUserServiceImpl implements SysUserService {
         String encryptPassword = SaSecureUtil.md5BySalt(paramDTO.getPassword(), SystemConstant.MD5_SALT);
         paramDTO.setPassword(encryptPassword);
         SysUser sysUser = LoginAboutAdapt.buildRegister(paramDTO);
+        registerCheck(paramDTO, sysUser);
         boolean save = sysUserDao.save(sysUser);
         if (save){
             /*
@@ -191,6 +192,7 @@ public class SysUserServiceImpl implements SysUserService {
             applicationEventPublisher.publishEvent(new SysUserRegisterEvent(this,sysUser,request));
         }
     }
+
 
     /**
      * 使用 ID 获取用户信息
@@ -229,4 +231,34 @@ public class SysUserServiceImpl implements SysUserService {
     public void updateWithId(SysUser update) {
         sysUserDao.updateById(update);
     }
+
+    /**
+     * 按帐户获取用户信息
+     *
+     * @param loginParamDTO login param dto
+     * @return {@link SysUser }
+     * @author qingmeng
+     * @createTime: 2023/11/22 07:42:34
+     */
+    @Override
+    public SysUser getUserInfoByAccount(LoginParamDTO loginParamDTO) {
+        return sysUserDao.getUserInfoByAccountAndPassword(loginParamDTO);
+    }
+
+
+    /**
+     * 注册检查
+     *
+     * @param paramDTO 参数 dto
+     * @param sysUser  sys 用户
+     * @author qingmeng
+     * @createTime: 2023/11/22 07:58:31
+     */
+    private void registerCheck(RegisterDTO paramDTO, SysUser sysUser) {
+        SysUser userByAccount = sysUserDao.getUserInfoByAccountAndPassword(sysUser.getUserAccount());
+        AsserUtils.isNotNull(userByAccount,"账号重复");
+        SysUser userByPhone = sysUserDao.getUserInfoByPhone(paramDTO.getPhone());
+        AsserUtils.isNotNull(userByPhone,"手机号重复");
+    }
+
 }

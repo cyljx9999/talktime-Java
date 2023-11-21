@@ -20,14 +20,14 @@ import org.springframework.stereotype.Service;
 public class SysUserDao extends ServiceImpl<SysUserMapper, SysUser> {
 
     /**
-     * 通过账号查询对应用户所有信息
+     * 通过账号密码查询对应用户所有信息
      *
      * @param paramDTO 参数类
      * @return {@link SysUser }
      * @author qingmeng
-     * @createTime: 2023/11/11 13:02:43
+     * @createTime: 2023/11/22 07:54:17
      */
-    public SysUser getUserInfoByAccount(LoginParamDTO paramDTO) {
+    public SysUser getUserInfoByAccountAndPassword(LoginParamDTO paramDTO) {
         LambdaQueryWrapper<SysUser> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(StrUtil.isNotBlank(paramDTO.getAccount()),SysUser::getUserAccount, paramDTO.getAccount());
         wrapper.eq(StrUtil.isNotBlank(paramDTO.getPassword()),SysUser::getUserPassword, paramDTO.getPassword());
@@ -35,16 +35,30 @@ public class SysUserDao extends ServiceImpl<SysUserMapper, SysUser> {
     }
 
     /**
-     * 通过手机号查询对应用户所有信息
+     * 通过账号查询对应用户所有信息
      *
-     * @param loginParamDTO 参数类
+     * @param account 帐户
      * @return {@link SysUser }
      * @author qingmeng
-     * @createTime: 2023/11/11 13:05:51
+     * @createTime: 2023/11/22 07:54:54
      */
-    public SysUser getUserInfoByPhone(LoginParamDTO loginParamDTO) {
+    public SysUser getUserInfoByAccountAndPassword(String account) {
         LambdaQueryWrapper<SysUser> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(StrUtil.isNotBlank(loginParamDTO.getPhone()),SysUser::getUserPhone, loginParamDTO.getPhone());
+        wrapper.eq(StrUtil.isNotBlank(account),SysUser::getUserAccount, account);
+        return getOne(wrapper);
+    }
+
+    /**
+     * 通过手机号查询对应用户所有信息
+     *
+     * @param phone 电话
+     * @return {@link SysUser }
+     * @author qingmeng
+     * @createTime: 2023/11/22 07:57:06
+     */
+    public SysUser getUserInfoByPhone(String phone) {
+        LambdaQueryWrapper<SysUser> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(StrUtil.isNotBlank(phone),SysUser::getUserPhone, phone);
         return getOne(wrapper);
     }
 }

@@ -84,4 +84,14 @@ public interface SysUserService{
      * @createTime: 2023/11/20 08:53:22
      */
     void updateWithId(SysUser update);
+
+    /**
+     * 按账号获取用户信息
+     *
+     * @param loginParamDTO login param dto
+     * @return {@link SysUser }
+     * @author qingmeng
+     * @createTime: 2023/11/22 07:42:34
+     */
+    SysUser getUserInfoByAccount(LoginParamDTO loginParamDTO);
 }
