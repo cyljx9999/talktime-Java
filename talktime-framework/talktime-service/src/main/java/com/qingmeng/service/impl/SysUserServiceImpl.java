@@ -9,6 +9,7 @@ import com.aliyun.sdk.service.dysmsapi20170525.AsyncClient;
 import com.aliyun.sdk.service.dysmsapi20170525.models.SendSmsRequest;
 import com.google.code.kaptcha.Producer;
 import com.qingmeng.adapt.LoginAboutAdapt;
+import com.qingmeng.cache.UserCache;
 import com.qingmeng.constant.RedisConstant;
 import com.qingmeng.constant.SystemConstant;
 import com.qingmeng.dao.SysUserDao;
@@ -38,6 +39,7 @@ import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -66,6 +68,8 @@ public class SysUserServiceImpl implements SysUserService {
     private SysUserDao sysUserDao;
     @Resource
     private ApplicationEventPublisher applicationEventPublisher;
+    @Resource
+    private UserCache userCache;
 
     /**
      * 验证码类型
@@ -204,7 +208,7 @@ public class SysUserServiceImpl implements SysUserService {
      */
     @Override
     public SysUser getUserInfoWithId(Long userId) {
-        return sysUserDao.getById(userId);
+        return userCache.getUserInfoById(userId);
     }
 
     /**
@@ -245,6 +249,18 @@ public class SysUserServiceImpl implements SysUserService {
         return sysUserDao.getUserInfoByAccountAndPassword(loginParamDTO);
     }
 
+    /**
+     * 根据ids查询用户集合
+     *
+     * @param userIds 用户 ID
+     * @return {@link List }<{@link SysUser }>
+     * @author qingmeng
+     * @createTime: 2023/11/22 09:28:46
+     */
+    @Override
+    public List<SysUser> listByIds(List<Long> userIds) {
+        return userCache.userListByIds(userIds);
+    }
 
     /**
      * 注册检查

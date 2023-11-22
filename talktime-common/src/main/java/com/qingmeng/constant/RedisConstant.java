@@ -25,4 +25,10 @@ public class RedisConstant {
      */
     public static final String OPEN_ID_CODE = "openId:code";
     public static final int OPEN_ID_CODE_EXPIRE = 60;
+
+    /**
+     * 用户缓存key和过期时间
+     */
+    public static final String USER_INFO_KEY = "userinfo:";
+    public static final long USER_INFO_EXPIRE = 5L;
 }

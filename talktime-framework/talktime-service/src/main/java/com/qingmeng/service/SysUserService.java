@@ -7,6 +7,7 @@ import com.qingmeng.vo.login.CaptchaVO;
 import com.qingmeng.vo.login.TokenInfoVO;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * <p>
@@ -94,4 +95,14 @@ public interface SysUserService{
      * @createTime: 2023/11/22 07:42:34
      */
     SysUser getUserInfoByAccount(LoginParamDTO loginParamDTO);
+
+    /**
+     * 根据ids查询用户集合
+     *
+     * @param userIds 用户 ID
+     * @return {@link List }<{@link SysUser }>
+     * @author qingmeng
+     * @createTime: 2023/11/22 09:28:38
+     */
+    List<SysUser> listByIds(List<Long> userIds);
 }

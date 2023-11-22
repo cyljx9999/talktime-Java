@@ -69,7 +69,7 @@ public abstract class AbstractRedisStringCache<IN, OUT> implements BatchCache<IN
     @Override
     public Map<IN, OUT> getBatch(List<IN> params) {
         if (CollectionUtil.isEmpty(params)) {
-            return new HashMap<>();
+            return new HashMap<>(0);
         }
         //去重
         params = params.stream().distinct().collect(Collectors.toList());

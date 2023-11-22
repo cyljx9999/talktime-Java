@@ -202,6 +202,14 @@ public class RedisUtils {
         REDIS_TEMPLATE.opsForValue().set(key, value, timeout, unit);
     }
 
+    /**
+     * 批量缓存
+     *
+     * @param map  数据
+     * @param time 时间
+     * @author qingmeng
+     * @createTime: 2023/11/22 09:44:50
+     */
     public static <T> void multiset(Map<String, T> map, long time) {
         Map<String, String> collect = map.entrySet()
                 .stream()
