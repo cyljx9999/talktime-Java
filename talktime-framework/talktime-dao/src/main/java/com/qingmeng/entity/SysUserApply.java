@@ -19,8 +19,7 @@ import java.util.Date;
 @Data
 @TableName("sys_user_apply")
 public class SysUserApply implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 7177822697507942976L;
 
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;

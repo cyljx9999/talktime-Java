@@ -20,7 +20,7 @@ import java.util.Date;
 @TableName("sys_article")
 public class SysArticle implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1561692133079259860L;
 
     /**
      * 主键

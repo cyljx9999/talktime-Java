@@ -104,8 +104,7 @@ public class LoginAboutAdapt {
         SysUser sysUser = new SysUser();
         sysUser.setUserName(RandomUtil.randomString(8));
         sysUser.setUserAccount(RandomUtil.randomString(8));
-        String randomPassword = RandomUtil.randomString(8);
-        sysUser.setUserPassword(SaSecureUtil.md5BySalt(randomPassword, SystemConstant.MD5_SALT));
+        sysUser.setUserPassword(SaSecureUtil.md5BySalt(SystemConstant.DEFAULT_PASSWORD, SystemConstant.MD5_SALT));
         sysUser.setUserSex(SexEnum.UNKNOWN.getCode());
         sysUser.setAccountStatus(AccountStatusEnum.NORMAL.getCode());
         sysUser.setAlterAccountCount(1);

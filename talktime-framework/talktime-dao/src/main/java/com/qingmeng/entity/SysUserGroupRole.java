@@ -17,8 +17,7 @@ import java.io.Serializable;
 @TableName("sys_user_group_role")
 public class SysUserGroupRole implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-
+    private static final long serialVersionUID = -3592827794211933841L;
     private Long id;
 
     /**

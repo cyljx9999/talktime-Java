@@ -17,8 +17,8 @@ import java.io.Serializable;
 @TableName("sys_user_article")
 public class SysUserArticle implements Serializable {
 
-    private static final long serialVersionUID = 1L;
 
+    private static final long serialVersionUID = 861328651833080067L;
     private Long id;
 
     /**

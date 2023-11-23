@@ -19,8 +19,7 @@ import java.util.Date;
 @TableName("sys_operate_log")
 public class SysOperateLog implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-
+    private static final long serialVersionUID = -7506546756202779017L;
     /**
      * 日志主键
      */

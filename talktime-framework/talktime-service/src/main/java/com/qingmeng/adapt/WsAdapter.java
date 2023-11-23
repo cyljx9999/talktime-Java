@@ -60,7 +60,7 @@ public class WsAdapter {
         wsBaseVO.setType(WSResponseTypeEnum.LOGIN_SUCCESS.getType());
         WsLoginSuccessVO wsLoginSuccess = WsLoginSuccessVO.builder()
                 .userId(sysUser.getId())
-                .avatar(sysUser.getUserName())
+                .avatar(sysUser.getUserAvatar())
                 .userName(sysUser.getUserName())
                 .tokenName(tokenName)
                 .tokenValue(tokenValue)

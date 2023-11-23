@@ -23,6 +23,11 @@ public class SystemConstant {
     public static final String MD5_SALT = "talktime";
 
     /**
+     * 默认密码
+     */
+    public static final String DEFAULT_PASSWORD = "talktime123456";
+
+    /**
      *  WebSocket 服务器监听的端口号
      */
     public static final int WEB_SOCKET_PORT = 9111;

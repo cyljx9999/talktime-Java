@@ -21,8 +21,7 @@ import java.util.Date;
 @TableName("sys_user_friend")
 public class SysUserFriend implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-
+    private static final long serialVersionUID = -9040425393852722191L;
     private Long id;
 
     /**

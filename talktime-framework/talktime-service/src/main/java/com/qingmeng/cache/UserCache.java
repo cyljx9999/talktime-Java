@@ -69,7 +69,7 @@ public class UserCache extends AbstractRedisStringCache<Long, SysUser> {
      * @author qingmeng
      * @createTime: 2023/11/22 09:34:10
      */
-    public SysUser getUserInfoById(Long userId){
+    public SysUser getUserInfoById(Long userId) {
         return get(userId);
     }
 
@@ -81,7 +81,7 @@ public class UserCache extends AbstractRedisStringCache<Long, SysUser> {
      * @author qingmeng
      * @createTime: 2023/11/22 09:43:57
      */
-    public List<SysUser> userListByIds(List<Long> userIds){
+    public List<SysUser> userListByIds(List<Long> userIds) {
         Map<Long, SysUser> userMap = getBatch(userIds);
         return new ArrayList<>(userMap.values());
     }
@@ -93,7 +93,7 @@ public class UserCache extends AbstractRedisStringCache<Long, SysUser> {
      * @author qingmeng
      * @createTime: 2023/11/22 09:35:40
      */
-    public void deleteUserById(Long userId){
+    public void deleteUserById(Long userId) {
         delete(userId);
     }
 
@@ -104,7 +104,7 @@ public class UserCache extends AbstractRedisStringCache<Long, SysUser> {
      * @author qingmeng
      * @createTime: 2023/11/22 09:35:42
      */
-    public void deleteBatchUserByIds(List<Long> userIds){
+    public void deleteBatchUserByIds(List<Long> userIds) {
         deleteBatch(userIds);
     }
 
@@ -141,12 +141,12 @@ public class UserCache extends AbstractRedisStringCache<Long, SysUser> {
     /**
      * 是否在线
      *
-     * @param  userId 用户id
+     * @param userId 用户id
      * @return boolean
      * @author qingmeng
      * @createTime: 2023/11/23 16:02:04
      */
     public boolean isOnline(Long userId) {
-        return Objects.nonNull(RedisUtils.zScore(RedisConstant.ONLINE_USERID_KEY,userId));
+        return Objects.nonNull(RedisUtils.zScore(RedisConstant.ONLINE_USERID_KEY, userId));
     }
 }

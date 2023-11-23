@@ -2,9 +2,11 @@ package com.qingmeng.service;
 
 import com.qingmeng.dto.login.LoginParamDTO;
 import com.qingmeng.dto.login.RegisterDTO;
+import com.qingmeng.dto.user.AlterAccountDTO;
 import com.qingmeng.entity.SysUser;
 import com.qingmeng.vo.login.CaptchaVO;
 import com.qingmeng.vo.login.TokenInfoVO;
+import com.qingmeng.vo.user.PersonalInfoVO;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -105,4 +107,24 @@ public interface SysUserService{
      * @createTime: 2023/11/22 09:28:38
      */
     List<SysUser> listByIds(List<Long> userIds);
+
+    /**
+     * 更改帐户
+     *
+     * @param userId          用户 ID
+     * @param alterAccountDTO 更改帐户 DTO
+     * @author qingmeng
+     * @createTime: 2023/11/23 21:45:01
+     */
+    void alterAccount(Long userId,AlterAccountDTO alterAccountDTO);
+
+    /**
+     * 获取个人信息
+     *
+     * @param userId 用户 ID
+     * @return {@link PersonalInfoVO }
+     * @author qingmeng
+     * @createTime: 2023/11/23 21:55:38
+     */
+    PersonalInfoVO getPersonalInfo(Long userId);
 }

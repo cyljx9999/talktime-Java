@@ -19,8 +19,7 @@ import java.io.Serializable;
 @TableName("sys_user_auth")
 public class SysUserAuth implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-
+    private static final long serialVersionUID = -2040348844066255970L;
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 

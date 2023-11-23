@@ -9,12 +9,14 @@ import com.aliyun.sdk.service.dysmsapi20170525.AsyncClient;
 import com.aliyun.sdk.service.dysmsapi20170525.models.SendSmsRequest;
 import com.google.code.kaptcha.Producer;
 import com.qingmeng.adapt.LoginAboutAdapt;
+import com.qingmeng.adapt.UserInfoAdapt;
 import com.qingmeng.cache.UserCache;
 import com.qingmeng.constant.RedisConstant;
 import com.qingmeng.constant.SystemConstant;
 import com.qingmeng.dao.SysUserDao;
 import com.qingmeng.dto.login.LoginParamDTO;
 import com.qingmeng.dto.login.RegisterDTO;
+import com.qingmeng.dto.user.AlterAccountDTO;
 import com.qingmeng.entity.SysUser;
 import com.qingmeng.enums.user.LoginMethodEnum;
 import com.qingmeng.event.SysUserRegisterEvent;
@@ -28,10 +30,12 @@ import com.qingmeng.utils.RedisUtils;
 import com.qingmeng.utils.RegexUtils;
 import com.qingmeng.vo.login.CaptchaVO;
 import com.qingmeng.vo.login.TokenInfoVO;
+import com.qingmeng.vo.user.PersonalInfoVO;
 import darabonba.core.client.ClientOverrideConfiguration;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.FastByteArrayOutputStream;
 
 import javax.annotation.Resource;
@@ -232,8 +236,10 @@ public class SysUserServiceImpl implements SysUserService {
      * @createTime: 2023/11/20 08:53:22
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void updateWithId(SysUser update) {
         sysUserDao.updateById(update);
+        userCache.delete(update.getId());
     }
 
     /**
@@ -260,6 +266,36 @@ public class SysUserServiceImpl implements SysUserService {
     @Override
     public List<SysUser> listByIds(List<Long> userIds) {
         return userCache.userListByIds(userIds);
+    }
+
+    /**
+     * 获取个人信息
+     *
+     * @param userId 用户 ID
+     * @return {@link PersonalInfoVO }
+     * @author qingmeng
+     * @createTime: 2023/11/23 21:55:38
+     */
+    @Override
+    public PersonalInfoVO getPersonalInfo(Long userId) {
+        SysUser sysUser = userCache.get(userId);
+        return UserInfoAdapt.buildPersonalInfoVO(sysUser);
+    }
+
+    /**
+     * 更改帐户
+     *
+     * @param userId          用户 ID
+     * @param alterAccountDTO 更改帐户 DTO
+     * @author qingmeng
+     * @createTime: 2023/11/23 21:45:01
+     */
+    @Override
+    public void alterAccount(Long userId, AlterAccountDTO alterAccountDTO) {
+        SysUser sysUser = getUserInfoWithId(userId);
+        AsserUtils.isTrue(sysUser.getAlterAccountCount() > 0, "帐户修改次数已用完");
+        sysUser.setAlterAccountCount(sysUser.getAlterAccountCount() - 1);
+        updateWithId(sysUser);
     }
 
     /**

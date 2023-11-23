@@ -20,8 +20,7 @@ import java.util.Date;
 @TableName("sys_group_role")
 public class SysGroupRole implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-
+    private static final long serialVersionUID = 4701898084889347694L;
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
