@@ -72,7 +72,6 @@ public class LoginAboutAdapt {
         sysUser.setAlterAccountCount(1);
         sysUser.setLatitude(param.getLatitude());
         sysUser.setLongitude(param.getLongitude());
-        sysUser.setIpLocation(param.getIpLocation());
         return sysUser;
     }
 

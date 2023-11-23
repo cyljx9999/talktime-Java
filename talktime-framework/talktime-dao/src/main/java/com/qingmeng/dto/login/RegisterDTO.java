@@ -60,9 +60,4 @@ public class RegisterDTO {
      * 经度
      */
     private BigDecimal longitude;
-
-    /**
-     * ip归属地
-     */
-    private String ipLocation;
 }
