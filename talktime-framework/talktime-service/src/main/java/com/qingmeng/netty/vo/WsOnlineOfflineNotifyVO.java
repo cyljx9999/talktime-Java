@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,7 +21,7 @@ public class WsOnlineOfflineNotifyVO {
     /**
      * 新的上下线用户
      */
-    private List<ChatMemberVO> changeList = new ArrayList<>();
+    private List<ChatMemberVO> changeList;
 
     /**
      * 在线人数

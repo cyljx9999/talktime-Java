@@ -3,6 +3,7 @@ package com.qingmeng.netty.service.impl;
 import cn.dev33.satoken.stp.SaLoginModel;
 import cn.dev33.satoken.stp.SaTokenInfo;
 import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.json.JSONUtil;
@@ -12,6 +13,7 @@ import com.qingmeng.adapt.WsAdapter;
 import com.qingmeng.dto.login.WsAuthorizeDTO;
 import com.qingmeng.entity.SysUser;
 import com.qingmeng.enums.user.LoginDeviceEnum;
+import com.qingmeng.event.UserOfflineEvent;
 import com.qingmeng.netty.dto.WsChannelExtraDTO;
 import com.qingmeng.netty.service.WebSocketService;
 import com.qingmeng.netty.vo.WsBaseVO;
@@ -24,12 +26,16 @@ import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import lombok.SneakyThrows;
 import me.chanjar.weixin.mp.api.WxMpService;
 import me.chanjar.weixin.mp.bean.result.WxMpQrCodeTicket;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.time.Duration;
+import java.util.Date;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -66,12 +72,18 @@ public class WebsocketServiceImpl implements WebSocketService {
     /**
      * 所有在线的用户和对应的socket
      */
-    private static final ConcurrentHashMap<Long, CopyOnWriteArrayList<Channel>> ONLINE_UID_MAP = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<Long, CopyOnWriteArrayList<Channel>> ONLINE_USERID_MAP = new ConcurrentHashMap<>();
 
 
     @Resource
     @Lazy
     private WxMpService wxMpService;
+
+    @Resource
+    private ApplicationEventPublisher applicationEventPublisher;
+    @Resource
+    @Qualifier("visibleTaskExecutor")
+    private ThreadPoolTaskExecutor threadPoolTaskExecutor;
 
     /**
      * 处理所有ws连接的事件
@@ -107,6 +119,20 @@ public class WebsocketServiceImpl implements WebSocketService {
     @Override
     public void removeConnect(Channel channel) {
         CONNECT_WS_MAP.remove(channel);
+        WsChannelExtraDTO wsChannelExtraDTO = CONNECT_WS_MAP.get(channel);
+        Long userId = wsChannelExtraDTO.getUserId();
+        if (Objects.nonNull(userId)) {
+            CopyOnWriteArrayList<Channel> channels = ONLINE_USERID_MAP.get(userId);
+            if (CollectionUtil.isNotEmpty(channels)) {
+                channels.removeIf(ch -> Objects.equals(ch, channel));
+            }
+            SysUser sysUser = new SysUser();
+            sysUser.setId(userId);
+            sysUser.setLastOperateTime(new Date());
+
+            applicationEventPublisher.publishEvent(new UserOfflineEvent(this, sysUser));
+        }
+
     }
 
     /**
@@ -148,6 +174,32 @@ public class WebsocketServiceImpl implements WebSocketService {
     }
 
     /**
+     * 推动消息给所有在线的人
+     *
+     * @param wsBaseVO 发送的消息体
+     * @param skipUid  需要跳过的人
+     */
+    @Override
+    public void sendToAllOnline(WsBaseVO<?> wsBaseVO, Long skipUid) {
+        ONLINE_USERID_MAP.forEach((userId, copyOnWriteArrayList) -> {
+            if (Objects.nonNull(skipUid) && Objects.equals(userId, skipUid)) {
+                return;
+            }
+            threadPoolTaskExecutor.execute(() -> sendMsg(copyOnWriteArrayList.get(0), wsBaseVO));
+        });
+    }
+
+    /**
+     * 推动消息给所有在线的人
+     *
+     * @param wsBaseVO 发送的消息体
+     */
+    @Override
+    public void sendToAllOnline(WsBaseVO<?> wsBaseVO) {
+        sendToAllOnline(wsBaseVO, null);
+    }
+
+    /**
      * 扫描登录成功
      *
      * @param loginCode 登录代码
@@ -176,6 +228,8 @@ public class WebsocketServiceImpl implements WebSocketService {
         loginSuccess(channel, sysUser, saTokenInfo.getTokenName(), saTokenInfo.getTokenValue());
     }
 
+
+
     /**
      * (channel必在本地)登录成功，并更新状态
      */
@@ -192,8 +246,8 @@ public class WebsocketServiceImpl implements WebSocketService {
      */
     private void online(Channel channel, Long userId) {
         getOrInitChannelExt(channel).setUserId(userId);
-        ONLINE_UID_MAP.putIfAbsent(userId, new CopyOnWriteArrayList<>());
-        ONLINE_UID_MAP.get(userId).add(channel);
+        ONLINE_USERID_MAP.putIfAbsent(userId, new CopyOnWriteArrayList<>());
+        ONLINE_USERID_MAP.get(userId).add(channel);
         NettyUtil.setAttr(channel, NettyUtil.USERID, userId);
     }
 

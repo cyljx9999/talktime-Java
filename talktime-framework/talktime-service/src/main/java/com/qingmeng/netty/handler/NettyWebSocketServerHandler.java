@@ -38,6 +38,32 @@ public class NettyWebSocketServerHandler extends SimpleChannelInboundHandler<Tex
     }
 
     /**
+     * 客户端离线
+     *
+     * @param ctx ChannelHandlerContext对象
+     * @author qingmeng
+     * @createTime: 2023/11/22 23:12:08
+     */
+    @Override
+    public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
+        userOffLine(ctx);
+    }
+
+    /**
+     * 捕获异常
+     *
+     * @param ctx   ChannelHandlerContext对象
+     * @param cause 原因
+     * @author qingmeng
+     * @createTime: 2023/11/22 23:13:03
+     */
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
+        log.warn("异常发生，异常消息 ={}", cause.getMessage());
+        ctx.channel().close();
+    }
+
+    /**
      * 在处理程序添加到管道时，初始化 WebSocket 服务。
      *
      * @param ctx ChannelHandlerContext 上下文

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -107,5 +108,9 @@ public class UserCache extends AbstractRedisStringCache<Long, SysUser> {
      */
     public void deleteBatchUserByIds(List<Long> userIds){
         deleteBatch(userIds);
+    }
+
+    public void offline(Long id, Date lastOperateTime) {
+
     }
 }

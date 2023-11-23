@@ -1,11 +1,13 @@
 package com.qingmeng.adapt;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.qingmeng.entity.SysUser;
+import com.qingmeng.enums.user.UsageStatusEnum;
 import com.qingmeng.netty.enums.WSResponseTypeEnum;
-import com.qingmeng.netty.vo.WsBaseVO;
-import com.qingmeng.netty.vo.WsLoginSuccessVO;
-import com.qingmeng.netty.vo.WsLoginUrlVO;
+import com.qingmeng.netty.vo.*;
 import me.chanjar.weixin.mp.bean.result.WxMpQrCodeTicket;
+
+import java.util.Collections;
 
 /**
  * @author 清梦
@@ -78,5 +80,40 @@ public class WsAdapter {
         WsBaseVO<WsLoginSuccessVO> wsBaseVO = new WsBaseVO<>();
         wsBaseVO.setType(WSResponseTypeEnum.INVALIDATE_TOKEN.getType());
         return wsBaseVO;
+    }
+
+    /**
+     * 构建离线通知返回类
+     *
+     * @param sysUser sys 用户
+     * @return {@link WsBaseVO }<{@link WsOnlineOfflineNotifyVO }>
+     * @author qingmeng
+     * @createTime: 2023/11/22 23:51:53
+     */
+    public static WsBaseVO<WsOnlineOfflineNotifyVO> buildOfflineNotifyVO(SysUser sysUser) {
+        WsBaseVO<WsOnlineOfflineNotifyVO> wsBaseResp = new WsBaseVO<>();
+        wsBaseResp.setType(WSResponseTypeEnum.ONLINE_OFFLINE_NOTIFY.getType());
+        WsOnlineOfflineNotifyVO onlineOfflineNotify = new WsOnlineOfflineNotifyVO();
+        onlineOfflineNotify.setChangeList(Collections.singletonList(buildOfflineInfo(sysUser)));
+        //todo 统计在线人数;
+        wsBaseResp.setData(onlineOfflineNotify);
+        return wsBaseResp;
+    }
+
+    /**
+     * 生成离线信息返回类
+     *
+     * @param sysUser sys 用户
+     * @return {@link ChatMemberVO }
+     * @author qingmeng
+     * @createTime: 2023/11/22 23:54:10
+     */
+    private static ChatMemberVO buildOfflineInfo(SysUser sysUser) {
+        ChatMemberVO chatMemberVO = new ChatMemberVO();
+        BeanUtil.copyProperties(sysUser, chatMemberVO);
+        chatMemberVO.setUserId(sysUser.getId());
+        chatMemberVO.setActiveStatus(UsageStatusEnum.ON_LINE.getCode());
+        chatMemberVO.setLastOptTime(sysUser.getLastOperateTime());
+        return chatMemberVO;
     }
 }

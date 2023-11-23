@@ -219,9 +219,7 @@ public class RedisUtils {
                         )
                 );
         REDIS_TEMPLATE.opsForValue().multiSet(collect);
-        map.forEach((key, value) -> {
-            expire(key, time,TimeUnit.SECONDS);
-        });
+        map.forEach((key, value) -> expire(key, time,TimeUnit.SECONDS));
     }
 
 

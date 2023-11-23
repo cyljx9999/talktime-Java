@@ -1,6 +1,7 @@
 package com.qingmeng.netty.service;
 
 import com.qingmeng.dto.login.WsAuthorizeDTO;
+import com.qingmeng.netty.vo.WsBaseVO;
 import io.netty.channel.Channel;
 
 /**
@@ -58,5 +59,21 @@ public interface WebSocketService {
      * @createTime: 2023/11/21 19:35:25
      */
     void authorize(Channel channel, WsAuthorizeDTO authorizeDTO);
+
+    /**
+     * 推动消息给所有在线的人
+     *
+     * @param wsBaseVO 发送的消息体
+     * @param skipUid    需要跳过的人
+     */
+    void sendToAllOnline(WsBaseVO<?> wsBaseVO, Long skipUid);
+
+    /**
+     * 推动消息给所有在线的人
+     *
+     * @param wsBaseVO 发送的消息体
+     */
+    void sendToAllOnline(WsBaseVO<?> wsBaseVO);
+
 }
 
