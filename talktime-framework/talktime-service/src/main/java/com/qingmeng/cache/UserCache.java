@@ -87,28 +87,6 @@ public class UserCache extends AbstractRedisStringCache<Long, SysUser> {
     }
 
     /**
-     * 删除用户
-     *
-     * @param userId 用户 ID
-     * @author qingmeng
-     * @createTime: 2023/11/22 09:35:40
-     */
-    public void deleteUserById(Long userId) {
-        delete(userId);
-    }
-
-    /**
-     * 批量删除 用户
-     *
-     * @param userIds 用户 ID
-     * @author qingmeng
-     * @createTime: 2023/11/22 09:35:42
-     */
-    public void deleteBatchUserByIds(List<Long> userIds) {
-        deleteBatch(userIds);
-    }
-
-    /**
      * 离线
      *
      * @param userId          用户 ID
