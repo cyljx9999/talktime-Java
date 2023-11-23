@@ -75,5 +75,15 @@ public interface WebSocketService {
      */
     void sendToAllOnline(WsBaseVO<?> wsBaseVO);
 
+    /**
+     * 发送到用户 ID
+     *
+     * @param wsBaseResp WS 基础 RESP
+     * @param userId     用户 ID
+     * @author qingmeng
+     * @createTime: 2023/11/23 16:22:54
+     */
+    void sendToUserId(WsBaseVO<?> wsBaseResp, Long userId);
+
 }
 

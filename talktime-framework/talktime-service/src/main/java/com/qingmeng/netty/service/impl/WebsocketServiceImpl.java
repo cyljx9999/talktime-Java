@@ -10,15 +10,18 @@ import cn.hutool.json.JSONUtil;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.qingmeng.adapt.WsAdapter;
+import com.qingmeng.cache.UserCache;
 import com.qingmeng.dto.login.WsAuthorizeDTO;
 import com.qingmeng.entity.SysUser;
 import com.qingmeng.enums.user.LoginDeviceEnum;
 import com.qingmeng.event.UserOfflineEvent;
+import com.qingmeng.event.UserOnlineEvent;
 import com.qingmeng.netty.dto.WsChannelExtraDTO;
 import com.qingmeng.netty.service.WebSocketService;
 import com.qingmeng.netty.vo.WsBaseVO;
 import com.qingmeng.service.SysUserService;
 import com.qingmeng.utils.AsserUtils;
+import com.qingmeng.utils.IpUtils;
 import com.qingmeng.utils.NettyUtil;
 import com.qingmeng.utils.RedisUtils;
 import io.netty.channel.Channel;
@@ -84,6 +87,8 @@ public class WebsocketServiceImpl implements WebSocketService {
     @Resource
     @Qualifier("visibleTaskExecutor")
     private ThreadPoolTaskExecutor threadPoolTaskExecutor;
+    @Resource
+    private UserCache userCache;
 
     /**
      * 处理所有ws连接的事件
@@ -118,7 +123,6 @@ public class WebsocketServiceImpl implements WebSocketService {
      */
     @Override
     public void removeConnect(Channel channel) {
-        CONNECT_WS_MAP.remove(channel);
         WsChannelExtraDTO wsChannelExtraDTO = CONNECT_WS_MAP.get(channel);
         Long userId = wsChannelExtraDTO.getUserId();
         if (Objects.nonNull(userId)) {
@@ -129,9 +133,9 @@ public class WebsocketServiceImpl implements WebSocketService {
             SysUser sysUser = new SysUser();
             sysUser.setId(userId);
             sysUser.setLastOperateTime(new Date());
-
             applicationEventPublisher.publishEvent(new UserOfflineEvent(this, sysUser));
         }
+        CONNECT_WS_MAP.remove(channel);
 
     }
 
@@ -165,7 +169,7 @@ public class WebsocketServiceImpl implements WebSocketService {
         // 用户校验成功给用户登录
         if (tokenFlag > 0) {
             SysUser user = sysUserService.getUserInfoWithId(Long.parseLong(StpUtil.getLoginIdByToken(token).toString()));
-            AsserUtils.isNull(user,"用户不存在");
+            AsserUtils.isNull(user, "用户不存在");
             loginSuccess(channel, user, tokenName, token);
         } else {
             // 通知到前端的token失效
@@ -200,6 +204,25 @@ public class WebsocketServiceImpl implements WebSocketService {
     }
 
     /**
+     * 发送到用户 ID
+     *
+     * @param wsBaseResp WS 基础 RESP
+     * @param userId     用户 ID
+     * @author qingmeng
+     * @createTime: 2023/11/23 16:22:54
+     */
+    @Override
+    public void sendToUserId(WsBaseVO<?> wsBaseResp, Long userId) {
+        CopyOnWriteArrayList<Channel> channels = ONLINE_USERID_MAP.get(userId);
+        if (CollectionUtil.isEmpty(channels)) {
+            return;
+        }
+        channels.forEach(channel -> {
+            threadPoolTaskExecutor.execute(() -> sendMsg(channel, wsBaseResp));
+        });
+    }
+
+    /**
      * 扫描登录成功
      *
      * @param loginCode 登录代码
@@ -229,7 +252,6 @@ public class WebsocketServiceImpl implements WebSocketService {
     }
 
 
-
     /**
      * (channel必在本地)登录成功，并更新状态
      */
@@ -238,7 +260,13 @@ public class WebsocketServiceImpl implements WebSocketService {
         online(channel, sysUser.getId());
         // 发送给对应的用户
         sendMsg(channel, WsAdapter.buildLoginSuccessVO(sysUser, tokenName, tokenValue));
-        // todo 发送用户上线事件
+        // 发送用户上线事件
+        boolean online = userCache.isOnline(sysUser.getId());
+        if (!online) {
+            sysUser.setLastOperateTime(new Date());
+            sysUser.setIpLocation(IpUtils.getIpHomeLocal(NettyUtil.getAttr(channel, NettyUtil.IP)));
+            applicationEventPublisher.publishEvent(new UserOnlineEvent(this, sysUser));
+        }
     }
 
     /**

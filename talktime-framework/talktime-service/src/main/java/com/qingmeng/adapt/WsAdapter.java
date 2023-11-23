@@ -112,6 +112,41 @@ public class WsAdapter {
         ChatMemberVO chatMemberVO = new ChatMemberVO();
         BeanUtil.copyProperties(sysUser, chatMemberVO);
         chatMemberVO.setUserId(sysUser.getId());
+        chatMemberVO.setActiveStatus(UsageStatusEnum.OFF_LINE.getCode());
+        chatMemberVO.setLastOptTime(sysUser.getLastOperateTime());
+        return chatMemberVO;
+    }
+
+    /**
+     * 建立在线通知VO
+     *
+     * @param sysUser sys 用户
+     * @return {@link WsBaseVO }<{@link WsOnlineOfflineNotifyVO }>
+     * @author qingmeng
+     * @createTime: 2023/11/23 16:19:58
+     */
+    public static WsBaseVO<WsOnlineOfflineNotifyVO> buildOnlineNotifyVO(SysUser sysUser) {
+        WsBaseVO<WsOnlineOfflineNotifyVO> wsBaseVO = new WsBaseVO<>();
+        wsBaseVO.setType(WSResponseTypeEnum.ONLINE_OFFLINE_NOTIFY.getType());
+        WsOnlineOfflineNotifyVO wsOnlineOfflineNotifyVO = new WsOnlineOfflineNotifyVO();
+        wsOnlineOfflineNotifyVO.setChangeList(Collections.singletonList(buildOnlineInfo(sysUser)));
+        //todo 统计在线人数;
+        wsBaseVO.setData(wsOnlineOfflineNotifyVO);
+        return wsBaseVO;
+    }
+
+    /**
+     * 建立在线信息
+     *
+     * @param sysUser sys 用户
+     * @return {@link ChatMemberVO }
+     * @author qingmeng
+     * @createTime: 2023/11/23 16:21:25
+     */
+    private static ChatMemberVO buildOnlineInfo(SysUser sysUser) {
+        ChatMemberVO chatMemberVO = new ChatMemberVO();
+        BeanUtil.copyProperties(sysUser, chatMemberVO);
+        chatMemberVO.setUserId(sysUser.getId());
         chatMemberVO.setActiveStatus(UsageStatusEnum.ON_LINE.getCode());
         chatMemberVO.setLastOptTime(sysUser.getLastOperateTime());
         return chatMemberVO;

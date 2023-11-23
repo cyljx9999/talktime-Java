@@ -98,4 +98,22 @@ public class IpUtils {
         Map entity = (Map) object.get("adcode");
         return entity.get("n").toString();
     }
+
+    /**
+     * 获取ip归属地
+     *
+     * @param ip ip地址
+     * @return {@link String }
+     * @author qingmeng
+     * @createTime: 2023/11/23 16:09:41
+     */
+    public static String getIpHomeLocal(String ip){
+        if (SystemConstant.LOCAL_IP.equals(ip)){
+            return "内网ip";
+        }
+        String result= HttpUtil.get("https://api.vore.top/api/IPdata?ip="+ip);
+        JSONObject object = JSONUtil.parseObj(result);
+        Map entity = (Map) object.get("adcode");
+        return entity.get("n").toString();
+    }
 }

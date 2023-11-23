@@ -31,4 +31,14 @@ public class RedisConstant {
      */
     public static final String USER_INFO_KEY = "userinfo:";
     public static final long USER_INFO_EXPIRE = 5L;
+
+    /**
+     * 在线用户列表
+     */
+    public static final String ONLINE_USERID_KEY = "online";
+
+    /**
+     * 离线用户列表
+     */
+    public static final String OFFLINE_USERID_KEY = "offline";
 }
