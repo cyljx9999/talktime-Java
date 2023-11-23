@@ -1,5 +1,6 @@
 package com.qingmeng.controller;
 
+import com.qingmeng.annotation.SysLog;
 import com.qingmeng.domain.rep.CommonResult;
 import com.qingmeng.dto.login.LoginParamDTO;
 import com.qingmeng.dto.login.RegisterDTO;
@@ -16,7 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * @author 清梦
  * @version 1.0.0
- * @Description 登陆香菇按controller
+ * @Description 登陆相关controller
  * @createTime 2023年11月11日 00:47:00
  */
 @RestController
@@ -34,6 +35,7 @@ public class LoginAboutController {
      * @createTime: 2023/11/11 11:17:45
      */
     @PostMapping("/login")
+    @SysLog(title = "登陆模块",content = "登陆")
     public CommonResult<TokenInfoVO> login(@RequestBody LoginParamDTO paramDTO){
         TokenInfoVO info = sysUserService.login(paramDTO);
         return CommonResult.success(info);
@@ -47,6 +49,7 @@ public class LoginAboutController {
      * @createTime: 2023/11/11 14:51:40
      */
     @GetMapping("/getCaptcha")
+    @SysLog(title = "登陆模块",content = "获取系统验证码")
     public CommonResult<CaptchaVO> getCaptcha(){
         CaptchaVO captchaVO = sysUserService.getCaptcha();
         return CommonResult.success(captchaVO);
@@ -61,6 +64,7 @@ public class LoginAboutController {
      * @createTime: 2023/11/11 21:23:41
      */
     @PostMapping("/sendPhoneCode/{phone}")
+    @SysLog(title = "登陆模块",content = "获取手机验证码")
     public CommonResult<String> sendPhoneCode(@PathVariable String phone){
         sysUserService.sendPhone(phone);
         return CommonResult.success();
@@ -76,6 +80,7 @@ public class LoginAboutController {
      * @createTime: 2023/11/13 07:50:51
      */
     @PostMapping("/register")
+    @SysLog(title = "登陆模块",content = "用户注册")
     public CommonResult<String> register(@Validated({AddGroup.class}) @RequestBody RegisterDTO paramDTO, HttpServletRequest request){
         sysUserService.register(paramDTO,request);
         return CommonResult.success();

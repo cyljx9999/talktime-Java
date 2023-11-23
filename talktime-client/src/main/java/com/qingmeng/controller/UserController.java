@@ -2,6 +2,7 @@ package com.qingmeng.controller;
 
 import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.dev33.satoken.stp.StpUtil;
+import com.qingmeng.annotation.SysLog;
 import com.qingmeng.domain.rep.CommonResult;
 import com.qingmeng.dto.user.AlterAccountDTO;
 import com.qingmeng.entity.SysUser;
@@ -33,6 +34,7 @@ public class UserController {
      * @createTime: 2023/11/23 21:35:42
      */
     @GetMapping("/getPersonalInfo")
+    @SysLog(title = "用户模块",content = "获取个人信息")
     public CommonResult<PersonalInfoVO> getPersonalInfo(){
         PersonalInfoVO personInfo = sysUserService.getPersonalInfo(StpUtil.getLoginIdAsLong());
         return CommonResult.success(personInfo);
@@ -47,6 +49,7 @@ public class UserController {
      * @createTime: 2023/11/23 21:44:24
      */
     @PutMapping("/alterAccount")
+    @SysLog(title = "用户模块",content = "修改账号")
     public CommonResult<String> alterAccount(@Valid @RequestBody AlterAccountDTO alterAccountDTO){
         sysUserService.alterAccount(StpUtil.getLoginIdAsLong(),alterAccountDTO);
         return CommonResult.success("修改成功");
