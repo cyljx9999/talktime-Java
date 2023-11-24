@@ -41,4 +41,11 @@ public class RedisConstant {
      * 离线用户列表
      */
     public static final String OFFLINE_USERID_KEY = "offline";
+
+    /**
+     * 物品缓存key和过期时间
+     */
+    public static final String ARTICLE_KEY = "article:";
+    public static final String ARTICLE_ALL_KEY = "articleALL";
+    public static final long ARTICLE_EXPIRE = 24L;
 }

@@ -581,6 +581,20 @@ public class RedisUtils {
     }
 
     /**
+     * 获取列表指定范围内的元素
+     *
+     * @param key   键
+     * @param start 开始位置, 0是开始位置
+     * @param end   结束位置, -1返回所有
+     * @return 多个值
+     */
+    public static <T> List<T> lRange(String key, long start, long end,Class<T> className) {
+        List<String> range = REDIS_TEMPLATE.opsForList().range(key, start, end);
+        assert range != null;
+        return range.stream().map(item -> JsonUtils.toBeanOrNull(item, className)).collect(Collectors.toList());
+    }
+
+    /**
      * 存储在list头部
      *
      * @param key   键

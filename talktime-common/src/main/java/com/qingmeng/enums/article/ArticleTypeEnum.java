@@ -15,9 +15,8 @@ public enum ArticleTypeEnum {
     /**
      * 物品枚举
      */
-    ALTER_NAME(0, "改名卡"),
-    BADGE(1, "徽章"),
-    HEAD_BORDER(2, "头像边框"),
+    BADGE(0, "徽章"),
+    HEAD_BORDER(1, "头像边框"),
     ;
 
     private final Integer code;

@@ -40,7 +40,7 @@ public class UserController {
         return CommonResult.success(personInfo);
     }
 
-    /**
+    /**+
      * 更改帐户
      *
      * @param alterAccountDTO 更改帐户 DTO

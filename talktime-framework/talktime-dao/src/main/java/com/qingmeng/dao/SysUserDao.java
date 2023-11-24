@@ -61,4 +61,33 @@ public class SysUserDao extends ServiceImpl<SysUserMapper, SysUser> {
         wrapper.eq(StrUtil.isNotBlank(phone),SysUser::getUserPhone, phone);
         return getOne(wrapper);
     }
+
+    /**
+     * 佩戴物品
+     *
+     * @param userId    用户 ID
+     * @param articleId 物品 ID
+     * @author qingmeng
+     * @createTime: 2023/11/24 22:22:53
+     */
+    public void wearArticle(Long userId, Long articleId) {
+        SysUser user = new SysUser();
+        user.setId(userId);
+        user.setArticleId(articleId);
+        updateById(user);
+    }
+
+    /**
+     * 更改帐户
+     *
+     * @param userId 用户 ID
+     * @author qingmeng
+     * @createTime: 2023/11/24 22:28:22
+     */
+    public void alterAccount(Long userId) {
+        SysUser user = new SysUser();
+        user.setId(userId);
+        user.setAlterAccountCount(user.getAlterAccountCount() - 1);
+        updateById(user);
+    }
 }

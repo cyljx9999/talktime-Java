@@ -283,6 +283,21 @@ public class SysUserServiceImpl implements SysUserService {
     }
 
     /**
+     * 佩戴头像边框
+     *
+     * @param userId    用户 ID
+     * @param articleId 物品 ID
+     * @author qingmeng
+     * @createTime: 2023/11/24 22:19:16
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void wearArticle(Long userId, Long articleId) {
+        sysUserDao.wearArticle(userId,articleId);
+        userCache.delete(userId);
+    }
+
+    /**
      * 更改帐户
      *
      * @param userId          用户 ID
@@ -291,11 +306,12 @@ public class SysUserServiceImpl implements SysUserService {
      * @createTime: 2023/11/23 21:45:01
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void alterAccount(Long userId, AlterAccountDTO alterAccountDTO) {
-        SysUser sysUser = getUserInfoWithId(userId);
-        AsserUtils.isTrue(sysUser.getAlterAccountCount() > 0, "帐户修改次数已用完");
-        sysUser.setAlterAccountCount(sysUser.getAlterAccountCount() - 1);
-        updateWithId(sysUser);
+        SysUser sysUser = userCache.get(userId);
+        AsserUtils.isTrue(sysUser.getAlterAccountCount() == 0, "帐户修改次数已用完");
+        sysUserDao.alterAccount(userId);
+        userCache.delete(userId);
     }
 
     /**

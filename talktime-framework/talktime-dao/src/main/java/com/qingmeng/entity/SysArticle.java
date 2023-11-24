@@ -29,7 +29,7 @@ public class SysArticle implements Serializable {
     private Long id;
 
     /**
-     * 物品类型 0 改名卡 1徽章 2头像边框
+     * 物品类型 0徽章 1头像边框
      * @see ArticleTypeEnum
      */
     private Integer articleType;

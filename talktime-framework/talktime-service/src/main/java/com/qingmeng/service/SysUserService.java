@@ -127,4 +127,14 @@ public interface SysUserService{
      * @createTime: 2023/11/23 21:55:38
      */
     PersonalInfoVO getPersonalInfo(Long userId);
+
+    /**
+     * 佩戴物品
+     *
+     * @param userId    用户 ID
+     * @param articleId 物品 ID
+     * @author qingmeng
+     * @createTime: 2023/11/24 22:19:16
+     */
+    void wearArticle(Long userId, Long articleId);
 }
