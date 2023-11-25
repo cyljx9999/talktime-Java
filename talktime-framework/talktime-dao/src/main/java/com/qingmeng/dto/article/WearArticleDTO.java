@@ -2,7 +2,8 @@ package com.qingmeng.dto.article;
 
 import lombok.Data;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotEmpty;
+import java.util.List;
 
 /**
  * @author 清梦
@@ -16,7 +17,7 @@ public class WearArticleDTO {
     /**
      * 物品 ID
      */
-    @NotNull
-    private Long articleId;
+    @NotEmpty
+    private List<Long> articleIds;
 
 }

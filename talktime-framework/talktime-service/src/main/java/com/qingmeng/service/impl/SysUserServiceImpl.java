@@ -34,6 +34,7 @@ import com.qingmeng.vo.user.PersonalInfoVO;
 import darabonba.core.client.ClientOverrideConfiguration;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.FastByteArrayOutputStream;
@@ -43,7 +44,6 @@ import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -63,6 +63,7 @@ public class SysUserServiceImpl implements SysUserService {
     private String aliAccessKeySecret;
 
     @Resource
+    @Lazy
     private LoginFactory loginFactory;
     @Resource(name = "captchaProducer")
     private Producer captchaProducer;
@@ -256,19 +257,6 @@ public class SysUserServiceImpl implements SysUserService {
     }
 
     /**
-     * 根据ids查询用户集合
-     *
-     * @param userIds 用户 ID
-     * @return {@link List }<{@link SysUser }>
-     * @author qingmeng
-     * @createTime: 2023/11/22 09:28:46
-     */
-    @Override
-    public List<SysUser> listByIds(List<Long> userIds) {
-        return userCache.userListByIds(userIds);
-    }
-
-    /**
      * 获取个人信息
      *
      * @param userId 用户 ID
@@ -282,20 +270,6 @@ public class SysUserServiceImpl implements SysUserService {
         return UserInfoAdapt.buildPersonalInfoVO(sysUser);
     }
 
-    /**
-     * 佩戴头像边框
-     *
-     * @param userId    用户 ID
-     * @param articleId 物品 ID
-     * @author qingmeng
-     * @createTime: 2023/11/24 22:19:16
-     */
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void wearArticle(Long userId, Long articleId) {
-        sysUserDao.wearArticle(userId,articleId);
-        userCache.delete(userId);
-    }
 
     /**
      * 更改帐户

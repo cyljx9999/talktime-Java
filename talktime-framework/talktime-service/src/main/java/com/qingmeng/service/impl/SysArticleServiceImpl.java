@@ -4,17 +4,19 @@ import cn.dev33.satoken.stp.StpUtil;
 import com.qingmeng.adapt.ArticleAdapt;
 import com.qingmeng.cache.ArticleCache;
 import com.qingmeng.dao.SysUserArticleDao;
+import com.qingmeng.dao.SysWearArticleRecordDao;
 import com.qingmeng.dto.article.WearArticleDTO;
 import com.qingmeng.entity.SysArticle;
 import com.qingmeng.entity.SysUserArticle;
 import com.qingmeng.enums.article.ArticleTypeEnum;
 import com.qingmeng.service.SysArticleService;
-import com.qingmeng.service.SysUserService;
+import com.qingmeng.service.SysWearArticleRecordService;
 import com.qingmeng.utils.AsserUtils;
 import com.qingmeng.vo.article.SysArticleListVO;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -31,7 +33,9 @@ public class SysArticleServiceImpl implements SysArticleService {
     @Resource
     private SysUserArticleDao sysUserArticleDao;
     @Resource
-    private SysUserService sysUserService;
+    private SysWearArticleRecordService sysWearArticleRecordService;
+    @Resource
+    private SysWearArticleRecordDao sysWearArticleRecordDao;
 
     /**
      * 获取物品展示列表
@@ -47,7 +51,9 @@ public class SysArticleServiceImpl implements SysArticleService {
         List<SysArticle> sysArticles = articleCache.getList();
         // 查询拥有的列表
         List<Long> haveArticleIds = sysUserArticleDao.getArticleIdListByUserId(userId);
-        return ArticleAdapt.buildSysArticleVO(sysArticles, haveArticleIds);
+        // 查询已佩戴物品列表
+        List<Long> wearArticleIds = sysWearArticleRecordDao.getWearListById(userId);
+        return ArticleAdapt.buildSysArticleVO(sysArticles, haveArticleIds, wearArticleIds);
     }
 
 
@@ -55,14 +61,14 @@ public class SysArticleServiceImpl implements SysArticleService {
      * 佩戴头像边框
      *
      * @param userId         用户 ID
-     * @param wearArticleDTO  DTO
+     * @param wearArticleDTO DTO
      * @author qingmeng
      * @createTime: 2023/11/24 22:01:54
      */
     @Override
     public void wearHeadBorder(Long userId, WearArticleDTO wearArticleDTO) {
-        preCheck(userId, wearArticleDTO,ArticleTypeEnum.HEAD_BORDER.getCode());
-        sysUserService.wearArticle(userId,wearArticleDTO.getArticleId());
+        preCheck(userId, wearArticleDTO, ArticleTypeEnum.HEAD_BORDER.getCode());
+        sysWearArticleRecordService.wearArticle(userId, wearArticleDTO.getArticleIds(), ArticleTypeEnum.HEAD_BORDER.getCode());
     }
 
     /**
@@ -75,8 +81,8 @@ public class SysArticleServiceImpl implements SysArticleService {
      */
     @Override
     public void wearBadge(Long userId, WearArticleDTO wearArticleDTO) {
-        preCheck(userId, wearArticleDTO,ArticleTypeEnum.BADGE.getCode());
-        sysUserService.wearArticle(userId,wearArticleDTO.getArticleId());
+        preCheck(userId, wearArticleDTO, ArticleTypeEnum.BADGE.getCode());
+        sysWearArticleRecordService.wearArticle(userId, wearArticleDTO.getArticleIds(), ArticleTypeEnum.BADGE.getCode());
     }
 
     /**
@@ -89,13 +95,17 @@ public class SysArticleServiceImpl implements SysArticleService {
      * @createTime: 2023/11/24 22:12:55
      */
     private void preCheck(Long userId, WearArticleDTO wearArticleDTO, int type) {
-        SysUserArticle userArticle = sysUserArticleDao.getUserArticle(userId, wearArticleDTO.getArticleId());
-        AsserUtils.isNull(userArticle, "尚未拥有该物品");
-        SysArticle article = articleCache.get(wearArticleDTO.getArticleId());
-        if(Objects.equals(type, ArticleTypeEnum.BADGE.getCode())){
-            AsserUtils.equal(article.getArticleType(), type, "该徽章不可佩戴");
-        }else if(Objects.equals(type, ArticleTypeEnum.HEAD_BORDER.getCode())){
-            AsserUtils.equal(article.getArticleType(), type, "该边框不可佩戴");
-        }
+        List<SysUserArticle> userArticles = sysUserArticleDao.getUserArticleByIds(userId, wearArticleDTO.getArticleIds());
+        userArticles.forEach(item -> {
+            AsserUtils.isNull(item, "尚未拥有该物品");
+        });
+        List<SysArticle> collection = new ArrayList<>(articleCache.getBatch(wearArticleDTO.getArticleIds()).values());
+        collection.forEach(article -> {
+            if (Objects.equals(type, ArticleTypeEnum.BADGE.getCode())) {
+                AsserUtils.equal(article.getArticleType(), type, "请选择相关类型物品进行佩戴");
+            } else if (Objects.equals(type, ArticleTypeEnum.HEAD_BORDER.getCode())) {
+                AsserUtils.equal(article.getArticleType(), type, "请选择相关类型物品进行佩戴");
+            }
+        });
     }
 }

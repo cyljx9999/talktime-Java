@@ -86,11 +86,6 @@ public class SysUser implements Serializable {
     private Integer alterAccountCount;
 
     /**
-     * 物品id
-     */
-    private Long articleId;
-
-    /**
      * 维度
      */
     private BigDecimal latitude;

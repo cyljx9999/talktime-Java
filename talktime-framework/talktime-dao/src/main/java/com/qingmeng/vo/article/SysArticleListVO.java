@@ -23,4 +23,9 @@ public class SysArticleListVO {
      */
     private List<Long> alreadyHadIds;
 
+    /**
+     * 佩戴物品 ID
+     */
+    private List<Long> wearArticleIds;
+
 }

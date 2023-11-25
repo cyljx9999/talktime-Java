@@ -5,6 +5,7 @@ import com.qingmeng.dao.SysArticleDao;
 import com.qingmeng.entity.SysArticle;
 import com.qingmeng.utils.JsonUtils;
 import com.qingmeng.utils.RedisUtils;
+import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
  * @Description 物品缓存
  * @createTime 2023年11月24日 21:11:00
  */
+@Component
 public class ArticleCache extends AbstractRedisStringCache<Long, SysArticle> {
     @Resource
     private SysArticleDao sysArticleDao;

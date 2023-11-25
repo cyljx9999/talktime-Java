@@ -32,7 +32,7 @@ public class SysArticleController {
      * @author qingmeng
      * @createTime: 2023/11/24 21:08:19
      */
-    @GetMapping("/getArticleListWithMe")
+    @GetMapping("/getArticleDisplayList")
     @SysLog(title = "物品模块",content = "获取物品展示列表")
     public CommonResult<SysArticleListVO> getArticleDisplayList() {
         return CommonResult.success(sysArticleService.getArticleDisplayList());

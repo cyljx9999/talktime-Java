@@ -1,8 +1,8 @@
 package com.qingmeng.cache;
 
 import com.qingmeng.constant.RedisConstant;
+import com.qingmeng.dao.SysUserDao;
 import com.qingmeng.entity.SysUser;
-import com.qingmeng.service.SysUserService;
 import com.qingmeng.utils.RedisUtils;
 import org.springframework.stereotype.Component;
 
@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 @Component
 public class UserCache extends AbstractRedisStringCache<Long, SysUser> {
     @Resource
-    private SysUserService sysUserService;
+    private SysUserDao sysUserDao;
 
     /**
      * 根据输入对象获取缓存的键。
@@ -57,7 +57,7 @@ public class UserCache extends AbstractRedisStringCache<Long, SysUser> {
      */
     @Override
     protected Map<Long, SysUser> load(List<Long> userIds) {
-        List<SysUser> list = sysUserService.listByIds(userIds);
+        List<SysUser> list = sysUserDao.listByIds(userIds);
         return list.stream().collect(Collectors.toMap(SysUser::getId, Function.identity()));
     }
 

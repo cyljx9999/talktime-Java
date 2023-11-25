@@ -9,7 +9,6 @@ import com.qingmeng.vo.login.TokenInfoVO;
 import com.qingmeng.vo.user.PersonalInfoVO;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 
 /**
  * <p>
@@ -98,15 +97,6 @@ public interface SysUserService{
      */
     SysUser getUserInfoByAccount(LoginParamDTO loginParamDTO);
 
-    /**
-     * 根据ids查询用户集合
-     *
-     * @param userIds 用户 ID
-     * @return {@link List }<{@link SysUser }>
-     * @author qingmeng
-     * @createTime: 2023/11/22 09:28:38
-     */
-    List<SysUser> listByIds(List<Long> userIds);
 
     /**
      * 更改帐户
@@ -128,13 +118,4 @@ public interface SysUserService{
      */
     PersonalInfoVO getPersonalInfo(Long userId);
 
-    /**
-     * 佩戴物品
-     *
-     * @param userId    用户 ID
-     * @param articleId 物品 ID
-     * @author qingmeng
-     * @createTime: 2023/11/24 22:19:16
-     */
-    void wearArticle(Long userId, Long articleId);
 }

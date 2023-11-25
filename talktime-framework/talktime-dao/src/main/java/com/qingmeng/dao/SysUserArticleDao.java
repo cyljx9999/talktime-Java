@@ -38,15 +38,15 @@ public class SysUserArticleDao extends ServiceImpl<SysUserArticleMapper, SysUser
      * 根据物品id和userId查询 拥有信息
      *
      * @param userId    用户 ID
-     * @param articleId 物品 ID
+     * @param articleIds 物品 ID
      * @return {@link SysUserArticle }
      * @author qingmeng
      * @createTime: 2023/11/24 22:20:57
      */
-    public SysUserArticle getUserArticle(Long userId, Long articleId) {
+    public List<SysUserArticle> getUserArticleByIds(Long userId, List<Long> articleIds) {
         LambdaQueryWrapper<SysUserArticle> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(SysUserArticle::getUserId, userId);
-        wrapper.eq(SysUserArticle::getArticleId, articleId);
-        return getOne(wrapper);
+        wrapper.in(SysUserArticle::getArticleId, articleIds);
+        return list(wrapper);
     }
 }
