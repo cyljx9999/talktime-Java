@@ -1,8 +1,6 @@
 package com.qingmeng.strategy.applyFriend;
 
-import com.qingmeng.adapt.FriendAdapt;
 import com.qingmeng.cache.UserSettingCache;
-import com.qingmeng.dao.SysUserApplyDao;
 import com.qingmeng.dto.user.ApplyFriendDTO;
 import com.qingmeng.entity.SysUserPrivacySetting;
 import com.qingmeng.enums.user.CloseOrOpenStatusEnum;
@@ -19,8 +17,6 @@ import javax.annotation.Resource;
  */
 @Component
 public class ApplyByPhoneStrategy extends AbstractApplyFriendStrategy{
-    @Resource
-    private SysUserApplyDao sysUserApplyDao;
     @Resource
     private UserSettingCache userSettingCache;
 
@@ -50,17 +46,4 @@ public class ApplyByPhoneStrategy extends AbstractApplyFriendStrategy{
         AsserUtils.equal(setting.getAddByPhone(), CloseOrOpenStatusEnum.OPEN.getCode(),"对方开启隐私设置，无法添加");
     }
 
-    /**
-     * 申请好友
-     *
-     * @param applyFriendDTO 申请好友 dto
-     * @author qingmeng
-     * @createTime: 2023/11/27 14:18:08
-     */
-    @Override
-    public void applyFriend(ApplyFriendDTO applyFriendDTO) {
-        check(applyFriendDTO);
-        applyFriendDTO.setApplyChannel(createChannelInfo());
-        sysUserApplyDao.save(FriendAdapt.buildSaveSysUserApply(applyFriendDTO));
-    }
 }

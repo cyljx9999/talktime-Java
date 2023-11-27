@@ -18,6 +18,7 @@ public enum ApplyStatusEnum {
     APPLYING(0, "申请中"),
     ACCEPT(1, "接受"),
     REJECT(2, "拒绝"),
+    BLOCK(3, "拉黑"),
     ;
 
     private final Integer code;

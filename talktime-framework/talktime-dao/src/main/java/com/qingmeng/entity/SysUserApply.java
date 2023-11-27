@@ -32,7 +32,7 @@ public class SysUserApply implements Serializable {
     private Long userId;
 
     /**
-     * 申请状态 0 申请中 1已同意 2拒绝接受
+     * 申请状态 0 申请中 1已同意 2拒绝接受 3拉黑
      * @see com.qingmeng.enums.user.ApplyStatusEnum
      */
     private Integer applyStatus;
