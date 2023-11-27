@@ -1,6 +1,7 @@
 package com.qingmeng.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.qingmeng.enums.system.LogicDeleteEnum;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,60 +11,46 @@ import java.util.Date;
 
 /**
  * <p>
- * 申请好友记录表
+ * 
  * </p>
  *
  * @author qingmeng
- * @since 2023-11-27 10:21:12
+ * @since 2023-11-27 10:17:00
  */
 @Getter
 @Setter
-@TableName("sys_user_apply")
-public class SysUserApply implements Serializable {
+@TableName("sys_user_friend_setting")
+public class SysUserFriendSetting implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
-    /**
-     * 用户id
-     */
-    private Long userId;
 
     /**
-     * 申请状态 0 申请中 1已同意 2拒绝接受
-     * @see com.qingmeng.enums.user.ApplyStatusEnum
+     * 昵称
      */
-    private Integer applyStatus;
+    private String nickName;
 
     /**
-     * 目标好友id
+     * 好友状态 0正常 1拉黑
+     * @see com.qingmeng.enums.user.FriendStausEnum
      */
-    private Long targetId;
+    private Integer friendStatus;
+
 
     /**
-     * 申请描述
+     * 添加渠道
      */
-    private String applyDescribe;
+    private String addChannel;
 
-    /**
-     * 申请渠道
-     */
-    private String applyChannel;
-
-    /**
-     * 阅读状态 0未读 1已读
-     * @see com.qingmeng.enums.user.ReadStatusEnum
-     */
-    private Integer readStatus;
 
     /**
      * 创建时间
      */
-    @TableField(fill = FieldFill.INSERT)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date createTime;
-
 
     /**
      * 更新时间
@@ -78,4 +65,5 @@ public class SysUserApply implements Serializable {
     @TableLogic
     @TableField(fill = FieldFill.INSERT)
     private Integer isDeleted;
+
 }

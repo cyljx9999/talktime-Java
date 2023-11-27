@@ -10,60 +10,47 @@ import java.util.Date;
 
 /**
  * <p>
- * 申请好友记录表
+ * 群聊设置
  * </p>
  *
  * @author qingmeng
- * @since 2023-11-27 10:21:12
+ * @since 2023-11-26 08:12:03
  */
 @Getter
 @Setter
-@TableName("sys_user_apply")
-public class SysUserApply implements Serializable {
+@TableName("chat_group_setting")
+public class ChatGroupSetting implements Serializable {
 
-    private static final long serialVersionUID = 1L;
 
+    private static final long serialVersionUID = -8866470944491730569L;
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
     /**
-     * 用户id
+     * 群聊房间
      */
-    private Long userId;
+    private Long groupRoomId;
 
     /**
-     * 申请状态 0 申请中 1已同意 2拒绝接受
-     * @see com.qingmeng.enums.user.ApplyStatusEnum
+     * 群聊名字
      */
-    private Integer applyStatus;
+    private String groupRoomName;
 
     /**
-     * 目标好友id
+     * 群聊头像
      */
-    private Long targetId;
+    private String groupRoomAvatar;
 
     /**
-     * 申请描述
+     * 群聊二维码
      */
-    private String applyDescribe;
-
-    /**
-     * 申请渠道
-     */
-    private String applyChannel;
-
-    /**
-     * 阅读状态 0未读 1已读
-     * @see com.qingmeng.enums.user.ReadStatusEnum
-     */
-    private Integer readStatus;
+    private String groupRoomQrcode;
 
     /**
      * 创建时间
      */
     @TableField(fill = FieldFill.INSERT)
     private Date createTime;
-
 
     /**
      * 更新时间

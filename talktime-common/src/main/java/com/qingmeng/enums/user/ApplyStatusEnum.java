@@ -11,7 +11,7 @@ import lombok.Getter;
  */
 @Getter
 @AllArgsConstructor
-public enum ApplyEnum {
+public enum ApplyStatusEnum {
     /**
      * 好友申请状态枚举
      */

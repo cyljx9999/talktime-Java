@@ -1,6 +1,7 @@
 package com.qingmeng.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
+import com.qingmeng.enums.chat.RoomStatusEnum;
 import com.qingmeng.enums.system.LogicDeleteEnum;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,21 +11,26 @@ import java.util.Date;
 
 /**
  * <p>
- * 申请好友记录表
+ * 单聊表
  * </p>
  *
  * @author qingmeng
- * @since 2023-11-27 10:21:12
+ * @since 2023-11-26 08:12:03
  */
 @Getter
 @Setter
-@TableName("sys_user_apply")
-public class SysUserApply implements Serializable {
+@TableName("chat_friend_room")
+public class ChatFriendRoom implements Serializable {
 
-    private static final long serialVersionUID = 1L;
 
+    private static final long serialVersionUID = -6524058172859594500L;
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
+
+    /**
+     * 房间id
+     */
+    private Long roomId;
 
     /**
      * 用户id
@@ -32,38 +38,26 @@ public class SysUserApply implements Serializable {
     private Long userId;
 
     /**
-     * 申请状态 0 申请中 1已同意 2拒绝接受
-     * @see com.qingmeng.enums.user.ApplyStatusEnum
+     * 好友id
      */
-    private Integer applyStatus;
+    private Long userFriendId;
 
     /**
-     * 目标好友id
+     * 根据双方id组成的唯一标识
      */
-    private Long targetId;
+    private String roomKey;
 
     /**
-     * 申请描述
+     * 房间状态 0正常 1删除
+     * @see RoomStatusEnum
      */
-    private String applyDescribe;
-
-    /**
-     * 申请渠道
-     */
-    private String applyChannel;
-
-    /**
-     * 阅读状态 0未读 1已读
-     * @see com.qingmeng.enums.user.ReadStatusEnum
-     */
-    private Integer readStatus;
+    private Integer roomStatus;
 
     /**
      * 创建时间
      */
     @TableField(fill = FieldFill.INSERT)
     private Date createTime;
-
 
     /**
      * 更新时间
