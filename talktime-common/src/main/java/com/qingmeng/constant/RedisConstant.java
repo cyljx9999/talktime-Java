@@ -48,4 +48,16 @@ public class RedisConstant {
     public static final String ARTICLE_KEY = "article:";
     public static final String ARTICLE_ALL_KEY = "articleALL";
     public static final long ARTICLE_EXPIRE = 24L;
+
+    /**
+     * 用户隐私设置缓存key和过期时间
+     */
+    public static final String USER_PRIVACY_SETTING_KEY = "user:privacy:setting:";
+    public static final long USER_PRIVACY_SETTING_EXPIRE = 7L;
+
+    /**
+     * 用户好友设置缓存key和过期时间
+     */
+    public static final String USER_FRIEND_SETTING_KEY = "user:friend:setting:";
+    public static final long USER_FRIEND_SETTING_EXPIRE = 7L;
 }

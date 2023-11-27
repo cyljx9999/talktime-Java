@@ -10,6 +10,7 @@ import com.aliyun.sdk.service.dysmsapi20170525.models.SendSmsRequest;
 import com.google.code.kaptcha.Producer;
 import com.qingmeng.adapt.LoginAboutAdapt;
 import com.qingmeng.adapt.UserInfoAdapt;
+import com.qingmeng.adapt.UserSettingAdapt;
 import com.qingmeng.cache.UserCache;
 import com.qingmeng.constant.RedisConstant;
 import com.qingmeng.constant.SystemConstant;
@@ -21,6 +22,7 @@ import com.qingmeng.entity.SysUser;
 import com.qingmeng.enums.user.LoginMethodEnum;
 import com.qingmeng.event.SysUserRegisterEvent;
 import com.qingmeng.exception.TalkTimeException;
+import com.qingmeng.service.SysUserPrivacySettingService;
 import com.qingmeng.service.SysUserService;
 import com.qingmeng.strategy.login.LoginFactory;
 import com.qingmeng.strategy.login.LoginStrategy;
@@ -75,6 +77,8 @@ public class SysUserServiceImpl implements SysUserService {
     private ApplicationEventPublisher applicationEventPublisher;
     @Resource
     private UserCache userCache;
+    @Resource
+    private SysUserPrivacySettingService sysUserPrivacySettingService;
 
     /**
      * 验证码类型
@@ -199,6 +203,8 @@ public class SysUserServiceImpl implements SysUserService {
             更新采用根据主键更新，需要更新插入成功再发布事件
              */
             applicationEventPublisher.publishEvent(new SysUserRegisterEvent(this,sysUser,request));
+            // 新增用户默认隐私设置表
+            sysUserPrivacySettingService.save(UserSettingAdapt.buildDefalutSysUserPrivacySetting(sysUser.getId()));
         }
     }
 

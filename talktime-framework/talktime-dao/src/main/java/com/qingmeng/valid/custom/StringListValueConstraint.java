@@ -12,7 +12,7 @@ import java.util.Set;
  * @Description ListValue校验器
  * @createTime 2023年11月10日 22:22:37
  */
-public class StingListValueConstraint implements ConstraintValidator<StingListValue,String> {
+public class StringListValueConstraint implements ConstraintValidator<StringListValue,String> {
 
     private final Set<String> set = new HashSet<>();
 
@@ -21,7 +21,7 @@ public class StingListValueConstraint implements ConstraintValidator<StingListVa
      *
      */
     @Override
-    public void initialize(StingListValue constraintAnnotation) {
+    public void initialize(StringListValue constraintAnnotation) {
         String[] values = constraintAnnotation.values();
         set.addAll(Arrays.asList(values));
     }

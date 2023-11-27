@@ -3,7 +3,7 @@ package com.qingmeng.dto.login;
 import com.qingmeng.enums.user.LoginMethodEnum;
 import com.qingmeng.valid.AccountGroup;
 import com.qingmeng.valid.PhoneGroup;
-import com.qingmeng.valid.custom.StingListValue;
+import com.qingmeng.valid.custom.StringListValue;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
@@ -55,7 +55,7 @@ public class LoginParamDTO {
      * @see com.qingmeng.enums.user.LoginDeviceEnum
      */
     @NotBlank(groups = {PhoneGroup.class, AccountGroup.class})
-    @StingListValue(values = {"pc", "h5", "app", "miniProgram"}, groups = {PhoneGroup.class, AccountGroup.class})
+    @StringListValue(values = {"pc", "h5", "app", "miniProgram"}, groups = {PhoneGroup.class, AccountGroup.class})
     private String loginType;
 
     /**
@@ -63,7 +63,7 @@ public class LoginParamDTO {
      * @see LoginMethodEnum
      */
     @NotNull(groups = {PhoneGroup.class, AccountGroup.class})
-    @StingListValue(values = {"account", "password"}, groups = {PhoneGroup.class, AccountGroup.class})
+    @StringListValue(values = {"account", "password"}, groups = {PhoneGroup.class, AccountGroup.class})
     private String loginMethod;
 
     /**

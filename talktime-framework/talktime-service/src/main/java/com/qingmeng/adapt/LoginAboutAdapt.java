@@ -76,7 +76,7 @@ public class LoginAboutAdapt {
     }
 
     /**
-     * 构造只有openId的用户授权对象
+     * 构造微信公众号的用户授权对象
      *
      * @param openId 第三方应用唯一凭证
      * @param userId 用户id
@@ -84,7 +84,7 @@ public class LoginAboutAdapt {
      * @author qingmeng
      * @createTime: 2023/11/13 15:10:13
      */
-    public static SysUserAuth buildUserAuthWithOpenId(String openId,Long userId){
+    public static SysUserAuth buildUserAuthWithMp(String openId, Long userId){
         SysUserAuth auth = new SysUserAuth();
         auth.setOpenId(openId);
         auth.setUserId(userId);

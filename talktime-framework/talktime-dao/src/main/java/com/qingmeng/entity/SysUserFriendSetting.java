@@ -27,6 +27,10 @@ public class SysUserFriendSetting implements Serializable {
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
+    /**
+     * 以双方user_id排序生成的唯一标识
+     */
+    private String roomFriendKey;
 
     /**
      * 昵称

@@ -3,11 +3,14 @@ package com.qingmeng.wxMp.service;
 import cn.hutool.core.util.StrUtil;
 import com.qingmeng.adapt.LoginAboutAdapt;
 import com.qingmeng.adapt.TextBuilderAdapt;
+import com.qingmeng.adapt.UserSettingAdapt;
 import com.qingmeng.constant.RedisConstant;
 import com.qingmeng.entity.SysUser;
 import com.qingmeng.entity.SysUserAuth;
+import com.qingmeng.entity.SysUserPrivacySetting;
 import com.qingmeng.netty.service.WebSocketService;
 import com.qingmeng.service.SysUserAuthService;
+import com.qingmeng.service.SysUserPrivacySettingService;
 import com.qingmeng.service.SysUserService;
 import com.qingmeng.utils.RedisUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -46,6 +49,8 @@ public class WxMsgService {
     private SysUserAuthService sysUserAuthService;
     @Resource
     private WebSocketService webSocketService;
+    @Resource
+    private SysUserPrivacySettingService sysUserPrivacySettingService;
 
     /**
      * 扫码关注后发送登录授权链接
@@ -79,8 +84,12 @@ public class WxMsgService {
         SysUser saveUser = LoginAboutAdapt.buildDefaultRegister();
         boolean saveFlag = sysUserService.save(saveUser);
         if (saveFlag) {
-            SysUserAuth saveUserAuth = LoginAboutAdapt.buildUserAuthWithOpenId(openId, saveUser.getId());
+            // 保存第三方授权信息
+            SysUserAuth saveUserAuth = LoginAboutAdapt.buildUserAuthWithMp(openId, saveUser.getId());
             sysUserAuthService.save(saveUserAuth);
+            // 新增用户隐私设置
+            SysUserPrivacySetting saveSysUserPrivacySetting = UserSettingAdapt.buildDefalutSysUserPrivacySetting(saveUser.getId());
+            sysUserPrivacySettingService.save(saveSysUserPrivacySetting);
         }
         //在redis中保存openid和场景code的关系，后续才能通知到前端,旧版数据没有清除,这里设置了过期时间
         RedisUtils.set(RedisConstant.OPEN_ID_CODE, String.valueOf(loginCode), RedisConstant.OPEN_ID_CODE_EXPIRE, TimeUnit.MINUTES);
