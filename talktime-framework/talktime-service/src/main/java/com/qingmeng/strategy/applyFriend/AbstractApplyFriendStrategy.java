@@ -1,11 +1,15 @@
 package com.qingmeng.strategy.applyFriend;
 
 import com.qingmeng.adapt.FriendAdapt;
+import com.qingmeng.adapt.WsAdapter;
+import com.qingmeng.cache.UserCache;
 import com.qingmeng.dao.SysUserApplyDao;
 import com.qingmeng.dto.user.ApplyFriendDTO;
+import com.qingmeng.entity.SysUser;
 import com.qingmeng.entity.SysUserApply;
 import com.qingmeng.enums.user.ApplyStatusEnum;
 import com.qingmeng.enums.user.ReadStatusEnum;
+import com.qingmeng.netty.service.WebSocketService;
 import com.qingmeng.utils.AsserUtils;
 import org.springframework.stereotype.Component;
 
@@ -22,6 +26,10 @@ import java.util.Objects;
 public abstract class AbstractApplyFriendStrategy implements ApplyFriendStrategy {
     @Resource
     private SysUserApplyDao sysUserApplyDao;
+    @Resource
+    private WebSocketService webSocketService;
+    @Resource
+    private UserCache userCache;
 
     /**
      * 生成获取渠道信息
@@ -47,13 +55,37 @@ public abstract class AbstractApplyFriendStrategy implements ApplyFriendStrategy
     }
 
     /**
-     * 检查
+     * 检查用户是否存在
+     *
+     * @param userId 用户 ID
+     * @author qingmeng
+     * @createTime: 2023/11/28 17:06:23
+     */
+    protected void checkUserExist(Long userId){
+        SysUser user = userCache.get(userId);
+        AsserUtils.isNull(user,"用户不存在");
+    }
+
+    /**
+     * 检查对方好友的权限
      *
      * @param applyFriendDTO 申请好友 dto
      * @author qingmeng
      * @createTime: 2023/11/27 14:37:33
      */
-    protected void check(ApplyFriendDTO applyFriendDTO) {
+    protected void checkAuthority(ApplyFriendDTO applyFriendDTO) {
+    }
+
+    /**
+     * 获取  用户申请 信息
+     *
+     * @param applyFriendDTO dto
+     * @return {@link SysUserApply }
+     * @author qingmeng
+     * @createTime: 2023/11/28 17:10:01
+     */
+    protected SysUserApply getSysUserApplyInfo(ApplyFriendDTO applyFriendDTO){
+        return FriendAdapt.buildSaveSysUserApply(applyFriendDTO);
     }
 
     /**
@@ -65,7 +97,8 @@ public abstract class AbstractApplyFriendStrategy implements ApplyFriendStrategy
      */
     @Override
     public void applyFriend(ApplyFriendDTO applyFriendDTO) {
-        check(applyFriendDTO);
+        checkUserExist(applyFriendDTO.getTargetId());
+        checkAuthority(applyFriendDTO);
         applyFriendDTO.setApplyChannel(createChannelInfo());
         SysUserApply sysUserApply = sysUserApplyDao.lambdaQuery()
                 .eq(SysUserApply::getUserId, applyFriendDTO.getUserId())
@@ -74,8 +107,10 @@ public abstract class AbstractApplyFriendStrategy implements ApplyFriendStrategy
         if (Objects.nonNull(sysUserApply)) {
             handlerApplyInfo(sysUserApply);
         } else {
-            sysUserApplyDao.save(FriendAdapt.buildSaveSysUserApply(applyFriendDTO));
+            sysUserApplyDao.save(getSysUserApplyInfo(applyFriendDTO));
         }
+        // websocket推送好友申请信息
+        webSocketService.sendToUserId(WsAdapter.buildApplyInfoVO(), sysUserApply.getTargetId());
     }
 
     /**
@@ -92,12 +127,10 @@ public abstract class AbstractApplyFriendStrategy implements ApplyFriendStrategy
         if (Objects.equals(applyStatus, ApplyStatusEnum.APPLYING.getCode())) {
             sysUserApply.setReadStatus(ReadStatusEnum.READ.getCode());
             sysUserApplyDao.updateById(sysUserApply);
-            // todo websocket推送好友申请信息
-        }else if (Objects.equals(applyStatus, ApplyStatusEnum.REJECT.getCode())) {
+        } else if (Objects.equals(applyStatus, ApplyStatusEnum.REJECT.getCode())) {
             sysUserApply.setApplyStatus(ApplyStatusEnum.APPLYING.getCode());
             sysUserApply.setReadStatus(ReadStatusEnum.READ.getCode());
             sysUserApplyDao.updateById(sysUserApply);
-            // todo websocket推送好友申请信息
         }
     }
 }

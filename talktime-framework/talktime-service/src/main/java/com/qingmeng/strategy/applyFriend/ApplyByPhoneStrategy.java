@@ -41,7 +41,7 @@ public class ApplyByPhoneStrategy extends AbstractApplyFriendStrategy{
      * @createTime: 2023/11/27 14:37:37
      */
     @Override
-    protected void check(ApplyFriendDTO applyFriendDTO) {
+    protected void checkAuthority(ApplyFriendDTO applyFriendDTO) {
         SysUserPrivacySetting setting = userSettingCache.get(applyFriendDTO.getUserId());
         AsserUtils.equal(setting.getAddByPhone(), CloseOrOpenStatusEnum.OPEN.getCode(),"对方开启隐私设置，无法添加");
     }

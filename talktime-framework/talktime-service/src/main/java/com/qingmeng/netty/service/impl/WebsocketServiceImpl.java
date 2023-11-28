@@ -217,9 +217,7 @@ public class WebsocketServiceImpl implements WebSocketService {
         if (CollectionUtil.isEmpty(channels)) {
             return;
         }
-        channels.forEach(channel -> {
-            threadPoolTaskExecutor.execute(() -> sendMsg(channel, wsBaseResp));
-        });
+        channels.forEach(channel -> threadPoolTaskExecutor.execute(() -> sendMsg(channel, wsBaseResp)));
     }
 
     /**

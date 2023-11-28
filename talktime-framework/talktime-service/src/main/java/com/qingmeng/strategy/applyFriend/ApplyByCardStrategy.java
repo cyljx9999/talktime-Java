@@ -8,6 +8,7 @@ import com.qingmeng.cache.UserSettingCache;
 import com.qingmeng.dao.SysUserApplyDao;
 import com.qingmeng.dto.user.ApplyFriendDTO;
 import com.qingmeng.entity.SysUser;
+import com.qingmeng.entity.SysUserApply;
 import com.qingmeng.entity.SysUserFriendSetting;
 import com.qingmeng.entity.SysUserPrivacySetting;
 import com.qingmeng.enums.user.CloseOrOpenStatusEnum;
@@ -62,23 +63,23 @@ public class ApplyByCardStrategy extends AbstractApplyFriendStrategy{
      * @createTime: 2023/11/27 14:37:37
      */
     @Override
-    protected void check(ApplyFriendDTO applyFriendDTO) {
+    protected void checkAuthority(ApplyFriendDTO applyFriendDTO) {
         SysUserPrivacySetting setting = userSettingCache.get(applyFriendDTO.getUserId());
         AsserUtils.equal(setting.getAddByCard(), CloseOrOpenStatusEnum.OPEN.getCode(),"对方开启隐私设置，无法添加");
         AsserUtils.isNotNull(applyFriendDTO.getShareCardByUserId(),"缺少分享者的用户id");
     }
 
     /**
-     * 申请好友
+     * 获取  用户申请 信息
      *
-     * @param applyFriendDTO 申请好友 dto
+     * @param applyFriendDTO dto
+     * @return {@link SysUserApply }
      * @author qingmeng
-     * @createTime: 2023/11/27 14:18:08
+     * @createTime: 2023/11/28 17:10:01
      */
     @Override
-    public void applyFriend(ApplyFriendDTO applyFriendDTO) {
-        check(applyFriendDTO);
+    protected SysUserApply getSysUserApplyInfo(ApplyFriendDTO applyFriendDTO){
         applyFriendDTO.setApplyChannel(createChannelInfo(applyFriendDTO));
-        sysUserApplyDao.save(FriendAdapt.buildSaveSysUserApply(applyFriendDTO));
+        return FriendAdapt.buildSaveSysUserApply(applyFriendDTO);
     }
 }

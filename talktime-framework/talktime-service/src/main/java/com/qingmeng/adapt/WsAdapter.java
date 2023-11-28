@@ -151,4 +151,17 @@ public class WsAdapter {
         chatMemberVO.setLastOptTime(sysUser.getLastOperateTime());
         return chatMemberVO;
     }
+
+    /**
+     * 构建申请好友信息
+     *
+     * @return {@link WsBaseVO }<{@link String }>
+     * @author qingmeng
+     * @createTime: 2023/11/28 16:53:18
+     */
+    public static WsBaseVO<String> buildApplyInfoVO() {
+        WsBaseVO<String> wsBaseVO = new WsBaseVO<>();
+        wsBaseVO.setType(WSResponseTypeEnum.APPLY.getType());
+        return wsBaseVO;
+    }
 }
