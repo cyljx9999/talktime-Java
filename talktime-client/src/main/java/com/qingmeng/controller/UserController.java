@@ -41,7 +41,7 @@ public class UserController {
     }
 
     /**+
-     * 更改帐户
+     * 更改账户
      *
      * @param alterAccountDTO 更改帐户 DTO
      * @return {@link CommonResult }<{@link String }>

@@ -21,7 +21,7 @@ public class CommonUtils {
      * @createTime: 2023/11/27 15:13:46
      */
     public static String getKeyBySort(List<Long> ids){
-        return ids.stream().sorted().map(Objects::toString).collect(Collectors.joining(","));
+        return ids.stream().sorted().map(Objects::toString).collect(Collectors.joining("-"));
     }
 
 }

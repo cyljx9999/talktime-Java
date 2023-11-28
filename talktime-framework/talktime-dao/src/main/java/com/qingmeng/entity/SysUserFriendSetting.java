@@ -30,7 +30,7 @@ public class SysUserFriendSetting implements Serializable {
     /**
      * 以双方user_id排序生成的唯一标识
      */
-    private String roomFriendKey;
+    private String tagKey;
 
     /**
      * 昵称

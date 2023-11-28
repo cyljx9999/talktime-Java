@@ -53,6 +53,6 @@ public class UserFriendSettingCache extends AbstractRedisStringCache<String, Sys
     @Override
     protected Map<String, SysUserFriendSetting> load(List<String> keys) {
         List<SysUserFriendSetting> list = sysUserFriendSettingDao.listByIds(keys);
-        return list.stream().collect(Collectors.toMap(SysUserFriendSetting::getRoomFriendKey, Function.identity()));
+        return list.stream().collect(Collectors.toMap(SysUserFriendSetting::getTagKey, Function.identity()));
     }
 }
