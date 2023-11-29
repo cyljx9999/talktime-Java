@@ -1,5 +1,6 @@
 package com.qingmeng.adapt;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.qingmeng.dto.user.ApplyFriendDTO;
 import com.qingmeng.entity.SysUser;
 import com.qingmeng.entity.SysUserApply;
@@ -7,6 +8,7 @@ import com.qingmeng.entity.SysUserFriend;
 import com.qingmeng.entity.SysUserFriendSetting;
 import com.qingmeng.enums.user.ApplyStatusEnum;
 import com.qingmeng.enums.user.ReadStatusEnum;
+import com.qingmeng.vo.common.CommonPageVO;
 import com.qingmeng.vo.user.FriendApplyRecordVO;
 
 import java.util.List;
@@ -57,29 +59,29 @@ public class FriendAdapt {
     /**
      * 建立 好友申请记录列表 VO
      *
-     * @param list     列表
+     * @param pageList 页面列表
      * @param userList 用户列表
-     * @return {@link List }<{@link FriendApplyRecordVO }>
+     * @return {@link CommonPageVO }<{@link FriendApplyRecordVO }>
      * @author qingmeng
-     * @createTime: 2023/11/28 23:38:57
+     * @createTime: 2023/11/29 08:19:32
      */
-    public static List<FriendApplyRecordVO> buildFriendApplyRecordListVO(List<SysUserApply> list,List<SysUser> userList){
-        return list.stream().map(apply -> {
-            FriendApplyRecordVO vo = new FriendApplyRecordVO();
-            vo.setApplyId(apply.getId());
-            vo.setApplyChannel(apply.getApplyChannel());
-            vo.setApplyStatus(apply.getApplyStatus());
-            vo.setReadStatus(apply.getReadStatus());
-            vo.setCreateTime(apply.getCreateTime());
+    public static CommonPageVO<FriendApplyRecordVO> buildFriendApplyRecordListVO(IPage<SysUserApply> pageList, List<SysUser> userList){
+        List<FriendApplyRecordVO> voList = pageList.getRecords().stream().map(apply -> {
+            FriendApplyRecordVO applyRecordVO = new FriendApplyRecordVO();
+            applyRecordVO.setApplyId(apply.getId());
+            applyRecordVO.setApplyChannel(apply.getApplyChannel());
+            applyRecordVO.setApplyStatus(apply.getApplyStatus());
+            applyRecordVO.setCreateTime(apply.getCreateTime());
             userList.stream()
                     .filter(user -> user.getId().equals(apply.getUserId()))
                     .findFirst()
                     .ifPresent(user -> {
-                        vo.setUserName(user.getUserName());
-                        vo.setUserAvatar(user.getUserAvatar());
+                        applyRecordVO.setUserName(user.getUserName());
+                        applyRecordVO.setUserAvatar(user.getUserAvatar());
                     });
-            return vo;
+            return applyRecordVO;
         }).collect(Collectors.toList());
+        return CommonPageVO.init(pageList.getCurrent(),pageList.getSize(), pageList.getTotal(), voList);
     }
 
 }

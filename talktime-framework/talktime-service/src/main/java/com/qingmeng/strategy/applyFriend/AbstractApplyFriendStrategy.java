@@ -8,7 +8,6 @@ import com.qingmeng.dto.user.ApplyFriendDTO;
 import com.qingmeng.entity.SysUser;
 import com.qingmeng.entity.SysUserApply;
 import com.qingmeng.enums.user.ApplyStatusEnum;
-import com.qingmeng.enums.user.ReadStatusEnum;
 import com.qingmeng.netty.service.WebSocketService;
 import com.qingmeng.utils.AsserUtils;
 import org.springframework.stereotype.Component;
@@ -100,10 +99,7 @@ public abstract class AbstractApplyFriendStrategy implements ApplyFriendStrategy
         checkUserExist(applyFriendDTO.getTargetId());
         checkAuthority(applyFriendDTO);
         applyFriendDTO.setApplyChannel(createChannelInfo());
-        SysUserApply sysUserApply = sysUserApplyDao.lambdaQuery()
-                .eq(SysUserApply::getUserId, applyFriendDTO.getUserId())
-                .eq(SysUserApply::getTargetId, applyFriendDTO.getTargetId())
-                .one();
+        SysUserApply sysUserApply = sysUserApplyDao.getApplyRecordByBothId(applyFriendDTO.getUserId(),applyFriendDTO.getTargetId());
         if (Objects.nonNull(sysUserApply)) {
             handlerApplyInfo(sysUserApply);
         } else {
@@ -125,12 +121,9 @@ public abstract class AbstractApplyFriendStrategy implements ApplyFriendStrategy
         AsserUtils.equal(applyStatus, ApplyStatusEnum.BLOCK.getCode(), "对方已拉黑，无法再次申请");
         AsserUtils.equal(applyStatus, ApplyStatusEnum.ACCEPT.getCode(), "对方已同意，请勿重复申请");
         if (Objects.equals(applyStatus, ApplyStatusEnum.APPLYING.getCode())) {
-            sysUserApply.setReadStatus(ReadStatusEnum.READ.getCode());
-            sysUserApplyDao.updateById(sysUserApply);
+            sysUserApplyDao.unReadApplyRecord(sysUserApply.getId());
         } else if (Objects.equals(applyStatus, ApplyStatusEnum.REJECT.getCode())) {
-            sysUserApply.setApplyStatus(ApplyStatusEnum.APPLYING.getCode());
-            sysUserApply.setReadStatus(ReadStatusEnum.READ.getCode());
-            sysUserApplyDao.updateById(sysUserApply);
+            sysUserApplyDao.updateReapplyStatus(sysUserApply.getId());
         }
     }
 }

@@ -1,10 +1,13 @@
 package com.qingmeng.service.impl;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.qingmeng.adapt.FriendAdapt;
 import com.qingmeng.adapt.RoomAdapt;
 import com.qingmeng.adapt.UserSettingAdapt;
 import com.qingmeng.cache.UserCache;
 import com.qingmeng.dao.*;
+import com.qingmeng.dto.common.PageDTO;
 import com.qingmeng.dto.user.AgreeApplyFriendDTO;
 import com.qingmeng.dto.user.ApplyFriendDTO;
 import com.qingmeng.entity.*;
@@ -14,6 +17,7 @@ import com.qingmeng.service.SysUserApplyService;
 import com.qingmeng.strategy.applyFriend.ApplyFriendFactory;
 import com.qingmeng.strategy.applyFriend.ApplyFriendStrategy;
 import com.qingmeng.utils.AsserUtils;
+import com.qingmeng.vo.common.CommonPageVO;
 import com.qingmeng.vo.user.FriendApplyRecordVO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -55,8 +59,10 @@ public class SysUserApplyServiceImpl implements SysUserApplyService {
      */
     @Override
     public void applyFriend(ApplyFriendDTO applyFriendDTO) {
+        // 根据getApplyChannel获取对应渠道的枚举进而获取对应处理的策略实现类
         ApplyFriendChannelEnum channelEnum = ApplyFriendChannelEnum.get(applyFriendDTO.getApplyChannel());
         ApplyFriendStrategy strategyWithType = applyFriendFactory.getStrategyWithType(channelEnum.getValue());
+        // 调用具体实现类的applyFriend方法
         strategyWithType.applyFriend(applyFriendDTO);
     }
 
@@ -99,16 +105,37 @@ public class SysUserApplyServiceImpl implements SysUserApplyService {
     /**
      * 根据userId获取好友申请列表
      *
-     * @param userId 用户 ID
-     * @return {@link List }<{@link FriendApplyRecordVO }>
+     * @param userId  用户 ID
+     * @param pageDTO 分页 dto
+     * @return {@link CommonPageVO }<{@link FriendApplyRecordVO }>
      * @author qingmeng
-     * @createTime: 2023/11/28 23:22:06
+     * @createTime: 2023/11/29 08:05:37
      */
     @Override
-    public List<FriendApplyRecordVO> getFriendApplyListByUserId(Long userId) {
-        List<SysUserApply> applyList = sysUserApplyDao.getFriendApplyListByUserId(userId);
-        List<Long> userIds = applyList.stream().map(SysUserApply::getUserId).collect(Collectors.toList());
+    public CommonPageVO<FriendApplyRecordVO> getFriendApplyListByUserId(Long userId, PageDTO pageDTO) {
+        IPage<SysUserApply> page = new Page<>(pageDTO.getPageNo(), pageDTO.getSize());
+        // 根据用户ID获取好友申请列表
+        IPage<SysUserApply> pageList = sysUserApplyDao.getFriendApplyPageListByUserId(userId, page);
+        // 获取申请列表中用户ID列表
+        List<Long> userIds = pageList.getRecords().stream().map(SysUserApply::getUserId).collect(Collectors.toList());
+        // 根据用户ID列表获取用户列表
         List<SysUser> userList = new ArrayList<>(userCache.getBatch(userIds).values());
-        return FriendAdapt.buildFriendApplyRecordListVO(applyList,userList);
+        // 更新此次的申请列表中的记录为已读状态
+        sysUserApplyDao.readApplyList(userId,pageList.getRecords().stream().map(SysUserApply::getId).collect(Collectors.toList()));
+        // 返回好友申请记录列表VO
+        return FriendAdapt.buildFriendApplyRecordListVO(pageList,userList);
+    }
+
+    /**
+     * 根据id获取未读申请记录计数
+     *
+     * @param userId 用户 ID
+     * @return {@link Long }
+     * @author qingmeng
+     * @createTime: 2023/11/29 09:09:59
+     */
+    @Override
+    public Long getUnReadApplyRecordCountByUserId(Long userId) {
+        return sysUserApplyDao.getUnReadApplyRecordCountByUserId(userId);
     }
 }

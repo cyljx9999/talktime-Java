@@ -3,15 +3,16 @@ package com.qingmeng.controller;
 import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.dev33.satoken.stp.StpUtil;
 import com.qingmeng.domain.rep.CommonResult;
+import com.qingmeng.dto.common.PageDTO;
 import com.qingmeng.dto.user.AgreeApplyFriendDTO;
 import com.qingmeng.dto.user.ApplyFriendDTO;
 import com.qingmeng.service.SysUserApplyService;
+import com.qingmeng.vo.common.CommonPageVO;
 import com.qingmeng.vo.user.FriendApplyRecordVO;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
-import java.util.List;
 
 /**
  * @author 清梦
@@ -59,14 +60,28 @@ public class UserApplyFriendController {
     /**
      * 根据userId获取好友申请列表
      *
-     * @return {@link CommonResult }<{@link List }<{@link FriendApplyRecordVO }>>
+     * @param pageDTO 分页 dto
+     * @return {@link CommonResult }<{@link CommonPageVO }<{@link FriendApplyRecordVO }>>
      * @author qingmeng
-     * @createTime: 2023/11/28 23:12:30
+     * @createTime: 2023/11/29 08:16:01
      */
     @GetMapping("/getMyFriendApplyList")
-    public CommonResult<List<FriendApplyRecordVO>> getMyFriendApplyList() {
-        List<FriendApplyRecordVO> list = sysUserApplyService.getFriendApplyListByUserId(StpUtil.getLoginIdAsLong());
+    public CommonResult<CommonPageVO<FriendApplyRecordVO>> getMyFriendApplyList(@Valid PageDTO pageDTO) {
+        CommonPageVO<FriendApplyRecordVO> list = sysUserApplyService.getFriendApplyListByUserId(StpUtil.getLoginIdAsLong(), pageDTO);
         return CommonResult.success(list);
+    }
+
+    /**
+     * 根据id获取未读申请记录计数
+     *
+     * @return {@link CommonResult }<{@link Long }>
+     * @author qingmeng
+     * @createTime: 2023/11/29 09:09:43
+     */
+    @GetMapping("/getUnReadRecordCount")
+    public CommonResult<Long> getUnReadApplyRecordCountByUserId() {
+        Long count = sysUserApplyService.getUnReadApplyRecordCountByUserId(StpUtil.getLoginIdAsLong());
+        return CommonResult.success(count);
     }
 
 

@@ -1,10 +1,10 @@
 package com.qingmeng.service;
 
+import com.qingmeng.dto.common.PageDTO;
 import com.qingmeng.dto.user.AgreeApplyFriendDTO;
 import com.qingmeng.dto.user.ApplyFriendDTO;
+import com.qingmeng.vo.common.CommonPageVO;
 import com.qingmeng.vo.user.FriendApplyRecordVO;
-
-import java.util.List;
 
 /**
  * <p>
@@ -37,10 +37,21 @@ public interface SysUserApplyService{
     /**
      * 根据userId获取好友申请列表
      *
-     * @param userId 用户 ID
-     * @return {@link List }<{@link FriendApplyRecordVO }>
+     * @param userId  用户 ID
+     * @param pageDTO 分页 dto
+     * @return {@link CommonPageVO }<{@link FriendApplyRecordVO }>
      * @author qingmeng
-     * @createTime: 2023/11/28 23:21:45
+     * @createTime: 2023/11/29 08:06:05
      */
-    List<FriendApplyRecordVO> getFriendApplyListByUserId(Long userId);
+    CommonPageVO<FriendApplyRecordVO> getFriendApplyListByUserId(Long userId, PageDTO pageDTO);
+
+    /**
+     * 根据id获取未读申请记录计数
+     *
+     * @param userId 用户 ID
+     * @return {@link Long }
+     * @author qingmeng
+     * @createTime: 2023/11/29 09:12:30
+     */
+    Long getUnReadApplyRecordCountByUserId(Long userId);
 }

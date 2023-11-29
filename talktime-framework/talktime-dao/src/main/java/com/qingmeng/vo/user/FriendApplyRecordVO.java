@@ -43,13 +43,6 @@ public class FriendApplyRecordVO {
     private Integer applyStatus;
 
     /**
-     * 阅读状态 0未读 1已读
-     * @see com.qingmeng.enums.user.ReadStatusEnum
-     */
-    private Integer readStatus;
-
-
-    /**
      * 创建时间
      */
     @TableField(fill = FieldFill.INSERT)
