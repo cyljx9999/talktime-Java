@@ -18,7 +18,7 @@ public class PageDTO {
     /**
      * 页码
      */
-    @Min(0)
+    @Min(1)
     @Max(50)
     @NotNull
     private Long pageNo;
@@ -27,6 +27,8 @@ public class PageDTO {
      * 大小
      */
     @NotNull
+    @Min(1)
+    @Max(20)
     private Long size;
 
 }

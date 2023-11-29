@@ -22,12 +22,6 @@ public class ApplyFriendDTO {
     private Long userId;
 
     /**
-     * 申请状态 0 申请中 1已同意 2拒绝接受
-     * @see com.qingmeng.enums.user.ApplyStatusEnum
-     */
-    private Integer applyStatus;
-
-    /**
      * 目标好友id
      */
     @NotNull
@@ -50,11 +44,5 @@ public class ApplyFriendDTO {
     @NotBlank
     @StringListValue(values = {"account","phone","card","group","qrcode"})
     private String applyChannel;
-
-    /**
-     * 阅读状态 0未读 1已读
-     * @see com.qingmeng.enums.user.ReadStatusEnum
-     */
-    private Integer readStatus;
 
 }

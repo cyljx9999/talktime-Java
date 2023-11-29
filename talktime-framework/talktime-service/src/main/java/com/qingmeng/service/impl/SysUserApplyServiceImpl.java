@@ -78,7 +78,7 @@ public class SysUserApplyServiceImpl implements SysUserApplyService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void agreeApply(AgreeApplyFriendDTO agreeApplyFriendDTO) {
-        SysUserApply sysUserApply = checkApplyExist(agreeApplyFriendDTO.getId());
+        SysUserApply sysUserApply = checkApplyExist(agreeApplyFriendDTO.getApplyId());
         AsserUtils.equal(sysUserApply.getApplyStatus(),ApplyStatusEnum.APPLYING.getCode(), "非法申请状态");
         // 新增好友设置
         SysUserFriendSetting saveFriendSetting = UserSettingAdapt.buildDefalutSysUserFriendSetting(sysUserApply);
@@ -100,7 +100,7 @@ public class SysUserApplyServiceImpl implements SysUserApplyService {
         // todo 发送默认同意申请信息
 
         // 修改申请记录为已同意
-        sysUserApplyDao.agreeApply(agreeApplyFriendDTO.getId());
+        sysUserApplyDao.agreeApply(agreeApplyFriendDTO.getApplyId());
     }
 
     /**

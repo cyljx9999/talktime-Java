@@ -14,6 +14,6 @@ public class AgreeApplyFriendDTO {
     /**
      * 申请好友记录的主键ID
      */
-    private Long id;
+    private Long applyId;
 
 }
