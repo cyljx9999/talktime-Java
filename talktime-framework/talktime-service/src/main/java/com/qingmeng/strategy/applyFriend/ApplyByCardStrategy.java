@@ -48,9 +48,15 @@ public class ApplyByCardStrategy extends AbstractApplyFriendStrategy{
     @Override
     protected String createChannelInfo(ApplyFriendDTO applyFriendDTO) {
         SysUser sysUser = userCache.get(applyFriendDTO.getShareCardByUserId());
+        // 获取申请和被申请的用户的id
         List<Long> ids = Arrays.asList(applyFriendDTO.getUserId(), applyFriendDTO.getShareCardByUserId());
-        SysUserFriendSetting sysUserFriendSetting = userFriendSettingCache.get(CommonUtils.getKeyBySort(ids));
+        // 根据id排序生成缓存key
+        String cacheKey = CommonUtils.getKeyBySort(ids) + ":" + applyFriendDTO.getUserId();
+        // 根据缓存key获取用户好友设置
+        SysUserFriendSetting sysUserFriendSetting = userFriendSettingCache.get(cacheKey);
+        // 获取用户昵称
         String nickName = sysUserFriendSetting.getNickName();
+        // 如果昵称不为空，则使用昵称，否则使用用户名
         String name = StrUtil.isNotBlank(nickName) ? nickName : sysUser.getUserName();
         return "对方通过 " + name + " 分享的名片添加";
     }

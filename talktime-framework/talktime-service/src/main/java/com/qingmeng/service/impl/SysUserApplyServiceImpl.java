@@ -18,6 +18,7 @@ import com.qingmeng.service.SysUserApplyService;
 import com.qingmeng.strategy.applyFriend.ApplyFriendFactory;
 import com.qingmeng.strategy.applyFriend.ApplyFriendStrategy;
 import com.qingmeng.utils.AsserUtils;
+import com.qingmeng.utils.CommonUtils;
 import com.qingmeng.vo.common.CommonPageVO;
 import com.qingmeng.vo.user.FriendApplyRecordVO;
 import org.jetbrains.annotations.NotNull;
@@ -26,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -80,9 +82,11 @@ public class SysUserApplyServiceImpl implements SysUserApplyService {
     public void agreeApply(AgreeApplyFriendDTO agreeApplyFriendDTO) {
         SysUserApply sysUserApply = checkApplyExist(agreeApplyFriendDTO.getApplyId());
         AsserUtils.equal(sysUserApply.getApplyStatus(),ApplyStatusEnum.APPLYING.getCode(), "非法申请状态");
+        List<Long> ids = Arrays.asList(sysUserApply.getUserId(), sysUserApply.getTargetId());
+        String tagKey = CommonUtils.getKeyBySort(ids);
         // 新增好友设置
-        SysUserFriendSetting saveFriendSetting = UserSettingAdapt.buildDefalutSysUserFriendSetting(sysUserApply);
-        sysUserFriendSettingDao.save(saveFriendSetting);
+        List<SysUserFriendSetting> friendSettingList = UserSettingAdapt.buildDefaultSysUserFriendSetting(ids,tagKey,sysUserApply.getApplyChannel());
+        sysUserFriendSettingDao.saveBatch(friendSettingList);
         // 新增好友记录
         SysUserFriend saveUserFriend = FriendAdapt.buildFriendRecord(sysUserApply);
         sysUserFriendDao.save(saveUserFriend);
@@ -94,7 +98,7 @@ public class SysUserApplyServiceImpl implements SysUserApplyService {
                 chatRoom.getId(),
                 sysUserApply.getUserId(),
                 sysUserApply.getTargetId(),
-                saveFriendSetting.getTagKey()
+                tagKey
         );
         chatFriendRoomDao.save(chatFriendRoom);
         // todo 发送默认同意申请信息

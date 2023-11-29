@@ -219,7 +219,7 @@ public class SysUserServiceImpl implements SysUserService {
      */
     @Override
     public SysUser getUserInfoWithId(Long userId) {
-        return userCache.getUserInfoById(userId);
+        return userCache.get(userId);
     }
 
     /**

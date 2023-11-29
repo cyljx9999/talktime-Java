@@ -1,14 +1,14 @@
 package com.qingmeng.adapt;
 
-import com.qingmeng.entity.SysUserApply;
 import com.qingmeng.entity.SysUserFriendSetting;
 import com.qingmeng.entity.SysUserPrivacySetting;
+import com.qingmeng.enums.chat.MessageTopStatusEnum;
 import com.qingmeng.enums.user.CloseOrOpenStatusEnum;
 import com.qingmeng.enums.user.FriendStausEnum;
-import com.qingmeng.utils.CommonUtils;
+import com.qingmeng.vo.user.UserFriendSettingVO;
 
-import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author 清梦
@@ -26,7 +26,7 @@ public class UserSettingAdapt {
      * @author qingmeng
      * @createTime: 2023/11/27 11:00:11
      */
-    public static SysUserPrivacySetting buildDefalutSysUserPrivacySetting(Long userId){
+    public static SysUserPrivacySetting buildDefalutSysUserPrivacySetting(Long userId) {
         SysUserPrivacySetting setting = new SysUserPrivacySetting();
         setting.setUserId(userId);
         setting.setAddByAccount(CloseOrOpenStatusEnum.OPEN.getCode());
@@ -40,18 +40,43 @@ public class UserSettingAdapt {
     /**
      * 构建 默认 用户好友设置
      *
-     * @param sysUserApply 申请好友记录参数
-     * @return {@link SysUserFriendSetting }
+     * @param ids          IDS
+     * @param tagKey       标签键
+     * @param applyChannel 应用渠道
+     * @return {@link List }<{@link SysUserFriendSetting }>
      * @author qingmeng
-     * @createTime: 2023/11/28 17:38:48
+     * @createTime: 2023/11/29 14:51:23
      */
-    public static SysUserFriendSetting buildDefalutSysUserFriendSetting(SysUserApply sysUserApply){
-        SysUserFriendSetting sysUserFriendSetting = new SysUserFriendSetting();
-        List<Long> ids = Arrays.asList(sysUserApply.getUserId(), sysUserApply.getTargetId());
-        sysUserFriendSetting.setTagKey(CommonUtils.getKeyBySort(ids));
-        sysUserFriendSetting.setFriendStatus(FriendStausEnum.NORMAL.getCode());
-        sysUserFriendSetting.setAddChannel(sysUserApply.getApplyChannel());
-        return sysUserFriendSetting;
+    public static List<SysUserFriendSetting> buildDefaultSysUserFriendSetting(List<Long> ids,String tagKey,String applyChannel) {
+        return ids.stream().map(id -> {
+            SysUserFriendSetting sysUserFriendSetting = new SysUserFriendSetting();
+            sysUserFriendSetting.setTagKey(tagKey);
+            sysUserFriendSetting.setUserId(id);
+            sysUserFriendSetting.setFriendStatus(FriendStausEnum.NORMAL.getCode());
+            sysUserFriendSetting.setTopStatus(MessageTopStatusEnum.NORMAL.getCode());
+            sysUserFriendSetting.setAddChannel(applyChannel);
+            return sysUserFriendSetting;
+        }).collect(Collectors.toList());
+    }
+
+
+    /**
+     * 构建 用户好友设置 VO
+     *
+     * @param sysUserFriendSetting SYS 用户好友设置
+     * @return {@link UserFriendSettingVO }
+     * @author qingmeng
+     * @createTime: 2023/11/29 14:48:01
+     */
+    public static UserFriendSettingVO buildUserFriendSettingVO(SysUserFriendSetting sysUserFriendSetting) {
+        UserFriendSettingVO vo = new UserFriendSettingVO();
+        vo.setSettingId(sysUserFriendSetting.getId());
+        vo.setNickName(sysUserFriendSetting.getNickName());
+        vo.setFriendStatus(sysUserFriendSetting.getFriendStatus());
+        vo.setTopStatus(sysUserFriendSetting.getTopStatus());
+        vo.setAddChannel(sysUserFriendSetting.getAddChannel());
+        vo.setCreateTime(sysUserFriendSetting.getCreateTime());
+        return vo;
     }
 
 

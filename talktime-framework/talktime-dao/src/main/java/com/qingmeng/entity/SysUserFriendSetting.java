@@ -33,6 +33,11 @@ public class SysUserFriendSetting implements Serializable {
     private String tagKey;
 
     /**
+     * 用户 ID
+     */
+    private Long userId;
+
+    /**
      * 昵称
      */
     private String nickName;
@@ -42,6 +47,12 @@ public class SysUserFriendSetting implements Serializable {
      * @see com.qingmeng.enums.user.FriendStausEnum
      */
     private Integer friendStatus;
+
+    /**
+     * 置顶状态 0不置顶 1置顶
+     * @see com.qingmeng.enums.chat.MessageTopStatusEnum
+     */
+    private Integer topStatus;
 
 
     /**

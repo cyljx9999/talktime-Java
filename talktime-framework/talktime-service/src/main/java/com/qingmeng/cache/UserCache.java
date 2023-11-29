@@ -62,31 +62,6 @@ public class UserCache extends AbstractRedisStringCache<Long, SysUser> {
     }
 
     /**
-     * 获取用户信息
-     *
-     * @param userId 用户 ID
-     * @return {@link SysUser }
-     * @author qingmeng
-     * @createTime: 2023/11/22 09:34:10
-     */
-    public SysUser getUserInfoById(Long userId) {
-        return get(userId);
-    }
-
-    /**
-     * 按 ID 查出用户列表
-     *
-     * @param userIds 用户 ID
-     * @return {@link List }<{@link SysUser }>
-     * @author qingmeng
-     * @createTime: 2023/11/22 09:43:57
-     */
-    public List<SysUser> userListByIds(List<Long> userIds) {
-        Map<Long, SysUser> userMap = getBatch(userIds);
-        return new ArrayList<>(userMap.values());
-    }
-
-    /**
      * 离线
      *
      * @param userId          用户 ID
