@@ -1,5 +1,6 @@
 package com.qingmeng.service.impl;
 
+import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.qingmeng.adapt.FriendAdapt;
@@ -125,7 +126,7 @@ public class SysUserApplyServiceImpl implements SysUserApplyService {
     }
 
     /**
-     * 根据id获取未读申请记录计数
+     * 根据userId获取未读申请记录计数
      *
      * @param userId 用户 ID
      * @return {@link Long }
@@ -146,7 +147,10 @@ public class SysUserApplyServiceImpl implements SysUserApplyService {
      */
     @Override
     public void blockApplyRecord(Long applyId) {
-        checkApplyExist(applyId);
+        // 检验请求是否存在
+        SysUserApply userApply = checkApplyExist(applyId);
+        // 检查当前用户请求的合法性
+        checkLegal(StpUtil.getLoginIdAsLong(), userApply);
         sysUserApplyDao.blockApplyRecord(applyId);
     }
 
@@ -159,7 +163,11 @@ public class SysUserApplyServiceImpl implements SysUserApplyService {
      */
     @Override
     public void cancelBlockApplyRecord(Long applyId) {
-        checkApplyExist(applyId);
+       // 检验请求是否存在
+       SysUserApply userApply = checkApplyExist(applyId);
+        // 检查当前用户请求的合法性
+        checkLegal(StpUtil.getLoginIdAsLong(), userApply);
+        // 根据申请id取消拉黑申请
         sysUserApplyDao.cancelBlockApplyRecord(applyId);
     }
 
@@ -191,8 +199,21 @@ public class SysUserApplyServiceImpl implements SysUserApplyService {
     @Override
     public void deleteApplyRecordByUserId(Long userId, Long applyId) {
         SysUserApply userApply = checkApplyExist(applyId);
-        AsserUtils.equal(userApply.getTargetId(),userId,"非法删除请求");
+        checkLegal(userId, userApply);
         sysUserApplyDao.removeById(applyId);
+    }
+
+
+    /**
+     * 检查合法性
+     *
+     * @param userId    用户 ID
+     * @param userApply 用户申请
+     * @author qingmeng
+     * @createTime: 2023/11/29 12:41:47
+     */
+    private static void checkLegal(Long userId, SysUserApply userApply) {
+        AsserUtils.equal(userApply.getTargetId(), userId,"非法请求");
     }
 
     /**
