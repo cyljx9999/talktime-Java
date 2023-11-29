@@ -2,6 +2,7 @@ package com.qingmeng.controller;
 
 import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.dev33.satoken.stp.StpUtil;
+import com.qingmeng.annotation.SysLog;
 import com.qingmeng.domain.rep.CommonResult;
 import com.qingmeng.dto.common.PageDTO;
 import com.qingmeng.dto.user.AgreeApplyFriendDTO;
@@ -37,6 +38,7 @@ public class UserApplyFriendController {
      * @createTime: 2023/11/27 15:56:31
      */
     @PostMapping("/add")
+    @SysLog(title = "添加好友模块",content = "提交好友申请")
     public CommonResult<String> applyFriend(@Valid @RequestBody ApplyFriendDTO applyFriendDTO) {
         applyFriendDTO.setUserId(StpUtil.getLoginIdAsLong());
         sysUserApplyService.applyFriend(applyFriendDTO);
@@ -52,6 +54,7 @@ public class UserApplyFriendController {
      * @createTime: 2023/11/27 15:56:31
      */
     @PostMapping("/agreeApply")
+    @SysLog(title = "添加好友模块",content = "同意好友申请")
     public CommonResult<String> agreeApply(@Valid @RequestBody AgreeApplyFriendDTO agreeApplyFriendDTO) {
         sysUserApplyService.agreeApply(agreeApplyFriendDTO);
         return CommonResult.success("已同意申请");
@@ -67,6 +70,7 @@ public class UserApplyFriendController {
      * @createTime: 2023/11/29 08:16:01
      */
     @GetMapping("/getMyFriendApplyList")
+    @SysLog(title = "添加好友模块",content = "获取当前申请列表")
     public CommonResult<CommonPageVO<FriendApplyRecordVO>> getMyFriendApplyList(@Valid PageDTO pageDTO) {
         CommonPageVO<FriendApplyRecordVO> list = sysUserApplyService.getFriendApplyListByUserId(StpUtil.getLoginIdAsLong(), pageDTO);
         return CommonResult.success(list);
@@ -80,6 +84,7 @@ public class UserApplyFriendController {
      * @createTime: 2023/11/29 09:09:43
      */
     @GetMapping("/getUnReadRecordCount")
+    @SysLog(title = "添加好友模块",content = "获取未读申请的记录数")
     public CommonResult<Long> getUnReadApplyRecordCountByUserId() {
         Long count = sysUserApplyService.getUnReadApplyRecordCountByUserId(StpUtil.getLoginIdAsLong());
         return CommonResult.success(count);
@@ -95,6 +100,7 @@ public class UserApplyFriendController {
      * @createTime: 2023/11/29 10:33:12
      */
     @PutMapping("/blockApplyRecord/{applyId}")
+    @SysLog(title = "添加好友模块",content = "拉黑对方好友申请")
     public CommonResult<String> blockApplyRecord(@PathVariable Long applyId) {
         sysUserApplyService.blockApplyRecord(applyId);
         return CommonResult.success("已拉黑");
@@ -109,6 +115,7 @@ public class UserApplyFriendController {
      * @createTime: 2023/11/29 11:23:40
      */
     @PutMapping("/cancelBlockApplyRecord/{applyId}")
+    @SysLog(title = "添加好友模块",content = "取消拉黑好友申请")
     public CommonResult<String> cancelBlockApplyRecord(@PathVariable Long applyId) {
         sysUserApplyService.cancelBlockApplyRecord(applyId);
         return CommonResult.success("已取消拉黑");
@@ -122,6 +129,7 @@ public class UserApplyFriendController {
      * @createTime: 2023/11/29 10:49:46
      */
     @GetMapping("/getBlockApplyList")
+    @SysLog(title = "添加好友模块",content = "获取已拉黑好友申请列表")
     public CommonResult<List<FriendApplyRecordVO>> getBlockApplyList() {
         List<FriendApplyRecordVO> list = sysUserApplyService.getBlockApplyListByUserId(StpUtil.getLoginIdAsLong());
         return CommonResult.success(list);
@@ -137,6 +145,7 @@ public class UserApplyFriendController {
      * @createTime: 2023/11/29 11:07:34
      */
     @DeleteMapping("/deleteApplyRecord/{applyId}")
+    @SysLog(title = "添加好友模块",content = "删除申请记录")
     public CommonResult<String> deleteApplyRecord(@PathVariable Long applyId) {
         sysUserApplyService.deleteApplyRecordByUserId(StpUtil.getLoginIdAsLong(),applyId);
         return CommonResult.success("删除成功");
