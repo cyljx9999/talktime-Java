@@ -31,7 +31,7 @@ public class SysUserApplyDao extends ServiceImpl<SysUserApplyMapper, SysUserAppl
     public void agreeApply(Long applyId) {
         lambdaUpdate().set(SysUserApply::getApplyStatus, ApplyStatusEnum.ACCEPT.getCode())
                 .eq(SysUserApply::getId, applyId)
-                .update();
+                .update(new SysUserApply());
     }
 
     /**
@@ -66,7 +66,7 @@ public class SysUserApplyDao extends ServiceImpl<SysUserApplyMapper, SysUserAppl
                 .eq(SysUserApply::getReadStatus, ReadStatusEnum.UNREAD.getCode())
                 .in(SysUserApply::getId, applyIds)
                 .eq(SysUserApply::getTargetId, userId)
-                .update();
+                .update(new SysUserApply());
     }
 
     /**
@@ -80,7 +80,7 @@ public class SysUserApplyDao extends ServiceImpl<SysUserApplyMapper, SysUserAppl
         lambdaUpdate()
                 .set(SysUserApply::getReadStatus, ReadStatusEnum.UNREAD.getCode())
                 .eq(SysUserApply::getId, applyId)
-                .update();
+                .update(new SysUserApply());
     }
 
     /**
@@ -95,7 +95,7 @@ public class SysUserApplyDao extends ServiceImpl<SysUserApplyMapper, SysUserAppl
                 .set(SysUserApply::getReadStatus, ReadStatusEnum.UNREAD.getCode())
                 .set(SysUserApply::getApplyStatus, ApplyStatusEnum.APPLYING.getCode())
                 .eq(SysUserApply::getId, applyId)
-                .update();
+                .update(new SysUserApply());
     }
 
     /**
@@ -127,4 +127,49 @@ public class SysUserApplyDao extends ServiceImpl<SysUserApplyMapper, SysUserAppl
                 .eq(SysUserApply::getReadStatus, ReadStatusEnum.UNREAD.getCode())
                 .count();
     }
+
+    /**
+     * 拉黑申请记录
+     *
+     * @param applyId 应用 ID
+     * @author qingmeng
+     * @createTime: 2023/11/29 10:36:25
+     */
+    public void blockApplyRecord( Long applyId) {
+        lambdaUpdate()
+                .set(SysUserApply::getApplyStatus, ApplyStatusEnum.BLOCK.getCode())
+                .eq(SysUserApply::getId, applyId)
+                .update(new SysUserApply());
+    }
+
+    /**
+     * 取消拉黑申请记录
+     *
+     * @param applyId 应用 ID
+     * @author qingmeng
+     * @createTime: 2023/11/29 11:24:41
+     */
+    public void cancelBlockApplyRecord(Long applyId) {
+        lambdaUpdate()
+                .set(SysUserApply::getApplyStatus, ApplyStatusEnum.APPLYING.getCode())
+                .eq(SysUserApply::getId, applyId)
+                .update(new SysUserApply());
+    }
+
+    /**
+     * 按用户 ID 获取拉黑申请记录列表
+     *
+     * @param userId 用户 ID
+     * @return {@link List }<{@link SysUserApply }>
+     * @author qingmeng
+     * @createTime: 2023/11/29 10:57:27
+     */
+    public List<SysUserApply> getBlockApplyListByUserId(Long userId) {
+        return lambdaQuery()
+                .eq(SysUserApply::getTargetId, userId)
+                .eq(SysUserApply::getApplyStatus, ApplyStatusEnum.BLOCK.getCode())
+                .list();
+    }
+
+
 }

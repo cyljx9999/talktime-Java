@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * @author 清梦
@@ -84,5 +85,61 @@ public class UserApplyFriendController {
         return CommonResult.success(count);
     }
 
+
+    /**
+     * 拉黑申请记录
+     *
+     * @param applyId 申请 ID
+     * @return {@link CommonResult }<{@link String }>
+     * @author qingmeng
+     * @createTime: 2023/11/29 10:33:12
+     */
+    @PutMapping("/blockApplyRecord/{applyId}")
+    public CommonResult<String> blockApplyRecord(@PathVariable Long applyId) {
+        sysUserApplyService.blockApplyRecord(applyId);
+        return CommonResult.success("已拉黑");
+    }
+
+    /**
+     * 取消拉黑申请记录
+     *
+     * @param applyId 申请 ID
+     * @return {@link CommonResult }<{@link String }>
+     * @author qingmeng
+     * @createTime: 2023/11/29 11:23:40
+     */
+    @PutMapping("/cancelBlockApplyRecord/{applyId}")
+    public CommonResult<String> cancelBlockApplyRecord(@PathVariable Long applyId) {
+        sysUserApplyService.cancelBlockApplyRecord(applyId);
+        return CommonResult.success("已取消拉黑");
+    }
+
+    /**
+     * 获取拉黑申请记录列表
+     *
+     * @return {@link CommonResult }<{@link List }<{@link FriendApplyRecordVO }>>
+     * @author qingmeng
+     * @createTime: 2023/11/29 10:49:46
+     */
+    @GetMapping("/getBlockApplyList")
+    public CommonResult<List<FriendApplyRecordVO>> getBlockApplyList() {
+        List<FriendApplyRecordVO> list = sysUserApplyService.getBlockApplyListByUserId(StpUtil.getLoginIdAsLong());
+        return CommonResult.success(list);
+    }
+
+
+    /**
+     * 删除申请记录
+     *
+     * @param applyId 应用 ID
+     * @return {@link CommonResult }<{@link String }>
+     * @author qingmeng
+     * @createTime: 2023/11/29 11:07:34
+     */
+    @DeleteMapping("/deleteApplyRecord/{applyId}")
+    public CommonResult<String> deleteApplyRecord(@PathVariable Long applyId) {
+        sysUserApplyService.deleteApplyRecordByUserId(StpUtil.getLoginIdAsLong(),applyId);
+        return CommonResult.success("删除成功");
+    }
 
 }

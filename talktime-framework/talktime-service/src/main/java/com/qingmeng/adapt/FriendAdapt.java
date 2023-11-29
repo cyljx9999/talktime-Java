@@ -57,7 +57,7 @@ public class FriendAdapt {
     }
 
     /**
-     * 建立 好友申请记录列表 VO
+     * 建立 好友申请记录分页列表 VO
      *
      * @param pageList 页面列表
      * @param userList 用户列表
@@ -65,8 +65,23 @@ public class FriendAdapt {
      * @author qingmeng
      * @createTime: 2023/11/29 08:19:32
      */
-    public static CommonPageVO<FriendApplyRecordVO> buildFriendApplyRecordListVO(IPage<SysUserApply> pageList, List<SysUser> userList){
-        List<FriendApplyRecordVO> voList = pageList.getRecords().stream().map(apply -> {
+    public static CommonPageVO<FriendApplyRecordVO> buildFriendApplyRecordPageListVO(IPage<SysUserApply> pageList, List<SysUser> userList){
+        List<FriendApplyRecordVO> voList = buildFriendApplyRecordListVO(pageList.getRecords(), userList);
+        return CommonPageVO.init(pageList.getCurrent(),pageList.getSize(), pageList.getTotal(), voList);
+    }
+
+
+    /**
+     * 建立 好友申请记录 列表 VO
+     *
+     * @param applyList 申请列表
+     * @param userList  用户列表
+     * @return {@link List }<{@link FriendApplyRecordVO }>
+     * @author qingmeng
+     * @createTime: 2023/11/29 11:03:59
+     */
+    public static List<FriendApplyRecordVO> buildFriendApplyRecordListVO(List<SysUserApply> applyList, List<SysUser> userList) {
+        return applyList.stream().map(apply -> {
             FriendApplyRecordVO applyRecordVO = new FriendApplyRecordVO();
             applyRecordVO.setApplyId(apply.getId());
             applyRecordVO.setApplyChannel(apply.getApplyChannel());
@@ -81,7 +96,6 @@ public class FriendAdapt {
                     });
             return applyRecordVO;
         }).collect(Collectors.toList());
-        return CommonPageVO.init(pageList.getCurrent(),pageList.getSize(), pageList.getTotal(), voList);
     }
 
 }
