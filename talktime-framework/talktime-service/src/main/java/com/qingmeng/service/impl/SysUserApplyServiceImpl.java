@@ -82,11 +82,11 @@ public class SysUserApplyServiceImpl implements SysUserApplyService {
     public void agreeApply(AgreeApplyFriendDTO agreeApplyFriendDTO) {
         SysUserApply sysUserApply = checkApplyExist(agreeApplyFriendDTO.getApplyId());
         AsserUtils.equal(sysUserApply.getApplyStatus(),ApplyStatusEnum.APPLYING.getCode(), "非法申请状态");
+        // 判断好友是否已存在
+        checkFriendExist(sysUserApply);
+        // 获取id组合标识key
         List<Long> ids = Arrays.asList(sysUserApply.getUserId(), sysUserApply.getTargetId());
         String tagKey = CommonUtils.getKeyBySort(ids);
-        // 判断好友是否已存在
-        SysUserFriend sysUserFriend = sysUserFriendDao.getFriendByBothId(sysUserApply.getUserId(), sysUserApply.getTargetId());
-        AsserUtils.isNotNull(sysUserFriend,"对方已经是您好友，请勿重复操作");
         // 新增好友设置
         List<SysUserFriendSetting> friendSettingList = UserSettingAdapt.buildDefaultSysUserFriendSetting(ids,tagKey,sysUserApply.getApplyChannel());
         sysUserFriendSettingDao.saveBatch(friendSettingList);
@@ -109,6 +109,8 @@ public class SysUserApplyServiceImpl implements SysUserApplyService {
         // 修改申请记录为已同意
         sysUserApplyDao.agreeApply(agreeApplyFriendDTO.getApplyId());
     }
+
+
 
     /**
      * 根据userId获取好友申请列表
@@ -210,6 +212,17 @@ public class SysUserApplyServiceImpl implements SysUserApplyService {
         sysUserApplyDao.removeById(applyId);
     }
 
+    /**
+     * 检查好友是否存在
+     *
+     * @param sysUserApply sys 用户申请
+     * @author qingmeng
+     * @createTime: 2023/12/01 09:40:40
+     */
+    private void checkFriendExist(SysUserApply sysUserApply) {
+        SysUserFriend sysUserFriend = sysUserFriendDao.getFriendByBothId(sysUserApply.getUserId(), sysUserApply.getTargetId());
+        AsserUtils.isNotNull(sysUserFriend,"对方已经是您好友，请勿重复操作");
+    }
 
     /**
      * 检查合法性
