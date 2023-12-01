@@ -1,13 +1,16 @@
 package com.qingmeng.dao;
 
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.qingmeng.dto.user.UserFriendSettingDTO;
 import com.qingmeng.entity.SysUserFriendSetting;
 import com.qingmeng.enums.system.LogicDeleteEnum;
 import com.qingmeng.mapper.SysUserFriendSettingMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -49,5 +52,23 @@ public class SysUserFriendSettingDao extends ServiceImpl<SysUserFriendSettingMap
                 .eq(SysUserFriendSetting::getTagKey, tagKey)
                 .set(SysUserFriendSetting::getIsDeleted, LogicDeleteEnum.IS_DELETE.getCode())
                 .update(new SysUserFriendSetting());
+    }
+
+    /**
+     * 按自定义保存或更新批处理
+     *
+     * @param friendSettingList 好友设置列表
+     * @author qingmeng
+     * @createTime: 2023/12/01 16:14:24
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public void saveOrUpdateBatchByCustom(List<SysUserFriendSetting> friendSettingList) {
+        friendSettingList.forEach(item -> {
+            LambdaQueryWrapper<SysUserFriendSetting> wrapper = new LambdaQueryWrapper<>();
+            wrapper.eq(SysUserFriendSetting::getTagKey, item.getTagKey());
+            wrapper.eq(SysUserFriendSetting::getUserId, item.getUserId());
+            wrapper.eq(SysUserFriendSetting::getIsDeleted, LogicDeleteEnum.IS_DELETE.getCode());
+            saveOrUpdate(item, wrapper);
+        });
     }
 }

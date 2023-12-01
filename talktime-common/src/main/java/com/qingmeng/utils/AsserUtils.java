@@ -140,6 +140,20 @@ public class AsserUtils {
         }
     }
 
+    /**
+     * 不为空
+     *
+     * @param object 对象
+     * @param msg    味精
+     * @author qingmeng
+     * @createTime: 2023/12/01 16:39:32
+     */
+    public static void isNotEmpty(Object object, String msg) {
+        if (ObjectUtil.isEmpty(object)) {
+            throwException(null,msg);
+        }
+    }
+
 
     /**
      * 校验对象。

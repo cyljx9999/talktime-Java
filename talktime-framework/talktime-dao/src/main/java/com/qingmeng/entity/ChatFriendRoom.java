@@ -37,9 +37,9 @@ public class ChatFriendRoom implements Serializable {
     private Long userId;
 
     /**
-     * 好友id
+     * 另一个用友id
      */
-    private Long userFriendId;
+    private Long otherUserId;
 
     /**
      * 根据双方id组成的唯一标识

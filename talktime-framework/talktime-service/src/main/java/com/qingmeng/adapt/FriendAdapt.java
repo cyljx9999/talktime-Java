@@ -57,6 +57,21 @@ public class FriendAdapt {
     }
 
     /**
+     * 构建逆向 好友 记录
+     *
+     * @param sysUserApply 申请好友记录参数
+     * @return {@link SysUserFriend }
+     * @author qingmeng
+     * @createTime: 2023/12/01 16:27:54
+     */
+    public static SysUserFriend buildFriendRecordReverse(SysUserApply sysUserApply){
+        SysUserFriend userFriend = new SysUserFriend();
+        userFriend.setUserId(sysUserApply.getTargetId());
+        userFriend.setFriendId(sysUserApply.getUserId());
+        return userFriend;
+    }
+
+    /**
      * 建立 好友申请记录分页列表 VO
      *
      * @param pageList 页面列表

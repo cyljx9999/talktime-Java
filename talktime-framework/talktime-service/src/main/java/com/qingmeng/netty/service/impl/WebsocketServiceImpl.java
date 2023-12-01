@@ -33,7 +33,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -42,6 +41,7 @@ import java.util.Date;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.Executor;
 
 /**
  * @author 清梦
@@ -86,7 +86,7 @@ public class WebsocketServiceImpl implements WebSocketService {
     private ApplicationEventPublisher applicationEventPublisher;
     @Resource
     @Qualifier("visibleTaskExecutor")
-    private ThreadPoolTaskExecutor threadPoolTaskExecutor;
+    private Executor threadPoolTaskExecutor;
     @Resource
     private UserCache userCache;
 

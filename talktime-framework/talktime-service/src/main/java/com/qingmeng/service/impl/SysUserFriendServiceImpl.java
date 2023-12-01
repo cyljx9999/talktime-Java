@@ -1,9 +1,13 @@
 package com.qingmeng.service.impl;
 
+import com.qingmeng.adapt.FriendAdapt;
 import com.qingmeng.adapt.UserSettingAdapt;
 import com.qingmeng.cache.UserFriendSettingCache;
+import com.qingmeng.dao.SysUserFriendDao;
 import com.qingmeng.dao.SysUserFriendSettingDao;
 import com.qingmeng.dto.user.UserFriendSettingDTO;
+import com.qingmeng.entity.SysUserApply;
+import com.qingmeng.entity.SysUserFriend;
 import com.qingmeng.entity.SysUserFriendSetting;
 import com.qingmeng.service.SysUserFriendService;
 import com.qingmeng.utils.AsserUtils;
@@ -11,6 +15,7 @@ import com.qingmeng.utils.CommonUtils;
 import com.qingmeng.vo.user.UserFriendSettingVO;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.Arrays;
@@ -27,6 +32,8 @@ public class SysUserFriendServiceImpl implements SysUserFriendService {
     private SysUserFriendSettingDao sysUserFriendSettingDao;
     @Resource
     private UserFriendSettingCache userFriendSettingCache;
+    @Resource
+    private SysUserFriendDao sysUserFriendDao;
 
 
     /**
@@ -63,6 +70,28 @@ public class SysUserFriendServiceImpl implements SysUserFriendService {
         userFriendSettingCache.delete(cacheKey);
     }
 
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void saveFriendRecord(SysUserApply sysUserApply) {
+        SysUserFriend saveUserFriend = FriendAdapt.buildFriendRecord(sysUserApply);
+        SysUserFriend saveUserFriendReverse = FriendAdapt.buildFriendRecordReverse(sysUserApply);
+        sysUserFriendDao.saveOrUpdateByCustom(saveUserFriend);
+        sysUserFriendDao.saveOrUpdateByCustom(saveUserFriendReverse);
+    }
+
+    /**
+     * 通过两个ID获取好友
+     *
+     * @param userId   用户 ID
+     * @param targetId 目标 ID
+     * @return {@link SysUserFriend }
+     * @author qingmeng
+     * @createTime: 2023/12/01 16:52:47
+     */
+    @Override
+    public SysUserFriend getFriendByBothId(Long userId, Long targetId) {
+        return sysUserFriendDao.getFriendByBothId(userId, targetId);
+    }
 
     /**
      * 检查合法性

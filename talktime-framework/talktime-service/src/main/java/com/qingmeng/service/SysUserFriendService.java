@@ -1,6 +1,8 @@
 package com.qingmeng.service;
 
 import com.qingmeng.dto.user.UserFriendSettingDTO;
+import com.qingmeng.entity.SysUserApply;
+import com.qingmeng.entity.SysUserFriend;
 import com.qingmeng.vo.user.UserFriendSettingVO;
 
 /**
@@ -33,4 +35,24 @@ public interface SysUserFriendService {
      * @createTime: 2023/11/29 15:15:19
      */
     void alterFriendSetting(Long userId, UserFriendSettingDTO userFriendSettingDTO);
+
+    /**
+     * 保存好友记录
+     *
+     * @param sysUserApply sys 用户申请
+     * @author qingmeng
+     * @createTime: 2023/12/01 16:51:18
+     */
+    void saveFriendRecord(SysUserApply sysUserApply);
+
+    /**
+     * 通过两个ID获取好友
+     *
+     * @param userId   用户 ID
+     * @param targetId 目标 ID
+     * @return {@link SysUserFriend }
+     * @author qingmeng
+     * @createTime: 2023/12/01 16:52:47
+     */
+    SysUserFriend getFriendByBothId(Long userId, Long targetId);
 }

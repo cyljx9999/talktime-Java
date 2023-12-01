@@ -1,6 +1,6 @@
 package com.qingmeng.service;
 
-import com.qingmeng.entity.ChatFriendRoom;
+import java.util.List;
 
 /**
  * <p>
@@ -13,12 +13,11 @@ import com.qingmeng.entity.ChatFriendRoom;
 public interface ChatFriendRoomService{
 
     /**
-     * 按键获取信息
+     * 保存聊天好友室
      *
-     * @param tagKey 标签键
-     * @return {@link ChatFriendRoom }
+     * @param ids IDS
      * @author qingmeng
-     * @createTime: 2023/12/01 09:09:28
+     * @createTime: 2023/12/01 16:36:25
      */
-    ChatFriendRoom getInfoByKey(String tagKey);
+    void saveChatFriendRoom(List<Long> ids);
 }

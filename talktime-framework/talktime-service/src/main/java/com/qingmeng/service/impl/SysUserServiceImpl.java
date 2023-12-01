@@ -200,6 +200,7 @@ public class SysUserServiceImpl implements SysUserService {
      * @createTime: 2023/11/13 07:51:11
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void register(RegisterDTO paramDTO, HttpServletRequest request) {
         // 密码加盐加密
         String encryptPassword = SaSecureUtil.md5BySalt(paramDTO.getPassword(), SystemConstant.MD5_SALT);
@@ -208,14 +209,11 @@ public class SysUserServiceImpl implements SysUserService {
         registerCheck(paramDTO, sysUser);
         boolean save = sysUserDao.save(sysUser);
         if (save) {
-            /*
-            获取ip归属地比较耗时，所以采用异步更新
-            更新采用根据主键更新，需要更新插入成功再发布事件
-             */
+            // 异步更新ip归属地
             applicationEventPublisher.publishEvent(new SysUserRegisterEvent(this, sysUser, request));
-            // 新增用户默认隐私设置表
-            sysUserPrivacySettingService.save(UserSettingAdapt.buildDefalutSysUserPrivacySetting(sysUser.getId()));
         }
+        // 新增用户默认隐私设置表
+        sysUserPrivacySettingService.save(UserSettingAdapt.buildDefalutSysUserPrivacySetting(sysUser.getId()));
     }
 
 
@@ -308,7 +306,7 @@ public class SysUserServiceImpl implements SysUserService {
         userFriendSettingCache.delete(tagKey + ":" + userId);
         sysUserFriendSettingDao.removeByTagKey(tagKey);
         // 删除好友
-        sysUserFriendDao.removeByFriend(friendId);
+        sysUserFriendDao.removeByFriend(userId,friendId);
     }
 
     /**

@@ -1,10 +1,12 @@
 package com.qingmeng.dao;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.qingmeng.entity.SysUserFriend;
 import com.qingmeng.enums.system.LogicDeleteEnum;
 import com.qingmeng.mapper.SysUserFriendMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * <p>
@@ -24,8 +26,9 @@ public class SysUserFriendDao extends ServiceImpl<SysUserFriendMapper, SysUserFr
      * @author qingmeng
      * @createTime: 2023/12/01 09:20:40
      */
-    public void removeByFriend(Long friendId) {
+    public void removeByFriend(Long userId,Long friendId) {
         lambdaUpdate()
+                .eq(SysUserFriend::getUserId, userId)
                 .eq(SysUserFriend::getFriendId, friendId)
                 .set(SysUserFriend::getIsDeleted, LogicDeleteEnum.IS_DELETE.getCode())
                 .update(new SysUserFriend());
@@ -45,5 +48,21 @@ public class SysUserFriendDao extends ServiceImpl<SysUserFriendMapper, SysUserFr
                 .eq(SysUserFriend::getUserId,targetId)
                 .eq(SysUserFriend::getFriendId,userId)
                 .one();
+    }
+
+    /**
+     * 自定义保存或更新
+     *
+     * @param saveUserFriend 保存用户好友
+     * @author qingmeng
+     * @createTime: 2023/12/01 16:18:31
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public void saveOrUpdateByCustom(SysUserFriend saveUserFriend) {
+        LambdaQueryWrapper<SysUserFriend> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(SysUserFriend::getUserId, saveUserFriend.getUserId());
+        wrapper.eq(SysUserFriend::getFriendId, saveUserFriend.getFriendId());
+        wrapper.eq(SysUserFriend::getIsDeleted, LogicDeleteEnum.IS_DELETE.getCode());
+        saveOrUpdate(saveUserFriend);
     }
 }

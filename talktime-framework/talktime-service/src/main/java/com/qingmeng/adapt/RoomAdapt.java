@@ -5,6 +5,8 @@ import com.qingmeng.entity.ChatRoom;
 import com.qingmeng.enums.chat.RoomStatusEnum;
 import com.qingmeng.enums.chat.RoomTypeEnum;
 
+import java.util.List;
+
 /**
  * @author 清梦
  * @version 1.0.0
@@ -43,19 +45,18 @@ public class RoomAdapt {
     /**
      * 建立聊天好友室
      *
-     * @param roomId   房间 ID
-     * @param userId   用户 ID
-     * @param friendId 好友ID
-     * @param key      钥匙
+     * @param roomId 房间 ID
+     * @param ids    IDS
+     * @param key    钥匙
      * @return {@link ChatFriendRoom }
      * @author qingmeng
-     * @createTime: 2023/11/28 17:55:22
+     * @createTime: 2023/12/01 16:48:10
      */
-    public static ChatFriendRoom buildChatFriendRoom(Long roomId,Long userId,Long friendId,String key){
+    public static ChatFriendRoom buildChatFriendRoom(Long roomId, List<Long> ids, String key){
         ChatFriendRoom chatFriendRoom = new ChatFriendRoom();
         chatFriendRoom.setRoomId(roomId);
-        chatFriendRoom.setUserId(userId);
-        chatFriendRoom.setUserFriendId(friendId);
+        chatFriendRoom.setUserId(ids.get(0));
+        chatFriendRoom.setOtherUserId(ids.get(1));
         chatFriendRoom.setRoomKey(key);
         chatFriendRoom.setRoomStatus(RoomStatusEnum.NORMAL.getCode());
         return chatFriendRoom;

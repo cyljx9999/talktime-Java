@@ -1,7 +1,6 @@
 package com.qingmeng.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
-import com.qingmeng.enums.system.LogicDeleteEnum;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -49,11 +48,4 @@ public class ChatRoom implements Serializable {
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private Date updateTime;
 
-    /**
-     * 逻辑删除
-     * @see LogicDeleteEnum
-     */
-    @TableLogic
-    @TableField(fill = FieldFill.INSERT)
-    private Integer isDeleted;
 }

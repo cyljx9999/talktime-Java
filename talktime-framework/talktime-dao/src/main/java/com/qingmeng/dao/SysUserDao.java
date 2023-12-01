@@ -29,8 +29,8 @@ public class SysUserDao extends ServiceImpl<SysUserMapper, SysUser> {
      */
     public SysUser getUserInfoByAccountAndPassword(LoginParamDTO paramDTO) {
         LambdaQueryWrapper<SysUser> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(StrUtil.isNotBlank(paramDTO.getAccount()),SysUser::getUserAccount, paramDTO.getAccount());
-        wrapper.eq(StrUtil.isNotBlank(paramDTO.getPassword()),SysUser::getUserPassword, paramDTO.getPassword());
+        wrapper.eq(StrUtil.isNotBlank(paramDTO.getAccount()), SysUser::getUserAccount, paramDTO.getAccount());
+        wrapper.eq(StrUtil.isNotBlank(paramDTO.getPassword()), SysUser::getUserPassword, paramDTO.getPassword());
         return getOne(wrapper);
     }
 
@@ -44,7 +44,7 @@ public class SysUserDao extends ServiceImpl<SysUserMapper, SysUser> {
      */
     public SysUser getUserInfoByAccountAndPassword(String account) {
         LambdaQueryWrapper<SysUser> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(StrUtil.isNotBlank(account),SysUser::getUserAccount, account);
+        wrapper.eq(StrUtil.isNotBlank(account), SysUser::getUserAccount, account);
         return getOne(wrapper);
     }
 
@@ -58,7 +58,7 @@ public class SysUserDao extends ServiceImpl<SysUserMapper, SysUser> {
      */
     public SysUser getUserInfoByPhone(String phone) {
         LambdaQueryWrapper<SysUser> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(StrUtil.isNotBlank(phone),SysUser::getUserPhone, phone);
+        wrapper.eq(StrUtil.isNotBlank(phone), SysUser::getUserPhone, phone);
         return getOne(wrapper);
     }
 

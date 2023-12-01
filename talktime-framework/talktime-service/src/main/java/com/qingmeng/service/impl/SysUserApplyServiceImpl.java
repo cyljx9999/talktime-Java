@@ -4,17 +4,22 @@ import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.qingmeng.adapt.FriendAdapt;
-import com.qingmeng.adapt.RoomAdapt;
 import com.qingmeng.adapt.UserSettingAdapt;
 import com.qingmeng.cache.UserCache;
-import com.qingmeng.dao.*;
+import com.qingmeng.dao.SysUserApplyDao;
+import com.qingmeng.dao.SysUserFriendSettingDao;
 import com.qingmeng.dto.common.PageDTO;
 import com.qingmeng.dto.user.AgreeApplyFriendDTO;
 import com.qingmeng.dto.user.ApplyFriendDTO;
-import com.qingmeng.entity.*;
+import com.qingmeng.entity.SysUser;
+import com.qingmeng.entity.SysUserApply;
+import com.qingmeng.entity.SysUserFriend;
+import com.qingmeng.entity.SysUserFriendSetting;
 import com.qingmeng.enums.user.ApplyFriendChannelEnum;
 import com.qingmeng.enums.user.ApplyStatusEnum;
+import com.qingmeng.service.ChatFriendRoomService;
 import com.qingmeng.service.SysUserApplyService;
+import com.qingmeng.service.SysUserFriendService;
 import com.qingmeng.strategy.applyFriend.ApplyFriendFactory;
 import com.qingmeng.strategy.applyFriend.ApplyFriendStrategy;
 import com.qingmeng.utils.AsserUtils;
@@ -46,11 +51,9 @@ public class SysUserApplyServiceImpl implements SysUserApplyService {
     @Resource
     private SysUserFriendSettingDao sysUserFriendSettingDao;
     @Resource
-    private SysUserFriendDao sysUserFriendDao;
+    private SysUserFriendService sysUserFriendService;
     @Resource
-    private ChatRoomDao chatRoomDao;
-    @Resource
-    private ChatFriendRoomDao chatFriendRoomDao;
+    private ChatFriendRoomService chatFriendRoomService;
     @Resource
     private UserCache userCache;
 
@@ -89,27 +92,16 @@ public class SysUserApplyServiceImpl implements SysUserApplyService {
         String tagKey = CommonUtils.getKeyBySort(ids);
         // 新增好友设置
         List<SysUserFriendSetting> friendSettingList = UserSettingAdapt.buildDefaultSysUserFriendSetting(ids,tagKey,sysUserApply.getApplyChannel());
-        sysUserFriendSettingDao.saveBatch(friendSettingList);
+        sysUserFriendSettingDao.saveOrUpdateBatchByCustom(friendSettingList);
         // 新增好友记录
-        SysUserFriend saveUserFriend = FriendAdapt.buildFriendRecord(sysUserApply);
-        sysUserFriendDao.save(saveUserFriend);
-        // 新增抽象好友房间记录
-        ChatRoom chatRoom = RoomAdapt.buildDefaultFriendRoom();
-        chatRoomDao.save(chatRoom);
-        // 新增好友房间记录
-        ChatFriendRoom chatFriendRoom = RoomAdapt.buildChatFriendRoom(
-                chatRoom.getId(),
-                sysUserApply.getUserId(),
-                sysUserApply.getTargetId(),
-                tagKey
-        );
-        chatFriendRoomDao.save(chatFriendRoom);
+        sysUserFriendService.saveFriendRecord(sysUserApply);
+        // 创建聊天房间
+        chatFriendRoomService.saveChatFriendRoom(ids);
         // todo 发送默认同意申请信息
 
         // 修改申请记录为已同意
         sysUserApplyDao.agreeApply(agreeApplyFriendDTO.getApplyId());
     }
-
 
 
     /**
@@ -220,7 +212,7 @@ public class SysUserApplyServiceImpl implements SysUserApplyService {
      * @createTime: 2023/12/01 09:40:40
      */
     private void checkFriendExist(SysUserApply sysUserApply) {
-        SysUserFriend sysUserFriend = sysUserFriendDao.getFriendByBothId(sysUserApply.getUserId(), sysUserApply.getTargetId());
+        SysUserFriend sysUserFriend = sysUserFriendService.getFriendByBothId(sysUserApply.getUserId(), sysUserApply.getTargetId());
         AsserUtils.isNotNull(sysUserFriend,"对方已经是您好友，请勿重复操作");
     }
 
