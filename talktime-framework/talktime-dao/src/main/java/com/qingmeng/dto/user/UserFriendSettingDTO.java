@@ -41,6 +41,13 @@ public class UserFriendSettingDTO {
     private Integer friendStatus;
 
     /**
+     * 提醒状态 0关闭 1开启
+     * @see com.qingmeng.enums.chat.RemindStatusEnum
+     */
+    @IntListValue(values = {0, 1})
+    private Integer remindStatus;
+
+    /**
      * 置顶状态 0不置顶 1置顶
      *
      * @see com.qingmeng.enums.chat.MessageTopStatusEnum

@@ -37,6 +37,12 @@ public class UserFriendSettingVO {
     private Integer topStatus;
 
     /**
+     * 提醒状态 0关闭 1开启
+     * @see com.qingmeng.enums.chat.RemindStatusEnum
+     */
+    private Integer remindStatus;
+
+    /**
      * 添加渠道
      */
     private String addChannel;

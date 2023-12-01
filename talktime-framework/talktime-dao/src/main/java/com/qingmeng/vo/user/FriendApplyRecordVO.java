@@ -22,6 +22,11 @@ public class FriendApplyRecordVO {
     private Long applyId;
 
     /**
+     * 申请用户 ID
+     */
+    private Long applyUserId;
+
+    /**
      * 用户头像
      */
     private String userAvatar;

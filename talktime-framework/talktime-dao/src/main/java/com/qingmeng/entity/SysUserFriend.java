@@ -2,7 +2,9 @@ package com.qingmeng.entity;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.qingmeng.enums.system.LogicDeleteEnum;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -44,4 +46,13 @@ public class SysUserFriend implements Serializable {
      */
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private Date updateTime;
+
+    /**
+     * 逻辑删除
+     * @see LogicDeleteEnum
+     */
+    @TableLogic
+    @TableField(fill = FieldFill.INSERT)
+    private Integer isDeleted;
+
 }

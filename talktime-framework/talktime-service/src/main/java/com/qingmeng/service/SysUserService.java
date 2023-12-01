@@ -118,4 +118,13 @@ public interface SysUserService{
      */
     PersonalInfoVO getPersonalInfo(Long userId);
 
+    /**
+     * 删除好友
+     *
+     * @param userId   用户 ID
+     * @param friendId 好友 ID
+     * @author qingmeng
+     * @createTime: 2023/12/01 09:03:23
+     */
+    void deleteFriend(Long userId, Long friendId);
 }

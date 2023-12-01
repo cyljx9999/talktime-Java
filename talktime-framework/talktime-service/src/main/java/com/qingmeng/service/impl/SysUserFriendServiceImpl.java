@@ -39,7 +39,7 @@ public class SysUserFriendServiceImpl implements SysUserFriendService {
      * @createTime: 2023/11/29 14:41:32
      */
     @Override
-    public UserFriendSettingVO getSettingByBothId(Long userId, Long friendId) {
+    public UserFriendSettingVO getFriendSettingByBothId(Long userId, Long friendId) {
         String cacheKey = getCacheKey(userId, friendId);
         SysUserFriendSetting friendSetting = checkLegal(cacheKey);
         return UserSettingAdapt.buildUserFriendSettingVO(friendSetting);
@@ -55,7 +55,7 @@ public class SysUserFriendServiceImpl implements SysUserFriendService {
      * @createTime: 2023/11/29 15:15:19
      */
     @Override
-    public void alterSetting(Long userId, UserFriendSettingDTO userFriendSettingDTO) {
+    public void alterFriendSetting(Long userId, UserFriendSettingDTO userFriendSettingDTO) {
         String cacheKey = getCacheKey(userId, userFriendSettingDTO.getFriendId());
         SysUserFriendSetting friendSetting = checkLegal(cacheKey);
         AsserUtils.equal(friendSetting.getUserId(),userId, "非法请求");

@@ -74,6 +74,7 @@ public class UserSettingAdapt {
         vo.setNickName(sysUserFriendSetting.getNickName());
         vo.setFriendStatus(sysUserFriendSetting.getFriendStatus());
         vo.setTopStatus(sysUserFriendSetting.getTopStatus());
+        vo.setRemindStatus(sysUserFriendSetting.getRemindStatus());
         vo.setAddChannel(sysUserFriendSetting.getAddChannel());
         vo.setCreateTime(sysUserFriendSetting.getCreateTime());
         return vo;

@@ -84,6 +84,7 @@ public class FriendAdapt {
         return applyList.stream().map(apply -> {
             FriendApplyRecordVO applyRecordVO = new FriendApplyRecordVO();
             applyRecordVO.setApplyId(apply.getId());
+            applyRecordVO.setApplyUserId(apply.getUserId());
             applyRecordVO.setApplyChannel(apply.getApplyChannel());
             applyRecordVO.setApplyStatus(apply.getApplyStatus());
             applyRecordVO.setCreateTime(apply.getCreateTime());

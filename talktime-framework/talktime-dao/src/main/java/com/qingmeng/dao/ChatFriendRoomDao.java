@@ -16,4 +16,15 @@ import org.springframework.stereotype.Service;
 @Service
 public class ChatFriendRoomDao extends ServiceImpl<ChatFriendRoomMapper, ChatFriendRoom> {
 
+    /**
+     * 按键获取信息
+     *
+     * @param tagKey 标签键
+     * @return {@link ChatFriendRoom }
+     * @author qingmeng
+     * @createTime: 2023/12/01 09:10:01
+     */
+    public ChatFriendRoom getInfoByKey(String tagKey) {
+        return lambdaQuery().eq(ChatFriendRoom::getRoomKey,tagKey).one();
+    }
 }

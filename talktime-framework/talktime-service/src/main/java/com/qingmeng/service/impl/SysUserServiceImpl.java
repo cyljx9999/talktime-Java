@@ -12,12 +12,14 @@ import com.qingmeng.adapt.LoginAboutAdapt;
 import com.qingmeng.adapt.UserInfoAdapt;
 import com.qingmeng.adapt.UserSettingAdapt;
 import com.qingmeng.cache.UserCache;
+import com.qingmeng.cache.UserFriendSettingCache;
 import com.qingmeng.constant.RedisConstant;
 import com.qingmeng.constant.SystemConstant;
-import com.qingmeng.dao.SysUserDao;
+import com.qingmeng.dao.*;
 import com.qingmeng.dto.login.LoginParamDTO;
 import com.qingmeng.dto.login.RegisterDTO;
 import com.qingmeng.dto.user.AlterAccountDTO;
+import com.qingmeng.entity.ChatFriendRoom;
 import com.qingmeng.entity.SysUser;
 import com.qingmeng.enums.user.LoginMethodEnum;
 import com.qingmeng.event.SysUserRegisterEvent;
@@ -26,10 +28,7 @@ import com.qingmeng.service.SysUserPrivacySettingService;
 import com.qingmeng.service.SysUserService;
 import com.qingmeng.strategy.login.LoginFactory;
 import com.qingmeng.strategy.login.LoginStrategy;
-import com.qingmeng.utils.AsserUtils;
-import com.qingmeng.utils.IdUtils;
-import com.qingmeng.utils.RedisUtils;
-import com.qingmeng.utils.RegexUtils;
+import com.qingmeng.utils.*;
 import com.qingmeng.vo.login.CaptchaVO;
 import com.qingmeng.vo.login.TokenInfoVO;
 import com.qingmeng.vo.user.PersonalInfoVO;
@@ -46,6 +45,7 @@ import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -79,6 +79,16 @@ public class SysUserServiceImpl implements SysUserService {
     private UserCache userCache;
     @Resource
     private SysUserPrivacySettingService sysUserPrivacySettingService;
+    @Resource
+    private SysUserFriendDao sysUserFriendDao;
+    @Resource
+    private UserFriendSettingCache userFriendSettingCache;
+    @Resource
+    private SysUserFriendSettingDao sysUserFriendSettingDao;
+    @Resource
+    private ChatRoomDao chatRoomDao;
+    @Resource
+    private ChatFriendRoomDao chatFriendRoomDao;
 
     /**
      * 验证码类型
@@ -142,7 +152,7 @@ public class SysUserServiceImpl implements SysUserService {
         }
         //输出流转换为Base64
         String encode = "data:image/jpeg;base64," + Base64.encode(os.toByteArray());
-        return LoginAboutAdapt.buildCaptchaVO(encode,uuid);
+        return LoginAboutAdapt.buildCaptchaVO(encode, uuid);
     }
 
     /**
@@ -154,7 +164,7 @@ public class SysUserServiceImpl implements SysUserService {
      */
     @Override
     public void sendPhone(String phone) {
-        AsserUtils.isTrue(RegexUtils.checkPhone(phone),"手机号格式错误");
+        AsserUtils.isTrue(RegexUtils.checkPhone(phone), "手机号格式错误");
         StaticCredentialProvider provider = StaticCredentialProvider.create(Credential.builder()
                 .accessKeyId(aliAccessKeyId)
                 .accessKeySecret(aliAccessKeySecret)
@@ -170,8 +180,8 @@ public class SysUserServiceImpl implements SysUserService {
                 .build();
         Integer phoneCode = Integer.parseInt(RandomUtil.randomNumbers(4));
         String key = RedisConstant.PHONE_CODE_KEY + phone;
-        RedisUtils.set(key, String.valueOf(phoneCode),RedisConstant.PHONE_CODE_EXPIRE, TimeUnit.MINUTES);
-        String code = "{\"code\":\""+phoneCode+"\"}";
+        RedisUtils.set(key, String.valueOf(phoneCode), RedisConstant.PHONE_CODE_EXPIRE, TimeUnit.MINUTES);
+        String code = "{\"code\":\"" + phoneCode + "\"}";
         SendSmsRequest sendSmsRequest = SendSmsRequest.builder()
                 .signName("阿里云短信测试")
                 .templateCode("SMS_154950909")
@@ -185,7 +195,7 @@ public class SysUserServiceImpl implements SysUserService {
      * 注册
      *
      * @param paramDTO 参数对象
-     * @param request 请求
+     * @param request  请求
      * @author qingmeng
      * @createTime: 2023/11/13 07:51:11
      */
@@ -197,12 +207,12 @@ public class SysUserServiceImpl implements SysUserService {
         SysUser sysUser = LoginAboutAdapt.buildRegister(paramDTO);
         registerCheck(paramDTO, sysUser);
         boolean save = sysUserDao.save(sysUser);
-        if (save){
+        if (save) {
             /*
             获取ip归属地比较耗时，所以采用异步更新
             更新采用根据主键更新，需要更新插入成功再发布事件
              */
-            applicationEventPublisher.publishEvent(new SysUserRegisterEvent(this,sysUser,request));
+            applicationEventPublisher.publishEvent(new SysUserRegisterEvent(this, sysUser, request));
             // 新增用户默认隐私设置表
             sysUserPrivacySettingService.save(UserSettingAdapt.buildDefalutSysUserPrivacySetting(sysUser.getId()));
         }
@@ -276,6 +286,30 @@ public class SysUserServiceImpl implements SysUserService {
         return UserInfoAdapt.buildPersonalInfoVO(sysUser);
     }
 
+    /**
+     * 删除好友
+     *
+     * @param userId   用户 ID
+     * @param friendId 好友 ID
+     * @author qingmeng
+     * @createTime: 2023/12/01 09:03:23
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteFriend(Long userId, Long friendId) {
+        SysUser sysUser = userCache.get(friendId);
+        AsserUtils.isNull(sysUser, "无效的friendId");
+        // 获取房间id
+        String tagKey = CommonUtils.getKeyBySort(Arrays.asList(userId, friendId));
+        ChatFriendRoom chatFriendRoom = chatFriendRoomDao.getInfoByKey(tagKey);
+        // 删除抽象房间信息
+        chatRoomDao.removeById(chatFriendRoom.getRoomId());
+        // 删除好友设置
+        userFriendSettingCache.delete(tagKey + ":" + userId);
+        sysUserFriendSettingDao.removeByTagKey(tagKey);
+        // 删除好友
+        sysUserFriendDao.removeByFriend(friendId);
+    }
 
     /**
      * 更改帐户
@@ -304,9 +338,9 @@ public class SysUserServiceImpl implements SysUserService {
      */
     private void registerCheck(RegisterDTO paramDTO, SysUser sysUser) {
         SysUser userByAccount = sysUserDao.getUserInfoByAccountAndPassword(sysUser.getUserAccount());
-        AsserUtils.isNotNull(userByAccount,"账号重复");
+        AsserUtils.isNotNull(userByAccount, "账号重复");
         SysUser userByPhone = sysUserDao.getUserInfoByPhone(paramDTO.getPhone());
-        AsserUtils.isNotNull(userByPhone,"手机号重复");
+        AsserUtils.isNotNull(userByPhone, "手机号重复");
     }
 
 }

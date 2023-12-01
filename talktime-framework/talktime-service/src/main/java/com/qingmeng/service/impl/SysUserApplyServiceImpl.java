@@ -84,6 +84,9 @@ public class SysUserApplyServiceImpl implements SysUserApplyService {
         AsserUtils.equal(sysUserApply.getApplyStatus(),ApplyStatusEnum.APPLYING.getCode(), "非法申请状态");
         List<Long> ids = Arrays.asList(sysUserApply.getUserId(), sysUserApply.getTargetId());
         String tagKey = CommonUtils.getKeyBySort(ids);
+        // 判断好友是否已存在
+        SysUserFriend sysUserFriend = sysUserFriendDao.getFriendByBothId(sysUserApply.getUserId(), sysUserApply.getTargetId());
+        AsserUtils.isNotNull(sysUserFriend,"对方已经是您好友，请勿重复操作");
         // 新增好友设置
         List<SysUserFriendSetting> friendSettingList = UserSettingAdapt.buildDefaultSysUserFriendSetting(ids,tagKey,sysUserApply.getApplyChannel());
         sysUserFriendSettingDao.saveBatch(friendSettingList);

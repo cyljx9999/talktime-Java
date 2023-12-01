@@ -22,7 +22,7 @@ public interface SysUserFriendService {
      * @author qingmeng
      * @createTime: 2023/11/29 14:41:26
      */
-    UserFriendSettingVO getSettingByBothId(Long userId, Long friendId);
+    UserFriendSettingVO getFriendSettingByBothId(Long userId, Long friendId);
 
     /**
      * 更改设置
@@ -32,5 +32,5 @@ public interface SysUserFriendService {
      * @author qingmeng
      * @createTime: 2023/11/29 15:15:19
      */
-    void alterSetting(Long userId, UserFriendSettingDTO userFriendSettingDTO);
+    void alterFriendSetting(Long userId, UserFriendSettingDTO userFriendSettingDTO);
 }
