@@ -41,4 +41,19 @@ public class SystemConstant {
      * 最大重试次数
      */
     public static final int MAX_RETRY_COUNT = 3;
+
+    /**
+     * 秒
+     */
+    public static final int SECOND = 60;
+
+    /**
+     * 分钟
+     */
+    public static final int MINUTE = 60 * 60;
+
+    /**
+     * 日
+     */
+    public static final int DAY = 24 * 60 * 60;
 }

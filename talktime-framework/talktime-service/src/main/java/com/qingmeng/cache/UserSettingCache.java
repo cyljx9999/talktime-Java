@@ -1,6 +1,7 @@
 package com.qingmeng.cache;
 
 import com.qingmeng.constant.RedisConstant;
+import com.qingmeng.constant.SystemConstant;
 import com.qingmeng.dao.SysUserPrivacySettingDao;
 import com.qingmeng.entity.SysUserPrivacySetting;
 import org.springframework.stereotype.Component;
@@ -42,7 +43,7 @@ public class UserSettingCache extends AbstractRedisStringCache<Long, SysUserPriv
      */
     @Override
     protected Long getExpireSeconds() {
-        return RedisConstant.USER_PRIVACY_SETTING_EXPIRE * 24 * 60 * 60;
+        return RedisConstant.USER_PRIVACY_SETTING_EXPIRE * SystemConstant.DAY;
     }
 
     /**

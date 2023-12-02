@@ -30,7 +30,7 @@ public class RedisConstant {
      * 用户缓存key和过期时间
      */
     public static final String USER_INFO_KEY = "userinfo:";
-    public static final long USER_INFO_EXPIRE = 5L;
+    public static final long USER_INFO_EXPIRE = 30L;
 
     /**
      * 在线用户列表
@@ -47,7 +47,7 @@ public class RedisConstant {
      */
     public static final String ARTICLE_KEY = "article:";
     public static final String ARTICLE_ALL_KEY = "articleALL";
-    public static final long ARTICLE_EXPIRE = 24L;
+    public static final long ARTICLE_EXPIRE = 7L;
 
     /**
      * 用户隐私设置缓存key和过期时间

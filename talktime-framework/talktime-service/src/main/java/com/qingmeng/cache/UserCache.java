@@ -1,6 +1,7 @@
 package com.qingmeng.cache;
 
 import com.qingmeng.constant.RedisConstant;
+import com.qingmeng.constant.SystemConstant;
 import com.qingmeng.dao.SysUserDao;
 import com.qingmeng.entity.SysUser;
 import com.qingmeng.utils.RedisUtils;
@@ -44,7 +45,7 @@ public class UserCache extends AbstractRedisStringCache<Long, SysUser> {
      */
     @Override
     protected Long getExpireSeconds() {
-        return RedisConstant.USER_INFO_EXPIRE * 60L;
+        return RedisConstant.USER_INFO_EXPIRE * SystemConstant.MINUTE;
     }
 
     /**

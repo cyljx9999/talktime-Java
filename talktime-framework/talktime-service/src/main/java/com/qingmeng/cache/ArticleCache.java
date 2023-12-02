@@ -1,6 +1,7 @@
 package com.qingmeng.cache;
 
 import com.qingmeng.constant.RedisConstant;
+import com.qingmeng.constant.SystemConstant;
 import com.qingmeng.dao.SysArticleDao;
 import com.qingmeng.entity.SysArticle;
 import com.qingmeng.utils.JsonUtils;
@@ -46,7 +47,7 @@ public class ArticleCache extends AbstractRedisStringCache<Long, SysArticle> {
      */
     @Override
     protected Long getExpireSeconds() {
-        return RedisConstant.ARTICLE_EXPIRE * 60 * 60;
+        return RedisConstant.ARTICLE_EXPIRE * SystemConstant.DAY;
     }
 
     /**
