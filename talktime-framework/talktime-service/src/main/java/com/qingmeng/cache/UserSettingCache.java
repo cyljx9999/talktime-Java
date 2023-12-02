@@ -6,6 +6,7 @@ import com.qingmeng.entity.SysUserPrivacySetting;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -52,7 +53,11 @@ public class UserSettingCache extends AbstractRedisStringCache<Long, SysUserPriv
      */
     @Override
     protected Map<Long, SysUserPrivacySetting> load(List<Long> userIds) {
-        List<SysUserPrivacySetting> list = sysUserPrivacySettingDao.listByIds(userIds);
+        List<SysUserPrivacySetting> list = new ArrayList<>();
+        userIds.forEach(userId -> {
+            SysUserPrivacySetting userPrivacySetting = sysUserPrivacySettingDao.lambdaQuery().eq(SysUserPrivacySetting::getUserId, userId).one();
+            list.add(userPrivacySetting);
+        });
         return list.stream().collect(Collectors.toMap(SysUserPrivacySetting::getUserId, Function.identity()));
     }
 }

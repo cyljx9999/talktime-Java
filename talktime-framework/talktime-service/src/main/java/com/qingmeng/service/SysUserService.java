@@ -3,10 +3,14 @@ package com.qingmeng.service;
 import com.qingmeng.dto.login.LoginParamDTO;
 import com.qingmeng.dto.login.RegisterDTO;
 import com.qingmeng.dto.user.AlterAccountDTO;
+import com.qingmeng.dto.user.AlterPersonalInfoDTO;
+import com.qingmeng.dto.user.PersonalPrivacySettingDTO;
 import com.qingmeng.entity.SysUser;
 import com.qingmeng.vo.login.CaptchaVO;
 import com.qingmeng.vo.login.TokenInfoVO;
+import com.qingmeng.vo.user.ClickFriendInfoVo;
 import com.qingmeng.vo.user.PersonalInfoVO;
+import com.qingmeng.vo.user.PersonalPrivacySettingVO;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -109,6 +113,16 @@ public interface SysUserService{
     void alterAccount(Long userId,AlterAccountDTO alterAccountDTO);
 
     /**
+     * 更改个人信息
+     *
+     * @param userId                      用户 ID
+     * @param alterAccountPersonalInfoDTO 更改帐户个人信息 DTO
+     * @author qingmeng
+     * @createTime: 2023/12/02 10:39:55
+     */
+    void alterPersonalInfo(Long userId, AlterPersonalInfoDTO alterAccountPersonalInfoDTO);
+
+    /**
      * 获取个人信息
      *
      * @param userId 用户 ID
@@ -127,4 +141,35 @@ public interface SysUserService{
      * @createTime: 2023/12/01 09:03:23
      */
     void deleteFriend(Long userId, Long friendId);
+
+    /**
+     * 点击获取好友信息
+     *
+     * @param userId   用户 ID
+     * @param friendId 好友ID
+     * @return {@link ClickFriendInfoVo }
+     * @author qingmeng
+     * @createTime: 2023/12/02 09:52:10
+     */
+    ClickFriendInfoVo getFriendInfoByClick(Long userId, Long friendId);
+
+    /**
+     * 获取个人隐私设置
+     *
+     * @param userId 用户 ID
+     * @return {@link PersonalPrivacySettingVO }
+     * @author qingmeng
+     * @createTime: 2023/12/02 10:49:28
+     */
+    PersonalPrivacySettingVO getPersonalPrivacySetting(Long userId);
+
+    /**
+     * 更改个人隐私设置
+     *
+     * @param userId                    用户 ID
+     * @param personalPrivacySettingDTO 个人隐私设置 DTO
+     * @author qingmeng
+     * @createTime: 2023/12/02 11:31:39
+     */
+    void alterPersonalPrivacySetting(Long userId, PersonalPrivacySettingDTO personalPrivacySettingDTO);
 }

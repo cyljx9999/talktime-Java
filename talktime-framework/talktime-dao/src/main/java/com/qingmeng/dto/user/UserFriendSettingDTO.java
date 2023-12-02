@@ -24,12 +24,13 @@ public class UserFriendSettingDTO {
     /**
      * 好友ID
      */
+    @NotNull
     private Long friendId;
 
     /**
      * 昵称
      */
-    @Length(max = 20)
+    @Length(min = 1,max = 10)
     private String nickName;
 
     /**

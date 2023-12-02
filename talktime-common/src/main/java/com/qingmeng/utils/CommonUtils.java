@@ -1,5 +1,6 @@
 package com.qingmeng.utils;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -22,6 +23,19 @@ public class CommonUtils {
      */
     public static String getKeyBySort(List<Long> ids){
         return ids.stream().sorted().map(Objects::toString).collect(Collectors.joining("-"));
+    }
+
+    /**
+     * 获取好友设置缓存密钥
+     *
+     * @param userId   用户 ID
+     * @param friendId 好友ID
+     * @return {@link String }
+     * @author qingmeng
+     * @createTime: 2023/12/02 10:00:04
+     */
+    public static String getFriendSettingCacheKey(Long userId, Long friendId) {
+        return getKeyBySort(Arrays.asList(userId, friendId)) + ":" + userId;
     }
 
 }

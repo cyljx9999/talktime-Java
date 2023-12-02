@@ -13,12 +13,10 @@ import com.qingmeng.service.SysUserFriendService;
 import com.qingmeng.utils.AsserUtils;
 import com.qingmeng.utils.CommonUtils;
 import com.qingmeng.vo.user.UserFriendSettingVO;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.Arrays;
 
 /**
  * @author 清梦
@@ -47,7 +45,7 @@ public class SysUserFriendServiceImpl implements SysUserFriendService {
      */
     @Override
     public UserFriendSettingVO getFriendSettingByBothId(Long userId, Long friendId) {
-        String cacheKey = getCacheKey(userId, friendId);
+        String cacheKey = CommonUtils.getFriendSettingCacheKey(userId, friendId);
         SysUserFriendSetting friendSetting = checkLegal(cacheKey);
         return UserSettingAdapt.buildUserFriendSettingVO(friendSetting);
     }
@@ -62,8 +60,9 @@ public class SysUserFriendServiceImpl implements SysUserFriendService {
      * @createTime: 2023/11/29 15:15:19
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void alterFriendSetting(Long userId, UserFriendSettingDTO userFriendSettingDTO) {
-        String cacheKey = getCacheKey(userId, userFriendSettingDTO.getFriendId());
+        String cacheKey = CommonUtils.getFriendSettingCacheKey(userId, userFriendSettingDTO.getFriendId());
         SysUserFriendSetting friendSetting = checkLegal(cacheKey);
         AsserUtils.equal(friendSetting.getUserId(),userId, "非法请求");
         sysUserFriendSettingDao.alterSetting(userFriendSettingDTO);
@@ -105,19 +104,5 @@ public class SysUserFriendServiceImpl implements SysUserFriendService {
         SysUserFriendSetting friendSetting = userFriendSettingCache.get(cacheKey);
         AsserUtils.isNull(friendSetting, "未找到好友设置");
         return friendSetting;
-    }
-
-    /**
-     * 获取缓存密钥
-     *
-     * @param userId   用户 ID
-     * @param friendId 好友ID
-     * @return {@link String }
-     * @author qingmeng
-     * @createTime: 2023/11/29 15:31:39
-     */
-    @NotNull
-    private static String getCacheKey(Long userId, Long friendId) {
-        return CommonUtils.getKeyBySort(Arrays.asList(userId, friendId)) + ":" + userId;
     }
 }

@@ -17,8 +17,6 @@ import com.qingmeng.utils.CommonUtils;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * @author 清梦
@@ -48,12 +46,10 @@ public class ApplyByCardStrategy extends AbstractApplyFriendStrategy{
     @Override
     protected String createChannelInfo(ApplyFriendDTO applyFriendDTO) {
         SysUser sysUser = userCache.get(applyFriendDTO.getShareCardByUserId());
-        // 获取申请和被申请的用户的id
-        List<Long> ids = Arrays.asList(applyFriendDTO.getUserId(), applyFriendDTO.getShareCardByUserId());
-        // 根据id排序生成缓存key
-        String cacheKey = CommonUtils.getKeyBySort(ids) + ":" + applyFriendDTO.getUserId();
         // 根据缓存key获取用户好友设置
-        SysUserFriendSetting sysUserFriendSetting = userFriendSettingCache.get(cacheKey);
+        SysUserFriendSetting sysUserFriendSetting = userFriendSettingCache.get(
+                CommonUtils.getFriendSettingCacheKey(applyFriendDTO.getUserId(), applyFriendDTO.getShareCardByUserId())
+        );
         // 获取用户昵称
         String nickName = sysUserFriendSetting.getNickName();
         // 如果昵称不为空，则使用昵称，否则使用用户名

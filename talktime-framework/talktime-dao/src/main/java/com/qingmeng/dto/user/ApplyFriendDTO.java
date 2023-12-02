@@ -6,6 +6,7 @@ import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 
 /**
  * @author 清梦
@@ -19,6 +20,7 @@ public class ApplyFriendDTO {
     /**
      * 用户id
      */
+    @Null
     private Long userId;
 
     /**

@@ -15,7 +15,7 @@ import javax.validation.constraints.NotBlank;
 public class AlterAccountDTO {
 
     /**
-     * 用户帐户
+     * 用户账户
      */
     @NotBlank
     @Length(min = 4, max = 10,message = "账号长度为4-10位")

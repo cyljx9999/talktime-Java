@@ -5,6 +5,7 @@ import com.qingmeng.entity.SysUserPrivacySetting;
 import com.qingmeng.enums.chat.MessageTopStatusEnum;
 import com.qingmeng.enums.user.CloseOrOpenStatusEnum;
 import com.qingmeng.enums.user.FriendStausEnum;
+import com.qingmeng.vo.user.PersonalPrivacySettingVO;
 import com.qingmeng.vo.user.UserFriendSettingVO;
 
 import java.util.List;
@@ -77,6 +78,25 @@ public class UserSettingAdapt {
         vo.setRemindStatus(sysUserFriendSetting.getRemindStatus());
         vo.setAddChannel(sysUserFriendSetting.getAddChannel());
         vo.setCreateTime(sysUserFriendSetting.getCreateTime());
+        return vo;
+    }
+
+    /**
+     * 建立个人隐私设置 VO
+     *
+     * @param setting 设置
+     * @return {@link PersonalPrivacySettingVO }
+     * @author qingmeng
+     * @createTime: 2023/12/02 10:52:34
+     */
+    public static PersonalPrivacySettingVO buildPersonalPrivacySettingVO(SysUserPrivacySetting setting){
+        PersonalPrivacySettingVO vo = new PersonalPrivacySettingVO();
+        vo.setUserId(setting.getUserId());
+        vo.setAddByAccount(setting.getAddByAccount());
+        vo.setAddByPhone(setting.getAddByPhone());
+        vo.setAddByGroup(setting.getAddByGroup());
+        vo.setAddByCard(setting.getAddByCard());
+        vo.setAddByQrcode(setting.getAddByQrcode());
         return vo;
     }
 

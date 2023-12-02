@@ -13,25 +13,31 @@ import com.qingmeng.adapt.UserInfoAdapt;
 import com.qingmeng.adapt.UserSettingAdapt;
 import com.qingmeng.cache.UserCache;
 import com.qingmeng.cache.UserFriendSettingCache;
+import com.qingmeng.cache.UserSettingCache;
 import com.qingmeng.constant.RedisConstant;
 import com.qingmeng.constant.SystemConstant;
 import com.qingmeng.dao.*;
 import com.qingmeng.dto.login.LoginParamDTO;
 import com.qingmeng.dto.login.RegisterDTO;
 import com.qingmeng.dto.user.AlterAccountDTO;
+import com.qingmeng.dto.user.AlterPersonalInfoDTO;
+import com.qingmeng.dto.user.PersonalPrivacySettingDTO;
 import com.qingmeng.entity.ChatFriendRoom;
 import com.qingmeng.entity.SysUser;
+import com.qingmeng.entity.SysUserFriendSetting;
+import com.qingmeng.entity.SysUserPrivacySetting;
 import com.qingmeng.enums.user.LoginMethodEnum;
 import com.qingmeng.event.SysUserRegisterEvent;
 import com.qingmeng.exception.TalkTimeException;
-import com.qingmeng.service.SysUserPrivacySettingService;
 import com.qingmeng.service.SysUserService;
 import com.qingmeng.strategy.login.LoginFactory;
 import com.qingmeng.strategy.login.LoginStrategy;
 import com.qingmeng.utils.*;
 import com.qingmeng.vo.login.CaptchaVO;
 import com.qingmeng.vo.login.TokenInfoVO;
+import com.qingmeng.vo.user.ClickFriendInfoVo;
 import com.qingmeng.vo.user.PersonalInfoVO;
+import com.qingmeng.vo.user.PersonalPrivacySettingVO;
 import darabonba.core.client.ClientOverrideConfiguration;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
@@ -45,6 +51,7 @@ import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -78,7 +85,7 @@ public class SysUserServiceImpl implements SysUserService {
     @Resource
     private UserCache userCache;
     @Resource
-    private SysUserPrivacySettingService sysUserPrivacySettingService;
+    private SysUserPrivacySettingDao sysUserPrivacySettingDao;
     @Resource
     private SysUserFriendDao sysUserFriendDao;
     @Resource
@@ -89,6 +96,8 @@ public class SysUserServiceImpl implements SysUserService {
     private ChatRoomDao chatRoomDao;
     @Resource
     private ChatFriendRoomDao chatFriendRoomDao;
+    @Resource
+    private UserSettingCache userSettingCache;
 
     /**
      * 验证码类型
@@ -213,7 +222,7 @@ public class SysUserServiceImpl implements SysUserService {
             applicationEventPublisher.publishEvent(new SysUserRegisterEvent(this, sysUser, request));
         }
         // 新增用户默认隐私设置表
-        sysUserPrivacySettingService.save(UserSettingAdapt.buildDefalutSysUserPrivacySetting(sysUser.getId()));
+        sysUserPrivacySettingDao.save(UserSettingAdapt.buildDefalutSysUserPrivacySetting(sysUser.getId()));
     }
 
 
@@ -267,7 +276,7 @@ public class SysUserServiceImpl implements SysUserService {
      */
     @Override
     public SysUser getUserInfoByAccount(LoginParamDTO loginParamDTO) {
-        return sysUserDao.getUserInfoByAccountAndPassword(loginParamDTO);
+        return sysUserDao.getUserInfoByAccount(loginParamDTO);
     }
 
     /**
@@ -310,10 +319,59 @@ public class SysUserServiceImpl implements SysUserService {
     }
 
     /**
-     * 更改帐户
+     * 点击获取好友信息
+     *
+     * @param userId   用户 ID
+     * @param friendId 好友ID
+     * @return {@link ClickFriendInfoVo }
+     * @author qingmeng
+     * @createTime: 2023/12/02 09:52:10
+     */
+    @Override
+    public ClickFriendInfoVo getFriendInfoByClick(Long userId, Long friendId) {
+        // 获取我对当前好友设置的数据
+        String cacheKey = CommonUtils.getFriendSettingCacheKey(userId, friendId);
+        SysUserFriendSetting sysUserFriendSetting = userFriendSettingCache.get(cacheKey);
+        // 获取好友信息
+        SysUser sysUser = userCache.get(friendId);
+        // todo 查询共同群聊
+        return UserInfoAdapt.buildClickFriendInfoVo(sysUserFriendSetting,sysUser,new ArrayList<>());
+    }
+
+    /**
+     * 获取个人隐私设置
+     *
+     * @param userId 用户 ID
+     * @return {@link PersonalPrivacySettingVO }
+     * @author qingmeng
+     * @createTime: 2023/12/02 10:49:28
+     */
+    @Override
+    public PersonalPrivacySettingVO getPersonalPrivacySetting(Long userId) {
+        SysUserPrivacySetting setting = userSettingCache.get(userId);
+        return UserSettingAdapt.buildPersonalPrivacySettingVO(setting);
+    }
+
+    /**
+     * 更改个人隐私设置
+     *
+     * @param userId                    用户 ID
+     * @param personalPrivacySettingDTO 个人隐私设置 DTO
+     * @author qingmeng
+     * @createTime: 2023/12/02 11:31:39
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void alterPersonalPrivacySetting(Long userId, PersonalPrivacySettingDTO personalPrivacySettingDTO) {
+        sysUserPrivacySettingDao.alterPersonalPrivacySetting(userId, personalPrivacySettingDTO);
+        userSettingCache.delete(userId);
+    }
+
+    /**
+     * 更改账户
      *
      * @param userId          用户 ID
-     * @param alterAccountDTO 更改帐户 DTO
+     * @param alterAccountDTO 更改账户 DTO
      * @author qingmeng
      * @createTime: 2023/11/23 21:45:01
      */
@@ -322,7 +380,22 @@ public class SysUserServiceImpl implements SysUserService {
     public void alterAccount(Long userId, AlterAccountDTO alterAccountDTO) {
         SysUser sysUser = userCache.get(userId);
         AsserUtils.isTrue(sysUser.getAlterAccountCount() == 0, "帐户修改次数已用完");
-        sysUserDao.alterAccount(userId);
+        sysUserDao.alterAccount(userId,sysUser.getAlterAccountCount() - 1,alterAccountDTO.getUserAccount());
+        userCache.delete(userId);
+    }
+
+    /**
+     * 更改个人信息
+     *
+     * @param userId                      用户 ID
+     * @param alterAccountPersonalInfoDTO 更改账户个人信息 DTO
+     * @author qingmeng
+     * @createTime: 2023/12/02 10:39:55
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void alterPersonalInfo(Long userId, AlterPersonalInfoDTO alterAccountPersonalInfoDTO) {
+        sysUserDao.alterPersonalInfo(userId,alterAccountPersonalInfoDTO);
         userCache.delete(userId);
     }
 
@@ -335,7 +408,7 @@ public class SysUserServiceImpl implements SysUserService {
      * @createTime: 2023/11/22 07:58:31
      */
     private void registerCheck(RegisterDTO paramDTO, SysUser sysUser) {
-        SysUser userByAccount = sysUserDao.getUserInfoByAccountAndPassword(sysUser.getUserAccount());
+        SysUser userByAccount = sysUserDao.getUserInfoByAccount(sysUser.getUserAccount());
         AsserUtils.isNotNull(userByAccount, "账号重复");
         SysUser userByPhone = sysUserDao.getUserInfoByPhone(paramDTO.getPhone());
         AsserUtils.isNotNull(userByPhone, "手机号重复");

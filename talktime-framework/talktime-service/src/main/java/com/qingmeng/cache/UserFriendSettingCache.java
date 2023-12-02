@@ -6,6 +6,7 @@ import com.qingmeng.entity.SysUserFriendSetting;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -25,7 +26,7 @@ public class UserFriendSettingCache extends AbstractRedisStringCache<String, Sys
 
     /**
      * 根据输入对象获取缓存的键。
-     *
+     *  (这个的key的形式是) 1-2:1 1-2为双方好友根据排序组成的tagKey 1表示本人id
      * @param key 输入对象
      * @return 缓存键
      */
@@ -46,13 +47,21 @@ public class UserFriendSettingCache extends AbstractRedisStringCache<String, Sys
 
     /**
      * 批量加载缓存数据。
-     *
+     *  (这个的key的形式是) 1-2:1 1-2为双方好友根据排序组成的tagKey 1表示本人id
      * @param keys 批量请求列表
      * @return 加载的缓存数据映射
      */
     @Override
     protected Map<String, SysUserFriendSetting> load(List<String> keys) {
-        List<SysUserFriendSetting> list = sysUserFriendSettingDao.listByIds(keys);
-        return list.stream().collect(Collectors.toMap(SysUserFriendSetting::getTagKey, Function.identity()));
+        List<SysUserFriendSetting> list = new ArrayList<>();
+        keys.forEach(key -> {
+            String[] split = key.split(":");
+            SysUserFriendSetting userFriendSetting = sysUserFriendSettingDao.lambdaQuery()
+                    .eq(SysUserFriendSetting::getTagKey, split[0])
+                    .eq(SysUserFriendSetting::getUserId, split[1])
+                    .one();
+            list.add(userFriendSetting);
+        });
+        return list.stream().collect(Collectors.toMap(item -> item.getTagKey() + ":" + item.getUserId(), Function.identity()));
     }
 }
