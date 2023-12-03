@@ -2,6 +2,7 @@ package com.qingmeng.service.impl;
 
 import com.qingmeng.adapt.FriendAdapt;
 import com.qingmeng.adapt.UserSettingAdapt;
+import com.qingmeng.cache.UserCache;
 import com.qingmeng.cache.UserFriendSettingCache;
 import com.qingmeng.dao.SysUserFriendDao;
 import com.qingmeng.dao.SysUserFriendSettingDao;
@@ -12,11 +13,13 @@ import com.qingmeng.entity.SysUserFriendSetting;
 import com.qingmeng.service.SysUserFriendService;
 import com.qingmeng.utils.AsserUtils;
 import com.qingmeng.utils.CommonUtils;
+import com.qingmeng.vo.user.FriendTypeVO;
 import com.qingmeng.vo.user.UserFriendSettingVO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * @author 清梦
@@ -32,6 +35,8 @@ public class SysUserFriendServiceImpl implements SysUserFriendService {
     private UserFriendSettingCache userFriendSettingCache;
     @Resource
     private SysUserFriendDao sysUserFriendDao;
+    @Resource
+    private UserCache userCache;
 
 
     /**
@@ -67,6 +72,7 @@ public class SysUserFriendServiceImpl implements SysUserFriendService {
         AsserUtils.equal(friendSetting.getUserId(),userId, "非法请求");
         sysUserFriendSettingDao.alterSetting(userFriendSettingDTO);
         userFriendSettingCache.delete(cacheKey);
+        userCache.evictFriendList(userId);
     }
 
     @Override
@@ -91,6 +97,21 @@ public class SysUserFriendServiceImpl implements SysUserFriendService {
     public SysUserFriend getFriendByBothId(Long userId, Long targetId) {
         return sysUserFriendDao.getFriendByBothId(userId, targetId);
     }
+
+    /**
+     * 获取好友列表
+     *
+     * @param userId 用户 ID
+     * @return {@link List }<{@link FriendTypeVO }>
+     * @author qingmeng
+     * @createTime: 2023/12/03 10:43:34
+     */
+    @Override
+    public List<FriendTypeVO> getFriendList(Long userId) {
+        return userCache.getFriendList(userId);
+    }
+
+
 
     /**
      * 检查合法性

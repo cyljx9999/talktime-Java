@@ -1,6 +1,7 @@
 package com.qingmeng.service.impl;
 
 import cn.dev33.satoken.secure.SaSecureUtil;
+import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.codec.Base64;
 import cn.hutool.core.util.RandomUtil;
 import com.aliyun.auth.credentials.Credential;
@@ -35,9 +36,7 @@ import com.qingmeng.strategy.login.LoginStrategy;
 import com.qingmeng.utils.*;
 import com.qingmeng.vo.login.CaptchaVO;
 import com.qingmeng.vo.login.TokenInfoVO;
-import com.qingmeng.vo.user.ClickFriendInfoVo;
-import com.qingmeng.vo.user.PersonalInfoVO;
-import com.qingmeng.vo.user.PersonalPrivacySettingVO;
+import com.qingmeng.vo.user.*;
 import darabonba.core.client.ClientOverrideConfiguration;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
@@ -51,9 +50,7 @@ import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -316,6 +313,7 @@ public class SysUserServiceImpl implements SysUserService {
         sysUserFriendSettingDao.removeByTagKey(tagKey);
         // 删除好友
         sysUserFriendDao.removeByFriend(userId,friendId);
+        userCache.evictFriendList(userId);
     }
 
     /**
@@ -365,6 +363,18 @@ public class SysUserServiceImpl implements SysUserService {
     public void alterPersonalPrivacySetting(Long userId, PersonalPrivacySettingDTO personalPrivacySettingDTO) {
         sysUserPrivacySettingDao.alterPersonalPrivacySetting(userId, personalPrivacySettingDTO);
         userSettingCache.delete(userId);
+    }
+
+    /**
+     * 检查登录
+     *
+     * @return {@link CheckLoginVO }
+     * @author qingmeng
+     * @createTime: 2023/12/03 09:35:06
+     */
+    @Override
+    public CheckLoginVO checkLogin() {
+        return UserInfoAdapt.buildCheckLoginVO(StpUtil.isLogin());
     }
 
     /**

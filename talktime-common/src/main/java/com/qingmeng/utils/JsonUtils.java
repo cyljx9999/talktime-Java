@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -50,9 +52,9 @@ public class JsonUtils {
     /**
      * 将 JSON 字符串转换为指定类型的对象，如果字符串为 null，则返回 null。
      *
-     * @param json    JSON 字符串
-     * @param tClass  目标对象的类型
-     * @param <T>     目标对象的泛型
+     * @param json   JSON 字符串
+     * @param tClass 目标对象的类型
+     * @param <T>    目标对象的泛型
      * @return 转换后的对象，如果 JSON 字符串为 null，则返回 null
      */
     static <T> T toBeanOrNull(String json, Class<T> tClass) {
@@ -73,6 +75,36 @@ public class JsonUtils {
             });
         } catch (JsonProcessingException e) {
             throw new UnsupportedOperationException(e);
+        }
+    }
+
+    /**
+     * 对象转List集合
+     *
+     * @param obj   对象
+     * @param clazz 具体的类型
+     * @return {@link List }<{@link T }>
+     * @author qingmeng
+     * @createTime: 2023/12/03 11:13:14
+     */
+    public static <T> List<T> objToList(Object obj, Class<T> clazz) {
+        if (obj == null) {
+            return Collections.emptyList();
+        }
+
+        if (obj instanceof List<?>) {
+            List<?> list = (List<?>) obj;
+            List<T> resultList = new ArrayList<>(list.size());
+            for (Object item : list) {
+                if (clazz.isInstance(item)) {
+                    resultList.add(clazz.cast(item));
+                } else {
+                    throw new IllegalArgumentException("List contains elements that are not of type " + clazz.getName());
+                }
+            }
+            return resultList;
+        } else {
+            throw new IllegalArgumentException("The provided object is not a List");
         }
     }
 }

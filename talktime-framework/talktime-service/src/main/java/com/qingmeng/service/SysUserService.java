@@ -8,6 +8,7 @@ import com.qingmeng.dto.user.PersonalPrivacySettingDTO;
 import com.qingmeng.entity.SysUser;
 import com.qingmeng.vo.login.CaptchaVO;
 import com.qingmeng.vo.login.TokenInfoVO;
+import com.qingmeng.vo.user.CheckLoginVO;
 import com.qingmeng.vo.user.ClickFriendInfoVo;
 import com.qingmeng.vo.user.PersonalInfoVO;
 import com.qingmeng.vo.user.PersonalPrivacySettingVO;
@@ -172,4 +173,14 @@ public interface SysUserService{
      * @createTime: 2023/12/02 11:31:39
      */
     void alterPersonalPrivacySetting(Long userId, PersonalPrivacySettingDTO personalPrivacySettingDTO);
+
+    /**
+     * 检查登录
+     *
+     * @return {@link CheckLoginVO }
+     * @author qingmeng
+     * @createTime: 2023/12/03 09:35:06
+     */
+    CheckLoginVO checkLogin();
+
 }

@@ -11,14 +11,12 @@ import com.qingmeng.dto.user.UserFriendSettingDTO;
 import com.qingmeng.entity.SysUser;
 import com.qingmeng.service.SysUserFriendService;
 import com.qingmeng.service.SysUserService;
-import com.qingmeng.vo.user.ClickFriendInfoVo;
-import com.qingmeng.vo.user.PersonalInfoVO;
-import com.qingmeng.vo.user.PersonalPrivacySettingVO;
-import com.qingmeng.vo.user.UserFriendSettingVO;
+import com.qingmeng.vo.user.*;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * @author 清梦
@@ -34,6 +32,22 @@ public class UserController {
     private SysUserService sysUserService;
     @Resource
     private SysUserFriendService sysUserFriendService;
+
+
+    /**
+     * 检查登录
+     *
+     * @return {@link CommonResult }<{@link CheckLoginVO }>
+     * @author qingmeng
+     * @createTime: 2023/12/03 09:35:01
+     */
+    @PostMapping("/checkLogin")
+    @SysLog(title = "用户模块",content = "检测登陆")
+    public CommonResult<CheckLoginVO> checkLogin(){
+        CheckLoginVO checkLoginVO = sysUserService.checkLogin();
+        return CommonResult.success(checkLoginVO);
+    }
+
 
     /**
      * 获取用户信息
@@ -168,5 +182,20 @@ public class UserController {
     public CommonResult<ClickFriendInfoVo> getFriendInfoByClick(@PathVariable Long friendId){
         ClickFriendInfoVo clickFriendInfoVo =  sysUserService.getFriendInfoByClick(StpUtil.getLoginIdAsLong(),friendId);
         return CommonResult.success(clickFriendInfoVo);
+    }
+
+
+    /**
+     * 获取好友列表
+     *
+     * @return {@link CommonResult }<{@link List }<{@link FriendTypeVO }>>
+     * @author qingmeng
+     * @createTime: 2023/12/03 10:43:21
+     */
+    @GetMapping("/getFriendList")
+    @SysLog(title = "用户模块",content = "获取好友列表")
+    public CommonResult<List<FriendTypeVO>> getFriendList(){
+        List<FriendTypeVO> list = sysUserFriendService.getFriendList(StpUtil.getLoginIdAsLong());
+        return CommonResult.success(list);
     }
 }

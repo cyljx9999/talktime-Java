@@ -1,5 +1,7 @@
 package com.qingmeng.utils;
 
+import net.sourceforge.pinyin4j.PinyinHelper;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -38,4 +40,48 @@ public class CommonUtils {
         return getKeyBySort(Arrays.asList(userId, friendId)) + ":" + userId;
     }
 
+    /**
+     * 检查是否为字母
+     *
+     * @param str str
+     * @return {@link Boolean } true 字母 false 不是字母
+     * @author qingmeng
+     * @createTime: 2023/12/03 11:10:06
+     */
+    public static Boolean checkLetter(char str){
+        return Character.isLowerCase(str) || Character.isUpperCase(str);
+    }
+
+    /**
+     * 检查是否为中文字符
+     *
+     * @param str str
+     * @return {@link Boolean } true 中文字符 false 中文字符
+     * @author qingmeng
+     * @createTime: 2023/12/03 11:10:06
+     */
+    public static Boolean checkChineseCharacter(char str){
+        return Character.UnicodeBlock.of(str).equals(Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS);
+    }
+
+    /**
+     * 获取首字母
+     *
+     * @param ch CH
+     * @return {@link String }
+     * @author qingmeng
+     * @createTime: 2023/12/03 12:20:45
+     */
+    public static String getFirstLetter(char ch) {
+        String firstLetter;
+
+        if (checkLetter(ch)) {
+            firstLetter = String.valueOf(ch).toUpperCase();
+        } else if (checkChineseCharacter(ch)) {
+            firstLetter = PinyinHelper.toHanyuPinyinStringArray(ch)[0].substring(0, 1).toUpperCase();
+        } else {
+            firstLetter = "#";
+        }
+        return firstLetter;
+    }
 }

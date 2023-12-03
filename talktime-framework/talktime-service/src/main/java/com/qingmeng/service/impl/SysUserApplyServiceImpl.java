@@ -101,6 +101,9 @@ public class SysUserApplyServiceImpl implements SysUserApplyService {
 
         // 修改申请记录为已同意
         sysUserApplyDao.agreeApply(agreeApplyFriendDTO.getApplyId());
+        // 删除好友列表缓存
+        userCache.evictFriendList(sysUserApply.getUserId());
+        userCache.evictFriendList(sysUserApply.getTargetId());
     }
 
 

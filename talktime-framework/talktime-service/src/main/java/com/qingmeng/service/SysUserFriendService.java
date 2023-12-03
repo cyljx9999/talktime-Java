@@ -3,7 +3,10 @@ package com.qingmeng.service;
 import com.qingmeng.dto.user.UserFriendSettingDTO;
 import com.qingmeng.entity.SysUserApply;
 import com.qingmeng.entity.SysUserFriend;
+import com.qingmeng.vo.user.FriendTypeVO;
 import com.qingmeng.vo.user.UserFriendSettingVO;
+
+import java.util.List;
 
 /**
  * <p>
@@ -55,4 +58,14 @@ public interface SysUserFriendService {
      * @createTime: 2023/12/01 16:52:47
      */
     SysUserFriend getFriendByBothId(Long userId, Long targetId);
+
+    /**
+     * 获取好友列表
+     *
+     * @param userId 用户 ID
+     * @return {@link List }<{@link FriendTypeVO }>
+     * @author qingmeng
+     * @createTime: 2023/12/03 11:02:52
+     */
+    List<FriendTypeVO> getFriendList(Long userId);
 }

@@ -1,5 +1,6 @@
 package com.qingmeng.adapt;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.qingmeng.dto.user.ApplyFriendDTO;
 import com.qingmeng.entity.SysUser;
@@ -10,8 +11,12 @@ import com.qingmeng.enums.user.ApplyStatusEnum;
 import com.qingmeng.enums.user.ReadStatusEnum;
 import com.qingmeng.vo.common.CommonPageVO;
 import com.qingmeng.vo.user.FriendApplyRecordVO;
+import com.qingmeng.vo.user.FriendTypeVO;
+import com.qingmeng.vo.user.SimpleUserInfo;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -30,7 +35,7 @@ public class FriendAdapt {
      * @author qingmeng
      * @createTime: 2023/11/27 14:31:48
      */
-    public static SysUserApply buildSaveSysUserApply(ApplyFriendDTO applyFriendDTO){
+    public static SysUserApply buildSaveSysUserApply(ApplyFriendDTO applyFriendDTO) {
         SysUserApply sysUserApply = new SysUserApply();
         sysUserApply.setUserId(applyFriendDTO.getUserId());
         sysUserApply.setApplyStatus(ApplyStatusEnum.APPLYING.getCode());
@@ -49,7 +54,7 @@ public class FriendAdapt {
      * @author qingmeng
      * @createTime: 2023/11/28 17:38:48
      */
-    public static SysUserFriend buildFriendRecord(SysUserApply sysUserApply){
+    public static SysUserFriend buildFriendRecord(SysUserApply sysUserApply) {
         SysUserFriend userFriend = new SysUserFriend();
         userFriend.setUserId(sysUserApply.getUserId());
         userFriend.setFriendId(sysUserApply.getTargetId());
@@ -64,7 +69,7 @@ public class FriendAdapt {
      * @author qingmeng
      * @createTime: 2023/12/01 16:27:54
      */
-    public static SysUserFriend buildFriendRecordReverse(SysUserApply sysUserApply){
+    public static SysUserFriend buildFriendRecordReverse(SysUserApply sysUserApply) {
         SysUserFriend userFriend = new SysUserFriend();
         userFriend.setUserId(sysUserApply.getTargetId());
         userFriend.setFriendId(sysUserApply.getUserId());
@@ -80,9 +85,9 @@ public class FriendAdapt {
      * @author qingmeng
      * @createTime: 2023/11/29 08:19:32
      */
-    public static CommonPageVO<FriendApplyRecordVO> buildFriendApplyRecordPageListVO(IPage<SysUserApply> pageList, List<SysUser> userList){
+    public static CommonPageVO<FriendApplyRecordVO> buildFriendApplyRecordPageListVO(IPage<SysUserApply> pageList, List<SysUser> userList) {
         List<FriendApplyRecordVO> voList = buildFriendApplyRecordListVO(pageList.getRecords(), userList);
-        return CommonPageVO.init(pageList.getCurrent(),pageList.getSize(), pageList.getTotal(), voList);
+        return CommonPageVO.init(pageList.getCurrent(), pageList.getSize(), pageList.getTotal(), voList);
     }
 
 
@@ -114,4 +119,37 @@ public class FriendAdapt {
         }).collect(Collectors.toList());
     }
 
+    /**
+     * 建立好友列表
+     *
+     * @param listMap           列表映射
+     * @param friendSettingList 好友设置列表
+     * @return {@link List }<{@link FriendTypeVO }>
+     * @author qingmeng
+     * @createTime: 2023/12/03 12:28:59
+     */
+    public static List<FriendTypeVO> buildFriendList(Map<String, List<SysUser>> listMap, List<SysUserFriendSetting> friendSettingList) {
+        List<FriendTypeVO> categorizedUserList = new ArrayList<>();
+        listMap.forEach((key, value) -> {
+            FriendTypeVO vo = new FriendTypeVO();
+            vo.setType(key);
+            List<SimpleUserInfo> userInfoList = value.stream().map(user -> {
+                SysUserFriendSetting friendSetting = friendSettingList.stream()
+                        .filter(setting -> setting.getUserId().equals(user.getId()))
+                        .findAny()
+                        .orElse(new SysUserFriendSetting());
+                SimpleUserInfo userInfo = new SimpleUserInfo();
+                userInfo.setUserAvatar(user.getUserAvatar());
+                if (StrUtil.isNotBlank(friendSetting.getNickName())) {
+                    userInfo.setUserName(friendSetting.getNickName());
+                } else {
+                    userInfo.setUserName(user.getUserName());
+                }
+                return userInfo;
+            }).collect(Collectors.toList());
+            vo.setUserList(userInfoList);
+            categorizedUserList.add(vo);
+        });
+        return categorizedUserList;
+    }
 }

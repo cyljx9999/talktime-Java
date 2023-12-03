@@ -1,10 +1,18 @@
 package com.qingmeng.cache;
 
+import com.qingmeng.adapt.FriendAdapt;
 import com.qingmeng.constant.RedisConstant;
 import com.qingmeng.constant.SystemConstant;
 import com.qingmeng.dao.SysUserDao;
+import com.qingmeng.dao.SysUserFriendDao;
 import com.qingmeng.entity.SysUser;
+import com.qingmeng.entity.SysUserFriend;
+import com.qingmeng.entity.SysUserFriendSetting;
+import com.qingmeng.utils.CommonUtils;
 import com.qingmeng.utils.RedisUtils;
+import com.qingmeng.vo.user.FriendTypeVO;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -22,6 +30,10 @@ import java.util.stream.Collectors;
 public class UserCache extends AbstractRedisStringCache<Long, SysUser> {
     @Resource
     private SysUserDao sysUserDao;
+    @Resource
+    private SysUserFriendDao sysUserFriendDao;
+    @Resource
+    private UserFriendSettingCache userFriendSettingCache;
 
     /**
      * 根据输入对象获取缓存的键。
@@ -103,4 +115,45 @@ public class UserCache extends AbstractRedisStringCache<Long, SysUser> {
     public boolean isOnline(Long userId) {
         return Objects.nonNull(RedisUtils.zScore(RedisConstant.ONLINE_USERID_KEY, userId));
     }
+
+    /**
+     * 获取好友列表
+     *
+     * @param userId 用户 ID
+     * @return {@link List }<{@link FriendTypeVO }>
+     * @author qingmeng
+     * @createTime: 2023/12/03 12:37:20
+     */
+    @Cacheable(value = "friendList", key = "#userId")
+    public List<FriendTypeVO> getFriendList(Long userId) {
+        List<Long> friendIds = sysUserFriendDao.getFriendListById(userId)
+                .stream().distinct()
+                .map(SysUserFriend::getFriendId)
+                .collect(Collectors.toList());
+        List<SysUser> sysUsers = new ArrayList<>(getBatch(friendIds).values());
+
+        Map<String, List<SysUser>> listMap = sysUsers.stream().collect(Collectors.groupingBy(user -> {
+            char ch = user.getUserName().charAt(0);
+            String firstLetter = CommonUtils.getFirstLetter(ch);
+            return SystemConstant.alphabetList.contains(firstLetter) ? firstLetter : "#";
+        }));
+
+        List<String> keys = friendIds.stream().map(friendId -> CommonUtils.getFriendSettingCacheKey(userId, friendId)).collect(Collectors.toList());
+        List<SysUserFriendSetting> friendSettings = new ArrayList<>(userFriendSettingCache.getBatch(keys).values());
+        return FriendAdapt.buildFriendList(listMap,friendSettings);
+    }
+
+    /**
+     * 删除好友列表缓存
+     *
+     * @param userId 用户 ID
+     * @return {@link List }<{@link FriendTypeVO }>
+     * @author qingmeng
+     * @createTime: 2023/12/03 12:40:43
+     */
+    @CacheEvict(cacheNames = "friendList", key = "#userId")
+    public List<FriendTypeVO> evictFriendList(Long userId) {
+        return null;
+    }
+
 }

@@ -54,6 +54,7 @@
         <spring-boot-test.version>2.6.7</spring-boot-test.version>
         <junit.version>4.13.2</junit.version>
         <spring-test.version>5.3.19</spring-test.version>
+        <com.belerweb.pinyin4j.version>2.5.1</com.belerweb.pinyin4j.version>
     </properties>
 
     <dependencyManagement>
@@ -206,6 +207,12 @@
                 <groupId>cn.hutool</groupId>
                 <artifactId>hutool-all</artifactId>
                 <version>${hutool.version}</version>
+            </dependency>
+            <!-- pinyin4j 汉语转拼音 -->
+            <dependency>
+                <groupId>com.belerweb</groupId>
+                <artifactId>pinyin4j</artifactId>
+                <version>${com.belerweb.pinyin4j.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

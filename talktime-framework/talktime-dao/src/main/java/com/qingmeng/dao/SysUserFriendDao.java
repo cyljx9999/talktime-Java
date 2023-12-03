@@ -8,6 +8,8 @@ import com.qingmeng.mapper.SysUserFriendMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 /**
  * <p>
  * 用户好友表 服务实现类
@@ -64,5 +66,17 @@ public class SysUserFriendDao extends ServiceImpl<SysUserFriendMapper, SysUserFr
         wrapper.eq(SysUserFriend::getFriendId, saveUserFriend.getFriendId());
         wrapper.eq(SysUserFriend::getIsDeleted, LogicDeleteEnum.IS_DELETE.getCode());
         saveOrUpdate(saveUserFriend);
+    }
+
+    /**
+     * 按ID获取好友列表
+     *
+     * @param userId 用户 ID
+     * @return {@link List }<{@link Long }>
+     * @author qingmeng
+     * @createTime: 2023/12/03 11:03:58
+     */
+    public List<SysUserFriend> getFriendListById(Long userId) {
+        return lambdaQuery().eq(SysUserFriend::getUserId,userId).list();
     }
 }

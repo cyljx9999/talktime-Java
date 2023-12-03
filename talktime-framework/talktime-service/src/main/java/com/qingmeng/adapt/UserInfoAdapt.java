@@ -4,6 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import com.qingmeng.entity.SysUser;
 import com.qingmeng.entity.SysUserFriendSetting;
 import com.qingmeng.vo.chat.SimpleChatInfoVO;
+import com.qingmeng.vo.user.CheckLoginVO;
 import com.qingmeng.vo.user.ClickFriendInfoVo;
 import com.qingmeng.vo.user.PersonalInfoVO;
 
@@ -66,4 +67,17 @@ public class UserInfoAdapt {
         return vo;
     }
 
+    /**
+     * 构建检查登录 vo
+     *
+     * @param status 地位
+     * @return {@link CheckLoginVO }
+     * @author qingmeng
+     * @createTime: 2023/12/03 09:36:20
+     */
+    public static CheckLoginVO buildCheckLoginVO(boolean status) {
+        CheckLoginVO loginVO = new CheckLoginVO();
+        loginVO.setLoginStatus(status);
+        return loginVO;
+    }
 }

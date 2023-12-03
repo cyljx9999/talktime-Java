@@ -1,5 +1,8 @@
 package com.qingmeng.constant;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * @author 清梦
  * @version 1.0.0
@@ -56,4 +59,14 @@ public class SystemConstant {
      * 日
      */
     public static final int DAY = 24 * 60 * 60;
+
+    /**
+     * 字母列表
+     */
+    public static final List<String> alphabetList = Arrays.asList(
+            "A","B","C","D","E","F","G",
+            "H","I","J","K","L","M","N",
+            "O","P","Q","R","S","T","U",
+            "V","W","X","Y","Z","#"
+    );
 }
