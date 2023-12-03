@@ -224,7 +224,7 @@ public class UserController {
      * @author qingmeng
      * @createTime: 2023/12/03 12:49:01
      */
-    @PostMapping("/checkFriend")
+    @PostMapping("/checkFriendList")
     @SysLog(title = "用户模块",content = "批量检查是否为好友")
     public CommonResult<List<CheckFriendVO>> checkFriendList(@Valid @RequestBody CheckFriendListDTO checkFriendListDTO){
         List<CheckFriendVO> list = sysUserFriendService.checkFriendList(StpUtil.getLoginIdAsLong(),checkFriendListDTO);
