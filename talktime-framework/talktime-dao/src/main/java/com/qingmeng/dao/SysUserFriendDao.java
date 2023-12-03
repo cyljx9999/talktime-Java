@@ -79,4 +79,16 @@ public class SysUserFriendDao extends ServiceImpl<SysUserFriendMapper, SysUserFr
     public List<SysUserFriend> getFriendListById(Long userId) {
         return lambdaQuery().eq(SysUserFriend::getUserId,userId).list();
     }
+
+    /**
+     * 通过ID获取好友
+     *
+     * @param userId 用户 ID
+     * @return {@link SysUserFriend }
+     * @author qingmeng
+     * @createTime: 2023/12/03 13:08:35
+     */
+    public SysUserFriend getFriendById(Long userId) {
+        return lambdaQuery().eq(SysUserFriend::getUserId,userId).one();
+    }
 }

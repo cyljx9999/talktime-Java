@@ -2,6 +2,8 @@ package com.qingmeng.adapt;
 
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.qingmeng.dto.login.CheckFriendDTO;
+import com.qingmeng.dto.login.CheckFriendListDTO;
 import com.qingmeng.dto.user.ApplyFriendDTO;
 import com.qingmeng.entity.SysUser;
 import com.qingmeng.entity.SysUserApply;
@@ -10,6 +12,7 @@ import com.qingmeng.entity.SysUserFriendSetting;
 import com.qingmeng.enums.user.ApplyStatusEnum;
 import com.qingmeng.enums.user.ReadStatusEnum;
 import com.qingmeng.vo.common.CommonPageVO;
+import com.qingmeng.vo.user.CheckFriendVO;
 import com.qingmeng.vo.user.FriendApplyRecordVO;
 import com.qingmeng.vo.user.FriendTypeVO;
 import com.qingmeng.vo.user.SimpleUserInfo;
@@ -151,5 +154,39 @@ public class FriendAdapt {
             categorizedUserList.add(vo);
         });
         return categorizedUserList;
+    }
+
+    /**
+     * 构造 检查好友列表
+     *
+     * @param friendIds      好友ID
+     * @param checkFriendDTO 检查好友 DTO
+     * @return {@link List }<{@link CheckFriendVO }>
+     * @author qingmeng
+     * @createTime: 2023/12/03 12:53:44
+     */
+    public static List<CheckFriendVO> buildCheckFriendList(List<Long> friendIds, CheckFriendListDTO checkFriendDTO) {
+        return checkFriendDTO.getFriendIdList().stream().map(id -> {
+            CheckFriendVO vo = new CheckFriendVO();
+            vo.setFriendId(id);
+            vo.setCheckStatus(friendIds.contains(id));
+            return vo;
+        }).collect(Collectors.toList());
+    }
+
+    /**
+     * 构建检查好友
+     *
+     * @param sysUserFriend  sys 用户好友
+     * @param checkFriendDTO 检查好友 DTO
+     * @return {@link CheckFriendVO }
+     * @author qingmeng
+     * @createTime: 2023/12/03 13:10:41
+     */
+    public static CheckFriendVO buildCheckFriend(SysUserFriend sysUserFriend, CheckFriendDTO checkFriendDTO) {
+        CheckFriendVO vo = new CheckFriendVO();
+        vo.setFriendId(checkFriendDTO.getFriendId());
+        vo.setCheckStatus(sysUserFriend.getFriendId().equals(checkFriendDTO.getFriendId()));
+        return vo;
     }
 }

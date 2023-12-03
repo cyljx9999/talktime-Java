@@ -1,8 +1,11 @@
 package com.qingmeng.service;
 
+import com.qingmeng.dto.login.CheckFriendDTO;
+import com.qingmeng.dto.login.CheckFriendListDTO;
 import com.qingmeng.dto.user.UserFriendSettingDTO;
 import com.qingmeng.entity.SysUserApply;
 import com.qingmeng.entity.SysUserFriend;
+import com.qingmeng.vo.user.CheckFriendVO;
 import com.qingmeng.vo.user.FriendTypeVO;
 import com.qingmeng.vo.user.UserFriendSettingVO;
 
@@ -68,4 +71,28 @@ public interface SysUserFriendService {
      * @createTime: 2023/12/03 11:02:52
      */
     List<FriendTypeVO> getFriendList(Long userId);
+
+    /**
+     * 检查是否为好友
+     *
+     * @param userId         用户 ID
+     * @param checkFriendDTO 检查好友 DTO
+     * @return {@link CheckFriendVO }
+     * @author qingmeng
+     * @createTime: 2023/12/03 13:09:02
+     */
+    CheckFriendVO checkFriend(Long userId,  CheckFriendDTO checkFriendDTO);
+
+
+    /**
+     * 批量检查是否为好友
+     *
+     * @param userId         用户 ID
+     * @param checkFriendListDTO 检查好友 DTO
+     * @return {@link List }<{@link CheckFriendVO }>
+     * @author qingmeng
+     * @createTime: 2023/12/03 13:04:21
+     */
+    List<CheckFriendVO> checkFriendList(Long userId, CheckFriendListDTO checkFriendListDTO);
+
 }

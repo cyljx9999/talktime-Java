@@ -4,6 +4,8 @@ import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.dev33.satoken.stp.StpUtil;
 import com.qingmeng.annotation.SysLog;
 import com.qingmeng.domain.rep.CommonResult;
+import com.qingmeng.dto.login.CheckFriendDTO;
+import com.qingmeng.dto.login.CheckFriendListDTO;
 import com.qingmeng.dto.user.AlterAccountDTO;
 import com.qingmeng.dto.user.AlterPersonalInfoDTO;
 import com.qingmeng.dto.user.PersonalPrivacySettingDTO;
@@ -196,6 +198,36 @@ public class UserController {
     @SysLog(title = "用户模块",content = "获取好友列表")
     public CommonResult<List<FriendTypeVO>> getFriendList(){
         List<FriendTypeVO> list = sysUserFriendService.getFriendList(StpUtil.getLoginIdAsLong());
+        return CommonResult.success(list);
+    }
+
+    /**
+     * 检查是否为好友
+     *
+     * @param checkFriendDTO 检查好友 DTO
+     * @return {@link CommonResult }<{@link CheckFriendVO }>
+     * @author qingmeng
+     * @createTime: 2023/12/03 13:09:17
+     */
+    @PostMapping("/checkFriend")
+    @SysLog(title = "用户模块",content = "检查是否为好友")
+    public CommonResult<CheckFriendVO> checkFriend(@Valid @RequestBody CheckFriendDTO checkFriendDTO){
+        CheckFriendVO checkFriendVO = sysUserFriendService.checkFriend(StpUtil.getLoginIdAsLong(),checkFriendDTO);
+        return CommonResult.success(checkFriendVO);
+    }
+
+    /**
+     * 批量检查是否为好友
+     *
+     * @param checkFriendListDTO 检查好友 DTO
+     * @return {@link CommonResult }<{@link List }<{@link CheckFriendVO }>>
+     * @author qingmeng
+     * @createTime: 2023/12/03 12:49:01
+     */
+    @PostMapping("/checkFriend")
+    @SysLog(title = "用户模块",content = "批量检查是否为好友")
+    public CommonResult<List<CheckFriendVO>> checkFriendList(@Valid @RequestBody CheckFriendListDTO checkFriendListDTO){
+        List<CheckFriendVO> list = sysUserFriendService.checkFriendList(StpUtil.getLoginIdAsLong(),checkFriendListDTO);
         return CommonResult.success(list);
     }
 }

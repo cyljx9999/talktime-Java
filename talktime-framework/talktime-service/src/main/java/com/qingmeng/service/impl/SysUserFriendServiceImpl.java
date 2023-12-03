@@ -6,6 +6,8 @@ import com.qingmeng.cache.UserCache;
 import com.qingmeng.cache.UserFriendSettingCache;
 import com.qingmeng.dao.SysUserFriendDao;
 import com.qingmeng.dao.SysUserFriendSettingDao;
+import com.qingmeng.dto.login.CheckFriendDTO;
+import com.qingmeng.dto.login.CheckFriendListDTO;
 import com.qingmeng.dto.user.UserFriendSettingDTO;
 import com.qingmeng.entity.SysUserApply;
 import com.qingmeng.entity.SysUserFriend;
@@ -13,6 +15,7 @@ import com.qingmeng.entity.SysUserFriendSetting;
 import com.qingmeng.service.SysUserFriendService;
 import com.qingmeng.utils.AsserUtils;
 import com.qingmeng.utils.CommonUtils;
+import com.qingmeng.vo.user.CheckFriendVO;
 import com.qingmeng.vo.user.FriendTypeVO;
 import com.qingmeng.vo.user.UserFriendSettingVO;
 import org.springframework.stereotype.Service;
@@ -20,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author 清梦
@@ -111,7 +115,38 @@ public class SysUserFriendServiceImpl implements SysUserFriendService {
         return userCache.getFriendList(userId);
     }
 
+    /**
+     * 检查是否为好友
+     *
+     * @param userId         用户 ID
+     * @param checkFriendDTO 检查好友 DTO
+     * @return {@link CheckFriendVO }
+     * @author qingmeng
+     * @createTime: 2023/12/03 13:08:56
+     */
+    @Override
+    public CheckFriendVO checkFriend(Long userId, CheckFriendDTO checkFriendDTO) {
+        SysUserFriend sysUserFriend = sysUserFriendDao.getFriendById(userId);
+        return FriendAdapt.buildCheckFriend(sysUserFriend, checkFriendDTO);
+    }
 
+    /**
+     * 批量检查是否为好友
+     *
+     * @param userId         用户 ID
+     * @param checkFriendListDTO 检查好友 DTO
+     * @return {@link List }<{@link CheckFriendVO }>
+     * @author qingmeng
+     * @createTime: 2023/12/03 12:49:25
+     */
+    @Override
+    public List<CheckFriendVO> checkFriendList(Long userId, CheckFriendListDTO checkFriendListDTO) {
+        List<Long> friendIds = sysUserFriendDao.getFriendListById(userId)
+                .stream().distinct()
+                .map(SysUserFriend::getFriendId)
+                .collect(Collectors.toList());
+        return FriendAdapt.buildCheckFriendList(friendIds, checkFriendListDTO);
+    }
 
     /**
      * 检查合法性

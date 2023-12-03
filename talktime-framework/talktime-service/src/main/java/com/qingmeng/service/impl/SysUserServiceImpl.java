@@ -18,6 +18,7 @@ import com.qingmeng.cache.UserSettingCache;
 import com.qingmeng.constant.RedisConstant;
 import com.qingmeng.constant.SystemConstant;
 import com.qingmeng.dao.*;
+import com.qingmeng.dto.login.CheckFriendDTO;
 import com.qingmeng.dto.login.LoginParamDTO;
 import com.qingmeng.dto.login.RegisterDTO;
 import com.qingmeng.dto.user.AlterAccountDTO;
@@ -30,6 +31,7 @@ import com.qingmeng.entity.SysUserPrivacySetting;
 import com.qingmeng.enums.user.LoginMethodEnum;
 import com.qingmeng.event.SysUserRegisterEvent;
 import com.qingmeng.exception.TalkTimeException;
+import com.qingmeng.service.SysUserFriendService;
 import com.qingmeng.service.SysUserService;
 import com.qingmeng.strategy.login.LoginFactory;
 import com.qingmeng.strategy.login.LoginStrategy;
@@ -50,7 +52,9 @@ import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -95,6 +99,8 @@ public class SysUserServiceImpl implements SysUserService {
     private ChatFriendRoomDao chatFriendRoomDao;
     @Resource
     private UserSettingCache userSettingCache;
+    @Resource
+    private SysUserFriendService sysUserFriendService;
 
     /**
      * 验证码类型
@@ -327,6 +333,8 @@ public class SysUserServiceImpl implements SysUserService {
      */
     @Override
     public ClickFriendInfoVo getFriendInfoByClick(Long userId, Long friendId) {
+        // 检查是否为当前好友
+        checkFriend(userId, friendId);
         // 获取我对当前好友设置的数据
         String cacheKey = CommonUtils.getFriendSettingCacheKey(userId, friendId);
         SysUserFriendSetting sysUserFriendSetting = userFriendSettingCache.get(cacheKey);
@@ -407,6 +415,21 @@ public class SysUserServiceImpl implements SysUserService {
     public void alterPersonalInfo(Long userId, AlterPersonalInfoDTO alterAccountPersonalInfoDTO) {
         sysUserDao.alterPersonalInfo(userId,alterAccountPersonalInfoDTO);
         userCache.delete(userId);
+    }
+
+    /**
+     * 查看好友
+     *
+     * @param userId   用户 ID
+     * @param friendId 好友 ID
+     * @author qingmeng
+     * @createTime: 2023/12/03 13:02:35
+     */
+    private void checkFriend(Long userId, Long friendId) {
+        CheckFriendDTO friendDTO = new CheckFriendDTO();
+        friendDTO.setFriendId(friendId);
+        CheckFriendVO checkFriendVO = sysUserFriendService.checkFriend(userId, friendDTO);
+        AsserUtils.isTrue(checkFriendVO.getCheckStatus(),"非法请求");
     }
 
     /**
