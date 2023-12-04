@@ -11,6 +11,7 @@ import com.qingmeng.entity.SysUserFriend;
 import com.qingmeng.entity.SysUserFriendSetting;
 import com.qingmeng.enums.user.ApplyStatusEnum;
 import com.qingmeng.enums.user.ReadStatusEnum;
+import com.qingmeng.utils.CommonUtils;
 import com.qingmeng.vo.common.CommonPageVO;
 import com.qingmeng.vo.user.CheckFriendVO;
 import com.qingmeng.vo.user.FriendApplyRecordVO;
@@ -18,6 +19,7 @@ import com.qingmeng.vo.user.FriendTypeVO;
 import com.qingmeng.vo.user.SimpleUserInfo;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -131,23 +133,26 @@ public class FriendAdapt {
      * @author qingmeng
      * @createTime: 2023/12/03 12:28:59
      */
-    public static List<FriendTypeVO> buildFriendList(Map<String, List<SysUser>> listMap, List<SysUserFriendSetting> friendSettingList) {
+    public static List<FriendTypeVO> buildFriendList(Map<String, List<SysUser>> listMap, List<SysUserFriendSetting> friendSettingList, Long userId) {
         List<FriendTypeVO> categorizedUserList = new ArrayList<>();
         listMap.forEach((key, value) -> {
             FriendTypeVO vo = new FriendTypeVO();
             vo.setType(key);
-            List<SimpleUserInfo> userInfoList = value.stream().map(user -> {
+            List<SimpleUserInfo> userInfoList = value.stream().map(friendUser -> {
+                // 获取 当前用户 对 对方 的设置数据，判断是否进行备注
                 SysUserFriendSetting friendSetting = friendSettingList.stream()
-                        .filter(setting -> setting.getUserId().equals(user.getId()))
+                        .filter(setting -> {
+                            // 通过tagKey和userId定位数据 tagKey:1-2 userId:1 表示用户1对用户2的设置
+                            boolean flagA = setting.getTagKey().equals(CommonUtils.getKeyBySort(Arrays.asList(userId, friendUser.getId())));
+                            boolean flagB = setting.getUserId().equals(userId);
+                            return flagA && flagB;
+                        })
                         .findAny()
                         .orElse(new SysUserFriendSetting());
                 SimpleUserInfo userInfo = new SimpleUserInfo();
-                userInfo.setUserAvatar(user.getUserAvatar());
-                if (StrUtil.isNotBlank(friendSetting.getNickName())) {
-                    userInfo.setUserName(friendSetting.getNickName());
-                } else {
-                    userInfo.setUserName(user.getUserName());
-                }
+                userInfo.setUserAvatar(friendUser.getUserAvatar());
+                // 如果有备注则采用备注，否则则使用对方原本的用户名
+                userInfo.setUserName(StrUtil.isNotBlank(friendSetting.getNickName()) ? friendSetting.getNickName() : friendUser.getUserName());
                 return userInfo;
             }).collect(Collectors.toList());
             vo.setUserList(userInfoList);

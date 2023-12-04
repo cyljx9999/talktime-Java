@@ -140,7 +140,7 @@ public class UserCache extends AbstractRedisStringCache<Long, SysUser> {
 
         List<String> keys = friendIds.stream().map(friendId -> CommonUtils.getFriendSettingCacheKey(userId, friendId)).collect(Collectors.toList());
         List<SysUserFriendSetting> friendSettings = new ArrayList<>(userFriendSettingCache.getBatch(keys).values());
-        return FriendAdapt.buildFriendList(listMap,friendSettings);
+        return FriendAdapt.buildFriendList(listMap,friendSettings,userId);
     }
 
     /**
