@@ -126,20 +126,24 @@ public class UserCache extends AbstractRedisStringCache<Long, SysUser> {
      */
     @Cacheable(value = "friendList", key = "#userId")
     public List<FriendTypeVO> getFriendList(Long userId) {
+        // 获取当前用户的好友id列表
         List<Long> friendIds = sysUserFriendDao.getFriendListById(userId)
                 .stream().distinct()
                 .map(SysUserFriend::getFriendId)
                 .collect(Collectors.toList());
+        // 获取完整的好友数据列表
         List<SysUser> sysUsers = new ArrayList<>(getBatch(friendIds).values());
 
+        // 根据用户名首字符按照字母分类表进行归类处理
         Map<String, List<SysUser>> listMap = sysUsers.stream().collect(Collectors.groupingBy(user -> {
             char ch = user.getUserName().charAt(0);
             String firstLetter = CommonUtils.getFirstLetter(ch);
             return SystemConstant.alphabetList.contains(firstLetter) ? firstLetter : "#";
         }));
-
+        // 获取当前用户对好友的设置列表
         List<String> keys = friendIds.stream().map(friendId -> CommonUtils.getFriendSettingCacheKey(userId, friendId)).collect(Collectors.toList());
         List<SysUserFriendSetting> friendSettings = new ArrayList<>(userFriendSettingCache.getBatch(keys).values());
+        // 构造最后的信息返回类
         return FriendAdapt.buildFriendList(listMap,friendSettings,userId);
     }
 
