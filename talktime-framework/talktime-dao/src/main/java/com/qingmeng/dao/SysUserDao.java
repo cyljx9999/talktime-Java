@@ -94,4 +94,19 @@ public class SysUserDao extends ServiceImpl<SysUserMapper, SysUser> {
                 .set(Objects.nonNull(alterAccountPersonalInfoDTO.getUserSex()),SysUser::getUserSex, alterAccountPersonalInfoDTO.getUserSex())
                 .update(new SysUser());
     }
+
+    /**
+     * 更新二维码
+     *
+     * @param userId    用户id
+     * @param qrcodeUrl 二维码地址
+     * @author qingmeng
+     * @createTime: 2023/12/05 22:29:49
+     */
+    public void updateQrcode(Long userId,String qrcodeUrl) {
+        lambdaUpdate()
+                .eq(SysUser::getId,userId)
+                .set(SysUser::getQrcodeUrl,qrcodeUrl)
+                .update(new SysUser());
+    }
 }

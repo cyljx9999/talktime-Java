@@ -138,7 +138,7 @@ public class UserCache extends AbstractRedisStringCache<Long, SysUser> {
         Map<String, List<SysUser>> listMap = sysUsers.stream().collect(Collectors.groupingBy(user -> {
             char ch = user.getUserName().charAt(0);
             String firstLetter = CommonUtils.getFirstLetter(ch);
-            return SystemConstant.alphabetList.contains(firstLetter) ? firstLetter : "#";
+            return SystemConstant.ALPHABET_LIST.contains(firstLetter) ? firstLetter : "#";
         }));
         // 获取当前用户对好友的设置列表
         List<String> keys = friendIds.stream().map(friendId -> CommonUtils.getFriendSettingCacheKey(userId, friendId)).collect(Collectors.toList());
@@ -151,13 +151,10 @@ public class UserCache extends AbstractRedisStringCache<Long, SysUser> {
      * 删除好友列表缓存
      *
      * @param userId 用户 ID
-     * @return {@link List }<{@link FriendTypeVO }>
      * @author qingmeng
      * @createTime: 2023/12/03 12:40:43
      */
     @CacheEvict(cacheNames = "friendList", key = "#userId")
-    public List<FriendTypeVO> evictFriendList(Long userId) {
-        return null;
-    }
+    public void evictFriendList(Long userId) {}
 
 }

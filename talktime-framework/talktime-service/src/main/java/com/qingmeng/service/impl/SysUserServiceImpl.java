@@ -242,18 +242,6 @@ public class SysUserServiceImpl implements SysUserService {
         return userCache.get(userId);
     }
 
-    /**
-     * 保存
-     *
-     * @param saveUser 用户
-     * @return boolean
-     * @author qingmeng
-     * @createTime: 2023/11/20 08:41:14
-     */
-    @Override
-    public boolean save(SysUser saveUser) {
-        return sysUserDao.save(saveUser);
-    }
 
     /**
      * 使用 ID 更新

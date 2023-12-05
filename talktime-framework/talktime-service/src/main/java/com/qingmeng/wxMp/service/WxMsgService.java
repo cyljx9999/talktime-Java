@@ -4,11 +4,14 @@ import cn.hutool.core.util.StrUtil;
 import com.qingmeng.adapt.LoginAboutAdapt;
 import com.qingmeng.adapt.TextBuilderAdapt;
 import com.qingmeng.adapt.UserSettingAdapt;
+import com.qingmeng.cache.UserCache;
 import com.qingmeng.constant.RedisConstant;
+import com.qingmeng.dao.SysUserDao;
 import com.qingmeng.entity.SysUser;
 import com.qingmeng.entity.SysUserAuth;
 import com.qingmeng.entity.SysUserPrivacySetting;
 import com.qingmeng.netty.service.WebSocketService;
+import com.qingmeng.service.FileService;
 import com.qingmeng.service.SysUserAuthService;
 import com.qingmeng.service.SysUserPrivacySettingService;
 import com.qingmeng.service.SysUserService;
@@ -44,6 +47,8 @@ public class WxMsgService {
     private String callback;
 
     @Resource
+    private SysUserDao sysUserDao;
+    @Resource
     private SysUserService sysUserService;
     @Resource
     private SysUserAuthService sysUserAuthService;
@@ -51,6 +56,10 @@ public class WxMsgService {
     private WebSocketService webSocketService;
     @Resource
     private SysUserPrivacySettingService sysUserPrivacySettingService;
+    @Resource
+    private UserCache userCache;
+    @Resource
+    private FileService fileService;
 
     /**
      * 扫码关注后发送登录授权链接
@@ -70,7 +79,7 @@ public class WxMsgService {
         // 查询用户授权信息
         SysUserAuth userAuth = sysUserAuthService.getAuthInfoWithOpenId(openId);
         if (Objects.nonNull(userAuth)) {
-            SysUser user = sysUserService.getUserInfoWithId(userAuth.getUserId());
+            SysUser user = userCache.get(userAuth.getUserId());
             /*
              * 如果已经注册,直接登录成功
              * StringUtils.isNotEmpty(user.getAvatar()) 判断这个的目的是为了确保用户点击授权链接进行授权
@@ -82,13 +91,16 @@ public class WxMsgService {
         }
         // 未注册用户自动注册账号
         SysUser saveUser = LoginAboutAdapt.buildDefaultRegister();
-        boolean saveFlag = sysUserService.save(saveUser);
+        boolean saveFlag = sysUserDao.save(saveUser);
         if (saveFlag) {
+            Long userId = saveUser.getId();
+            sysUserDao.updateQrcode(userId,fileService.getQrcodeUrl(userId));
+            userCache.delete(userId);
             // 保存第三方授权信息
-            SysUserAuth saveUserAuth = LoginAboutAdapt.buildUserAuthWithMp(openId, saveUser.getId());
+            SysUserAuth saveUserAuth = LoginAboutAdapt.buildUserAuthWithMp(openId, userId);
             sysUserAuthService.save(saveUserAuth);
             // 新增用户隐私设置
-            SysUserPrivacySetting saveSysUserPrivacySetting = UserSettingAdapt.buildDefalutSysUserPrivacySetting(saveUser.getId());
+            SysUserPrivacySetting saveSysUserPrivacySetting = UserSettingAdapt.buildDefalutSysUserPrivacySetting(userId);
             sysUserPrivacySettingService.save(saveSysUserPrivacySetting);
         }
         //在redis中保存openid和场景code的关系，后续才能通知到前端,旧版数据没有清除,这里设置了过期时间

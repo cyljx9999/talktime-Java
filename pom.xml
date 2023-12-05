@@ -19,6 +19,7 @@
         <module>talktime-framework</module>
         <module>talktime-common</module>
         <module>talktime-client</module>
+        <module>talktime-minio</module>
     </modules>
 
     <properties>
@@ -45,7 +46,7 @@
         <jsoup.version>1.15.3</jsoup.version>
         <wechatpay-apache-httpclient.version>0.4.7</wechatpay-apache-httpclient.version>
         <redisson-spring-boot-starter.version>3.17.1</redisson-spring-boot-starter.version>
-        <minio.version>8.4.5</minio.version>
+        <minio.version>8.2.2</minio.version>
         <lombok.version>1.18.10</lombok.version>
         <weixin-java-mp.version>4.4.0</weixin-java-mp.version>
         <logstash-logback.version>7.2</logstash-logback.version>
@@ -55,6 +56,7 @@
         <junit.version>4.13.2</junit.version>
         <spring-test.version>5.3.19</spring-test.version>
         <com.belerweb.pinyin4j.version>2.5.1</com.belerweb.pinyin4j.version>
+        <com.google.zxing.version>3.5.0</com.google.zxing.version>
     </properties>
 
     <dependencyManagement>
@@ -213,6 +215,11 @@
                 <groupId>com.belerweb</groupId>
                 <artifactId>pinyin4j</artifactId>
                 <version>${com.belerweb.pinyin4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.zxing</groupId>
+                <artifactId>core</artifactId>
+                <version>${com.google.zxing.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

@@ -1,7 +1,12 @@
 package com.qingmeng.utils;
 
+import lombok.SneakyThrows;
 import net.sourceforge.pinyin4j.PinyinHelper;
+import org.springframework.core.io.ClassPathResource;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -23,7 +28,7 @@ public class CommonUtils {
      * @author qingmeng
      * @createTime: 2023/11/27 15:13:46
      */
-    public static String getKeyBySort(List<Long> ids){
+    public static String getKeyBySort(List<Long> ids) {
         return ids.stream().sorted().map(Objects::toString).collect(Collectors.joining("-"));
     }
 
@@ -48,7 +53,7 @@ public class CommonUtils {
      * @author qingmeng
      * @createTime: 2023/12/03 11:10:06
      */
-    public static Boolean checkLetter(char str){
+    public static Boolean checkLetter(char str) {
         return Character.isLowerCase(str) || Character.isUpperCase(str);
     }
 
@@ -60,7 +65,7 @@ public class CommonUtils {
      * @author qingmeng
      * @createTime: 2023/12/03 11:10:06
      */
-    public static Boolean checkChineseCharacter(char str){
+    public static Boolean checkChineseCharacter(char str) {
         return Character.UnicodeBlock.of(str).equals(Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS);
     }
 
@@ -83,5 +88,19 @@ public class CommonUtils {
             firstLetter = "#";
         }
         return firstLetter;
+    }
+
+    /**
+     * 获取徽标图像
+     *
+     * @return {@link Image }
+     * @author qingmeng
+     * @createTime: 2023/12/05 22:11:51
+     */
+    @SneakyThrows
+    public static Image getLogoImage() {
+        ClassPathResource classPathResource = new ClassPathResource("/static/logo.png");
+        InputStream inputStreamImg = classPathResource.getInputStream();
+        return ImageIO.read(inputStreamImg);
     }
 }

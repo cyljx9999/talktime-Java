@@ -21,6 +21,8 @@ import me.chanjar.weixin.common.bean.WxOAuth2UserInfo;
  */
 public class LoginAboutAdapt {
 
+    public static final int USE_NAME_LENGTH = 8;
+
     /**
      * 构造token信息类
      *
@@ -101,8 +103,8 @@ public class LoginAboutAdapt {
      */
     public static SysUser buildDefaultRegister(){
         SysUser sysUser = new SysUser();
-        sysUser.setUserName(RandomUtil.randomString(8));
-        sysUser.setUserAccount(RandomUtil.randomString(8));
+        sysUser.setUserName(RandomUtil.randomString(USE_NAME_LENGTH));
+        sysUser.setUserAccount(RandomUtil.randomString(USE_NAME_LENGTH));
         sysUser.setUserPassword(SaSecureUtil.md5BySalt(SystemConstant.DEFAULT_PASSWORD, SystemConstant.MD5_SALT));
         sysUser.setUserSex(SexEnum.UNKNOWN.getCode());
         sysUser.setAccountStatus(AccountStatusEnum.NORMAL.getCode());
@@ -125,8 +127,8 @@ public class LoginAboutAdapt {
         user.setUserAvatar(userInfo.getHeadImgUrl());
         user.setUserName(userInfo.getNickname());
         user.setUserSex(userInfo.getSex());
-        if (userInfo.getNickname().length() > 10) {
-            user.setUserName(RandomUtil.randomString(8));
+        if (userInfo.getNickname().length() > SystemConstant.NICK_NAME_MAX_LENGTH) {
+            user.setUserName(RandomUtil.randomString(USE_NAME_LENGTH));
         } else {
             user.setUserName(userInfo.getNickname());
         }

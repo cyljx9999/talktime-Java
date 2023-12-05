@@ -74,16 +74,6 @@ public interface SysUserService{
     SysUser getUserInfoWithId(Long userId);
 
     /**
-     * 保存
-     *
-     * @param saveUser 用户
-     * @return boolean
-     * @author qingmeng
-     * @createTime: 2023/11/20 08:41:14
-     */
-    boolean save(SysUser saveUser);
-
-    /**
      * 使用 ID 更新
      *
      * @param update 更新

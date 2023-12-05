@@ -63,10 +63,27 @@ public class SystemConstant {
     /**
      * 字母列表
      */
-    public static final List<String> alphabetList = Arrays.asList(
+    public static final List<String> ALPHABET_LIST = Arrays.asList(
             "A","B","C","D","E","F","G",
             "H","I","J","K","L","M","N",
             "O","P","Q","R","S","T","U",
             "V","W","X","Y","Z","#"
     );
+
+    /**
+     * 昵称最大长度
+     */
+    public static final int NICK_NAME_MAX_LENGTH = 10;
+
+    /**
+     * QR码宽度
+     */
+    public static final int QRCODE_WIDTH = 300;
+
+    /**
+     * QR码高度
+     */
+    public static final int QRCODE_HEIGHT = 300;
+
+
 }
