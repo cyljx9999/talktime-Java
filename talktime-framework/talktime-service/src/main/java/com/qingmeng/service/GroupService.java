@@ -13,7 +13,7 @@ public interface GroupService {
      * 创建群聊
      *
      * @param userId        用户 ID
-     * @param creatGroupDTO 创建集团 DTO
+     * @param creatGroupDTO 创建群聊 DTO
      * @author qingmeng
      * @createTime: 2023/12/06 22:07:59
      */

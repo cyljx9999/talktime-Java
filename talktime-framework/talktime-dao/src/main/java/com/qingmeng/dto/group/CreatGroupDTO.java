@@ -19,7 +19,7 @@ public class CreatGroupDTO {
      * 成员ids
      */
     @NotEmpty
-    @Size(min = 1, max = 200)
+    @Size(min = 3, max = 200)
     private List<Long> memberIds;
 
 }

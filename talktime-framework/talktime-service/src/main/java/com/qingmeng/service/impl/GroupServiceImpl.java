@@ -8,11 +8,13 @@ import com.qingmeng.dto.group.CreatGroupDTO;
 import com.qingmeng.entity.*;
 import com.qingmeng.service.FileService;
 import com.qingmeng.service.GroupService;
+import com.qingmeng.utils.AssertUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author 清梦
@@ -42,13 +44,15 @@ public class GroupServiceImpl implements GroupService {
      * 创建群聊
      *
      * @param userId        用户 ID
-     * @param creatGroupDTO 创建集团 DTO
+     * @param creatGroupDTO 创建群聊 DTO
      * @author qingmeng
      * @createTime: 2023/12/06 22:07:59
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void creatGroup(Long userId, CreatGroupDTO creatGroupDTO) {
+        List<Long> ids = creatGroupDTO.getMemberIds().stream().distinct().collect(Collectors.toList());
+        AssertUtils.equal(ids.size(),3,"创建群聊不得少于三人");
         // 创建抽象群聊房间记录
         ChatRoom chatRoom = RoomAdapt.buildDefaultGroupRoom();
         chatRoomDao.save(chatRoom);
@@ -57,13 +61,13 @@ public class GroupServiceImpl implements GroupService {
         ChatGroupRoom chatGroupRoom = ChatAdapt.buildChatGroupRoom(roomId);
         Long groupRoomId = chatGroupRoom.getId();
         // 添加群成员记录
-        List<ChatGroupMember> saveChatGroupMemberList = ChatAdapt.buildSaveChatGroupMemberList(groupRoomId, creatGroupDTO.getMemberIds());
+        List<ChatGroupMember> saveChatGroupMemberList = ChatAdapt.buildSaveChatGroupMemberList(groupRoomId, ids);
         chatGroupMemberDao.saveBatch(saveChatGroupMemberList);
         // 添加群管理员(即群主)记录
         ChatGroupManager chatGroupManager = ChatAdapt.buildChatGroupManager(userId, groupRoomId);
         chatGroupManagersDao.save(chatGroupManager);
         // 添加对应成员对群聊设置记录
-        List<ChatGroupPersonalSetting> builtChatGroupPersonalSettingSaveList = ChatAdapt.buildChatGroupPersonalSettingSaveList(groupRoomId, creatGroupDTO.getMemberIds());
+        List<ChatGroupPersonalSetting> builtChatGroupPersonalSettingSaveList = ChatAdapt.buildChatGroupPersonalSettingSaveList(groupRoomId, ids);
         chatGroupPersonalSettingDao.saveBatch(builtChatGroupPersonalSettingSaveList);
         // 添加管理员管理群聊设置记录
         SysUser sysUser = userCache.get(userId);
