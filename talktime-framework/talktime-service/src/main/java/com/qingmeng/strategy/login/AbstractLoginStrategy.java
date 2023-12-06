@@ -10,7 +10,7 @@ import com.qingmeng.dto.login.LoginParamDTO;
 import com.qingmeng.entity.SysUser;
 import com.qingmeng.enums.system.BannedEnum;
 import com.qingmeng.service.SysUserService;
-import com.qingmeng.utils.AsserUtils;
+import com.qingmeng.utils.AssertUtils;
 import com.qingmeng.utils.RedisUtils;
 import com.qingmeng.valid.AccountGroup;
 import com.qingmeng.vo.login.TokenInfoVO;
@@ -37,12 +37,12 @@ public abstract class AbstractLoginStrategy implements LoginStrategy{
      * @createTime: 2023/11/11 11:16:16
      */
     protected void checkParam(LoginParamDTO loginParamDTO){
-        AsserUtils.validateEntity(loginParamDTO,true, AccountGroup.class);
+        AssertUtils.validateEntity(loginParamDTO,true, AccountGroup.class);
         String captchaCode = RedisUtils.get(RedisConstant.CAPTCHA_CODE_KEY + loginParamDTO.getCodeId());
         if (SystemConstant.UNIVERSAL_VERIFICATION_CODE.equals(captchaCode)){
             return;
         }
-        AsserUtils.equal(captchaCode, loginParamDTO.getCode(),"验证码不一致");
+        AssertUtils.equal(captchaCode, loginParamDTO.getCode(),"验证码不一致");
     }
 
     /**
@@ -56,7 +56,7 @@ public abstract class AbstractLoginStrategy implements LoginStrategy{
     protected SysUser getUserInfo(LoginParamDTO loginParamDTO) {
         SysUser sysUser = sysUserService.getUserInfoByAccount(loginParamDTO);
         String encryptPassword = SaSecureUtil.md5BySalt(loginParamDTO.getPassword(), SystemConstant.MD5_SALT);
-        AsserUtils.equal(encryptPassword,sysUser.getUserPassword(),"密码不一致");
+        AssertUtils.equal(encryptPassword,sysUser.getUserPassword(),"密码不一致");
         return sysUser;
     }
 

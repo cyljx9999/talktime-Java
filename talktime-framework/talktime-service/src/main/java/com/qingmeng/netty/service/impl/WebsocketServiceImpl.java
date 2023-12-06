@@ -20,7 +20,7 @@ import com.qingmeng.netty.dto.WsChannelExtraDTO;
 import com.qingmeng.netty.service.WebSocketService;
 import com.qingmeng.netty.vo.WsBaseVO;
 import com.qingmeng.service.SysUserService;
-import com.qingmeng.utils.AsserUtils;
+import com.qingmeng.utils.AssertUtils;
 import com.qingmeng.utils.IpUtils;
 import com.qingmeng.utils.NettyUtil;
 import com.qingmeng.utils.RedisUtils;
@@ -169,7 +169,7 @@ public class WebsocketServiceImpl implements WebSocketService {
         // 用户校验成功给用户登录
         if (tokenFlag > 0) {
             SysUser user = sysUserService.getUserInfoWithId(Long.parseLong(StpUtil.getLoginIdByToken(token).toString()));
-            AsserUtils.isNull(user, "用户不存在");
+            AssertUtils.isNull(user, "用户不存在");
             loginSuccess(channel, user, tokenName, token);
         } else {
             // 通知到前端的token失效

@@ -4,7 +4,7 @@ import com.qingmeng.cache.UserSettingCache;
 import com.qingmeng.dto.user.ApplyFriendDTO;
 import com.qingmeng.entity.SysUserPrivacySetting;
 import com.qingmeng.enums.user.CloseOrOpenStatusEnum;
-import com.qingmeng.utils.AsserUtils;
+import com.qingmeng.utils.AssertUtils;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -42,7 +42,7 @@ public class ApplyByQrcodeStrategy extends AbstractApplyFriendStrategy{
     @Override
     protected void checkAuthority(ApplyFriendDTO applyFriendDTO) {
         SysUserPrivacySetting setting = userSettingCache.get(applyFriendDTO.getUserId());
-        AsserUtils.equal(setting.getAddByCard(), CloseOrOpenStatusEnum.OPEN.getCode(),"对方开启隐私设置，无法添加");
+        AssertUtils.equal(setting.getAddByCard(), CloseOrOpenStatusEnum.OPEN.getCode(),"对方开启隐私设置，无法添加");
     }
 
 }

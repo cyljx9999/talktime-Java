@@ -6,7 +6,7 @@ import com.qingmeng.dao.ChatRoomDao;
 import com.qingmeng.entity.ChatFriendRoom;
 import com.qingmeng.entity.ChatRoom;
 import com.qingmeng.service.ChatFriendRoomService;
-import com.qingmeng.utils.AsserUtils;
+import com.qingmeng.utils.AssertUtils;
 import com.qingmeng.utils.CommonUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,8 +37,8 @@ public class ChatFriendRoomServiceImpl implements ChatFriendRoomService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void saveChatFriendRoom(List<Long> ids) {
-        AsserUtils.isNotEmpty(ids, "房间创建失败，好友数量不对");
-        AsserUtils.equal(ids.size(), 2, "房间创建失败，好友数量不对");
+        AssertUtils.isNotEmpty(ids, "房间创建失败，好友数量不对");
+        AssertUtils.equal(ids.size(), 2, "房间创建失败，好友数量不对");
         // 新增抽象好友房间记录
         ChatRoom chatRoom = RoomAdapt.buildDefaultFriendRoom();
         chatRoomDao.save(chatRoom);

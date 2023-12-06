@@ -20,7 +20,7 @@ import com.qingmeng.enums.system.UploadSceneEnum;
 import com.qingmeng.service.FileService;
 import com.qingmeng.service.MinioService;
 import com.qingmeng.service.SysUserFriendService;
-import com.qingmeng.utils.AsserUtils;
+import com.qingmeng.utils.AssertUtils;
 import com.qingmeng.utils.CommonUtils;
 import com.qingmeng.vo.common.ScanQrcodeInfoVO;
 import com.qingmeng.vo.file.MinioVO;
@@ -149,7 +149,7 @@ public class FileServiceImpl implements FileService {
      */
     private SysUser getFriend(Long friendId) {
         SysUser sysUser = userCache.get(friendId);
-        AsserUtils.isNull(sysUser, "非法请求");
+        AssertUtils.isNull(sysUser, "非法请求");
         return sysUser;
     }
 

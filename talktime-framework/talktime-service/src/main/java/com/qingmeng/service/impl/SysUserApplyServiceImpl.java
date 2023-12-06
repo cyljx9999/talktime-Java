@@ -22,7 +22,7 @@ import com.qingmeng.service.SysUserApplyService;
 import com.qingmeng.service.SysUserFriendService;
 import com.qingmeng.strategy.applyFriend.ApplyFriendFactory;
 import com.qingmeng.strategy.applyFriend.ApplyFriendStrategy;
-import com.qingmeng.utils.AsserUtils;
+import com.qingmeng.utils.AssertUtils;
 import com.qingmeng.utils.CommonUtils;
 import com.qingmeng.vo.common.CommonPageVO;
 import com.qingmeng.vo.user.FriendApplyRecordVO;
@@ -84,7 +84,7 @@ public class SysUserApplyServiceImpl implements SysUserApplyService {
     @Transactional(rollbackFor = Exception.class)
     public void agreeApply(AgreeApplyFriendDTO agreeApplyFriendDTO) {
         SysUserApply sysUserApply = checkApplyExist(agreeApplyFriendDTO.getApplyId());
-        AsserUtils.equal(sysUserApply.getApplyStatus(),ApplyStatusEnum.APPLYING.getCode(), "非法申请状态");
+        AssertUtils.equal(sysUserApply.getApplyStatus(),ApplyStatusEnum.APPLYING.getCode(), "非法申请状态");
         // 判断好友是否已存在
         checkFriendExist(sysUserApply);
         // 获取id组合标识key
@@ -216,7 +216,7 @@ public class SysUserApplyServiceImpl implements SysUserApplyService {
      */
     private void checkFriendExist(SysUserApply sysUserApply) {
         SysUserFriend sysUserFriend = sysUserFriendService.getFriendByBothId(sysUserApply.getUserId(), sysUserApply.getTargetId());
-        AsserUtils.isNotNull(sysUserFriend,"对方已经是您好友，请勿重复操作");
+        AssertUtils.isNotNull(sysUserFriend,"对方已经是您好友，请勿重复操作");
     }
 
     /**
@@ -228,7 +228,7 @@ public class SysUserApplyServiceImpl implements SysUserApplyService {
      * @createTime: 2023/11/29 12:41:47
      */
     private static void checkLegal(Long userId, SysUserApply userApply) {
-        AsserUtils.equal(userApply.getTargetId(), userId,"非法请求");
+        AssertUtils.equal(userApply.getTargetId(), userId,"非法请求");
     }
 
     /**
@@ -241,7 +241,7 @@ public class SysUserApplyServiceImpl implements SysUserApplyService {
      */
     private SysUserApply checkApplyExist(Long applyId) {
         SysUserApply userApply = sysUserApplyDao.getById(applyId);
-        AsserUtils.isNull(userApply, "无效的applyId");
+        AssertUtils.isNull(userApply, "无效的applyId");
         return userApply;
     }
 

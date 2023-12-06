@@ -5,7 +5,7 @@ import com.qingmeng.constant.SystemConstant;
 import com.qingmeng.dao.SysUserDao;
 import com.qingmeng.dto.login.LoginParamDTO;
 import com.qingmeng.entity.SysUser;
-import com.qingmeng.utils.AsserUtils;
+import com.qingmeng.utils.AssertUtils;
 import com.qingmeng.utils.RedisUtils;
 import com.qingmeng.valid.PhoneGroup;
 import com.qingmeng.vo.login.TokenInfoVO;
@@ -33,12 +33,12 @@ public class PhoneStrategy extends AbstractLoginStrategy{
      */
     @Override
     protected void checkParam(LoginParamDTO loginParamDTO) {
-        AsserUtils.validateEntity(loginParamDTO,true, PhoneGroup.class);
+        AssertUtils.validateEntity(loginParamDTO,true, PhoneGroup.class);
         String phoneCode = RedisUtils.get(RedisConstant.PHONE_CODE_EXPIRE + loginParamDTO.getPhone());
         if (SystemConstant.UNIVERSAL_VERIFICATION_CODE.equals(phoneCode)){
             return;
         }
-        AsserUtils.equal(phoneCode, loginParamDTO.getCode(),"验证码不一致");
+        AssertUtils.equal(phoneCode, loginParamDTO.getCode(),"验证码不一致");
     }
 
     /**

@@ -11,7 +11,7 @@ import com.qingmeng.entity.SysUserArticle;
 import com.qingmeng.enums.article.ArticleTypeEnum;
 import com.qingmeng.service.SysArticleService;
 import com.qingmeng.service.SysWearArticleRecordService;
-import com.qingmeng.utils.AsserUtils;
+import com.qingmeng.utils.AssertUtils;
 import com.qingmeng.vo.article.SysArticleListVO;
 import org.springframework.stereotype.Service;
 
@@ -97,14 +97,14 @@ public class SysArticleServiceImpl implements SysArticleService {
     private void preCheck(Long userId, WearArticleDTO wearArticleDTO, int type) {
         List<SysUserArticle> userArticles = sysUserArticleDao.getUserArticleByIds(userId, wearArticleDTO.getArticleIds());
         userArticles.forEach(item -> {
-            AsserUtils.isNull(item, "尚未拥有该物品");
+            AssertUtils.isNull(item, "尚未拥有该物品");
         });
         List<SysArticle> collection = new ArrayList<>(articleCache.getBatch(wearArticleDTO.getArticleIds()).values());
         collection.forEach(article -> {
             if (Objects.equals(type, ArticleTypeEnum.BADGE.getCode())) {
-                AsserUtils.equal(article.getArticleType(), type, "请选择相关类型物品进行佩戴");
+                AssertUtils.equal(article.getArticleType(), type, "请选择相关类型物品进行佩戴");
             } else if (Objects.equals(type, ArticleTypeEnum.HEAD_BORDER.getCode())) {
-                AsserUtils.equal(article.getArticleType(), type, "请选择相关类型物品进行佩戴");
+                AssertUtils.equal(article.getArticleType(), type, "请选择相关类型物品进行佩戴");
             }
         });
     }

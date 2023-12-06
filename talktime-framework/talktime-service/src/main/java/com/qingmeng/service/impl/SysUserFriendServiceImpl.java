@@ -13,7 +13,7 @@ import com.qingmeng.entity.SysUserApply;
 import com.qingmeng.entity.SysUserFriend;
 import com.qingmeng.entity.SysUserFriendSetting;
 import com.qingmeng.service.SysUserFriendService;
-import com.qingmeng.utils.AsserUtils;
+import com.qingmeng.utils.AssertUtils;
 import com.qingmeng.utils.CommonUtils;
 import com.qingmeng.vo.user.CheckFriendVO;
 import com.qingmeng.vo.user.FriendTypeVO;
@@ -73,7 +73,7 @@ public class SysUserFriendServiceImpl implements SysUserFriendService {
     public void alterFriendSetting(Long userId, UserFriendSettingDTO userFriendSettingDTO) {
         String cacheKey = CommonUtils.getFriendSettingCacheKey(userId, userFriendSettingDTO.getFriendId());
         SysUserFriendSetting friendSetting = checkLegal(cacheKey);
-        AsserUtils.equal(friendSetting.getUserId(),userId, "非法请求");
+        AssertUtils.equal(friendSetting.getUserId(),userId, "非法请求");
         sysUserFriendSettingDao.alterSetting(userFriendSettingDTO);
         userFriendSettingCache.delete(cacheKey);
         userCache.evictFriendList(userId);
@@ -158,7 +158,7 @@ public class SysUserFriendServiceImpl implements SysUserFriendService {
      */
     private SysUserFriendSetting checkLegal(String cacheKey) {
         SysUserFriendSetting friendSetting = userFriendSettingCache.get(cacheKey);
-        AsserUtils.isNull(friendSetting, "未找到好友设置");
+        AssertUtils.isNull(friendSetting, "未找到好友设置");
         return friendSetting;
     }
 }

@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
  * @Description 业务校验工具
  * @createTime 2023年11月09日 22:11:00
  */
-public class AsserUtils {
+public class AssertUtils {
 
     /**
      * SpringValidatorAdapter 实例。

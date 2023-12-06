@@ -12,7 +12,7 @@ import com.qingmeng.entity.SysUserApply;
 import com.qingmeng.entity.SysUserFriendSetting;
 import com.qingmeng.entity.SysUserPrivacySetting;
 import com.qingmeng.enums.user.CloseOrOpenStatusEnum;
-import com.qingmeng.utils.AsserUtils;
+import com.qingmeng.utils.AssertUtils;
 import com.qingmeng.utils.CommonUtils;
 import org.springframework.stereotype.Component;
 
@@ -67,8 +67,8 @@ public class ApplyByCardStrategy extends AbstractApplyFriendStrategy{
     @Override
     protected void checkAuthority(ApplyFriendDTO applyFriendDTO) {
         SysUserPrivacySetting setting = userSettingCache.get(applyFriendDTO.getUserId());
-        AsserUtils.equal(setting.getAddByCard(), CloseOrOpenStatusEnum.OPEN.getCode(),"对方开启隐私设置，无法添加");
-        AsserUtils.isNotNull(applyFriendDTO.getShareCardByUserId(),"缺少分享者的用户id");
+        AssertUtils.equal(setting.getAddByCard(), CloseOrOpenStatusEnum.OPEN.getCode(),"对方开启隐私设置，无法添加");
+        AssertUtils.isNotNull(applyFriendDTO.getShareCardByUserId(),"缺少分享者的用户id");
     }
 
     /**

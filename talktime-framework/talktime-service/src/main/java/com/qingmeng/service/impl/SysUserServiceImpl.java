@@ -176,7 +176,7 @@ public class SysUserServiceImpl implements SysUserService {
      */
     @Override
     public void sendPhone(String phone) {
-        AsserUtils.isTrue(RegexUtils.checkPhone(phone), "手机号格式错误");
+        AssertUtils.isTrue(RegexUtils.checkPhone(phone), "手机号格式错误");
         StaticCredentialProvider provider = StaticCredentialProvider.create(Credential.builder()
                 .accessKeyId(aliAccessKeyId)
                 .accessKeySecret(aliAccessKeySecret)
@@ -296,7 +296,7 @@ public class SysUserServiceImpl implements SysUserService {
     @Transactional(rollbackFor = Exception.class)
     public void deleteFriend(Long userId, Long friendId) {
         SysUser sysUser = userCache.get(friendId);
-        AsserUtils.isNull(sysUser, "无效的friendId");
+        AssertUtils.isNull(sysUser, "无效的friendId");
         // 获取房间id
         String tagKey = CommonUtils.getKeyBySort(Arrays.asList(userId, friendId));
         ChatFriendRoom chatFriendRoom = chatFriendRoomDao.getInfoByKey(tagKey);
@@ -385,7 +385,7 @@ public class SysUserServiceImpl implements SysUserService {
     @Transactional(rollbackFor = Exception.class)
     public void alterAccount(Long userId, AlterAccountDTO alterAccountDTO) {
         SysUser sysUser = userCache.get(userId);
-        AsserUtils.isTrue(sysUser.getAlterAccountCount() == 0, "帐户修改次数已用完");
+        AssertUtils.isTrue(sysUser.getAlterAccountCount() == 0, "帐户修改次数已用完");
         sysUserDao.alterAccount(userId,sysUser.getAlterAccountCount() - 1,alterAccountDTO.getUserAccount());
         userCache.delete(userId);
     }
@@ -417,7 +417,7 @@ public class SysUserServiceImpl implements SysUserService {
         CheckFriendDTO friendDTO = new CheckFriendDTO();
         friendDTO.setFriendId(friendId);
         CheckFriendVO checkFriendVO = sysUserFriendService.checkFriend(userId, friendDTO);
-        AsserUtils.isTrue(checkFriendVO.getCheckStatus(),"非法请求");
+        AssertUtils.isTrue(checkFriendVO.getCheckStatus(),"非法请求");
     }
 
     /**
@@ -430,9 +430,9 @@ public class SysUserServiceImpl implements SysUserService {
      */
     private void registerCheck(RegisterDTO paramDTO, SysUser sysUser) {
         SysUser userByAccount = sysUserDao.getUserInfoByAccount(sysUser.getUserAccount());
-        AsserUtils.isNotNull(userByAccount, "账号重复");
+        AssertUtils.isNotNull(userByAccount, "账号重复");
         SysUser userByPhone = sysUserDao.getUserInfoByPhone(paramDTO.getPhone());
-        AsserUtils.isNotNull(userByPhone, "手机号重复");
+        AssertUtils.isNotNull(userByPhone, "手机号重复");
     }
 
 }

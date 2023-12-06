@@ -9,7 +9,7 @@ import com.qingmeng.entity.SysUser;
 import com.qingmeng.entity.SysUserApply;
 import com.qingmeng.enums.user.ApplyStatusEnum;
 import com.qingmeng.netty.service.WebSocketService;
-import com.qingmeng.utils.AsserUtils;
+import com.qingmeng.utils.AssertUtils;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -62,7 +62,7 @@ public abstract class AbstractApplyFriendStrategy implements ApplyFriendStrategy
      */
     protected void checkUserExist(Long userId){
         SysUser user = userCache.get(userId);
-        AsserUtils.isNull(user,"用户不存在");
+        AssertUtils.isNull(user,"用户不存在");
     }
 
     /**
@@ -118,8 +118,8 @@ public abstract class AbstractApplyFriendStrategy implements ApplyFriendStrategy
      */
     private void handlerApplyInfo(SysUserApply sysUserApply) {
         Integer applyStatus = sysUserApply.getApplyStatus();
-        AsserUtils.equal(applyStatus, ApplyStatusEnum.BLOCK.getCode(), "对方已拉黑，无法再次申请");
-        AsserUtils.equal(applyStatus, ApplyStatusEnum.ACCEPT.getCode(), "对方已同意，请勿重复申请");
+        AssertUtils.equal(applyStatus, ApplyStatusEnum.BLOCK.getCode(), "对方已拉黑，无法再次申请");
+        AssertUtils.equal(applyStatus, ApplyStatusEnum.ACCEPT.getCode(), "对方已同意，请勿重复申请");
         if (Objects.equals(applyStatus, ApplyStatusEnum.APPLYING.getCode())) {
             sysUserApplyDao.unReadApplyRecord(sysUserApply.getId());
         } else if (Objects.equals(applyStatus, ApplyStatusEnum.REJECT.getCode())) {
