@@ -1,12 +1,19 @@
 package com.qingmeng.utils;
 
+import cn.hutool.core.util.RandomUtil;
+import cn.hutool.core.util.StrUtil;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import net.sourceforge.pinyin4j.PinyinHelper;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.util.StreamUtils;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -18,6 +25,7 @@ import java.util.stream.Collectors;
  * @Description 通用工具
  * @createTime 2023年11月27日 15:09:00
  */
+@Slf4j
 public class CommonUtils {
 
     /**
@@ -42,7 +50,7 @@ public class CommonUtils {
      * @createTime: 2023/12/02 10:00:04
      */
     public static String getFriendSettingCacheKey(Long userId, Long friendId) {
-        return getKeyBySort(Arrays.asList(userId, friendId)) + ":" + userId;
+        return getKeyBySort(Arrays.asList(userId, friendId)) + StrUtil.COLON + userId;
     }
 
     /**
@@ -102,5 +110,26 @@ public class CommonUtils {
         ClassPathResource classPathResource = new ClassPathResource("/static/logo.png");
         InputStream inputStreamImg = classPathResource.getInputStream();
         return ImageIO.read(inputStreamImg);
+    }
+
+    /**
+     * URL 转文件
+     *
+     * @param imageUrl 图片网址
+     * @return {@link File }
+     * @author qingmeng
+     * @createTime: 2023/12/06 11:11:24
+     */
+    @SneakyThrows
+    public static File urlToFile(String imageUrl){
+        URL url = new URL(imageUrl);
+        File tempFile = File.createTempFile(RandomUtil.randomString(10), ".tmp");
+        tempFile.deleteOnExit();
+
+        try (InputStream in = url.openStream(); FileOutputStream out = new FileOutputStream(tempFile)) {
+            StreamUtils.copy(in, out);
+        }
+
+        return tempFile;
     }
 }

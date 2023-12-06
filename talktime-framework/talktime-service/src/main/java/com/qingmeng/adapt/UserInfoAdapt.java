@@ -4,9 +4,11 @@ import cn.hutool.core.util.StrUtil;
 import com.qingmeng.entity.SysUser;
 import com.qingmeng.entity.SysUserFriendSetting;
 import com.qingmeng.vo.chat.SimpleChatInfoVO;
+import com.qingmeng.vo.common.ScanQrcodeInfoVO;
 import com.qingmeng.vo.user.CheckLoginVO;
 import com.qingmeng.vo.user.ClickFriendInfoVo;
 import com.qingmeng.vo.user.PersonalInfoVO;
+import com.qingmeng.vo.user.UserPartialInfoVO;
 
 import java.util.List;
 
@@ -64,6 +66,7 @@ public class UserInfoAdapt {
         vo.setUserSex(sysUser.getUserSex());
         vo.setTogetherGroupList(togetherGroupList);
         vo.setAddChannel(sysUserFriendSetting.getAddChannel());
+        vo.setLocation(sysUser.getIpLocation());
         return vo;
     }
 
@@ -79,5 +82,55 @@ public class UserInfoAdapt {
         CheckLoginVO loginVO = new CheckLoginVO();
         loginVO.setLoginStatus(status);
         return loginVO;
+    }
+
+    /**
+     * 扫描二维码信息给朋友VO
+     *
+     * @param friendSetting     好友设置
+     * @param sysUser           sys 用户
+     * @param togetherGroupList 一起组列表
+     * @return {@link ScanQrcodeInfoVO }<{@link ? }>
+     * @author qingmeng
+     * @createTime: 2023/12/06 11:33:40
+     */
+    public static ScanQrcodeInfoVO<?> scanQrcodeInfoToFriendVO(SysUserFriendSetting friendSetting, SysUser sysUser, List<SimpleChatInfoVO> togetherGroupList) {
+        ClickFriendInfoVo clickFriendInfoVo = buildClickFriendInfoVo(friendSetting, sysUser, togetherGroupList);
+        ScanQrcodeInfoVO<ClickFriendInfoVo> scanQrcodeInfoVO = new ScanQrcodeInfoVO<>();
+        scanQrcodeInfoVO.setDataInfo(clickFriendInfoVo);
+        return scanQrcodeInfoVO;
+    }
+
+    /**
+     * 扫描二维码信息到用户部分VO
+     *
+     * @param sysUser sys 用户
+     * @return {@link ScanQrcodeInfoVO }<{@link ? }>
+     * @author qingmeng
+     * @createTime: 2023/12/06 11:38:20
+     */
+    public static ScanQrcodeInfoVO<?> scanQrcodeInfoToUserPartialVO(SysUser sysUser) {
+        UserPartialInfoVO userPartialInfoVO = buildUserPartialInfoVO(sysUser);
+        ScanQrcodeInfoVO<UserPartialInfoVO> scanQrcodeInfoVO = new ScanQrcodeInfoVO<>();
+        scanQrcodeInfoVO.setDataInfo(userPartialInfoVO);
+        return scanQrcodeInfoVO;
+    }
+
+    /**
+     * 构建用户部分信息 vo
+     *
+     * @param sysUser sys 用户
+     * @return {@link UserPartialInfoVO }
+     * @author qingmeng
+     * @createTime: 2023/12/06 11:37:49
+     */
+    public static UserPartialInfoVO buildUserPartialInfoVO(SysUser sysUser){
+        UserPartialInfoVO userPartialInfoVO = new UserPartialInfoVO();
+        userPartialInfoVO.setUserName(sysUser.getUserName());
+        userPartialInfoVO.setUserAvatar(sysUser.getUserAvatar());
+        userPartialInfoVO.setUserAccount(sysUser.getUserAccount());
+        userPartialInfoVO.setUserSex(sysUser.getUserSex());
+        userPartialInfoVO.setLocation(sysUser.getIpLocation());
+        return userPartialInfoVO;
     }
 }

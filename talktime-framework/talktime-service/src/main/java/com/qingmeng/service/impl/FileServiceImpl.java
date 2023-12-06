@@ -4,21 +4,34 @@ import cn.hutool.core.util.RandomUtil;
 import cn.hutool.extra.qrcode.QrCodeUtil;
 import cn.hutool.extra.qrcode.QrConfig;
 import com.qingmeng.adapt.FileAdapt;
+import com.qingmeng.adapt.UserInfoAdapt;
 import com.qingmeng.cache.UserCache;
+import com.qingmeng.cache.UserFriendSettingCache;
 import com.qingmeng.constant.SystemConstant;
 import com.qingmeng.dao.SysUserDao;
 import com.qingmeng.dto.file.MinioDTO;
+import com.qingmeng.dto.file.ScanQrcodeDTO;
 import com.qingmeng.dto.file.UploadUrlDTO;
+import com.qingmeng.dto.login.CheckFriendDTO;
+import com.qingmeng.entity.SysUser;
+import com.qingmeng.entity.SysUserFriendSetting;
+import com.qingmeng.enums.system.ScanQrcodeEnum;
 import com.qingmeng.enums.system.UploadSceneEnum;
 import com.qingmeng.service.FileService;
-import com.qingmeng.service.MinioSerivce;
+import com.qingmeng.service.MinioService;
+import com.qingmeng.service.SysUserFriendService;
+import com.qingmeng.utils.AsserUtils;
 import com.qingmeng.utils.CommonUtils;
+import com.qingmeng.vo.common.ScanQrcodeInfoVO;
 import com.qingmeng.vo.file.MinioVO;
+import com.qingmeng.vo.user.CheckFriendVO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  * @author 清梦
@@ -29,11 +42,15 @@ import java.io.File;
 @Service
 public class FileServiceImpl implements FileService {
     @Resource
-    private MinioSerivce minioSerivce;
+    private MinioService minioSerivce;
     @Resource
     private UserCache userCache;
     @Resource
     private SysUserDao sysUserDao;
+    @Resource
+    private SysUserFriendService sysUserFriendService;
+    @Resource
+    private UserFriendSettingCache userFriendSettingCache;
 
     /**
      * 获取二维码网址
@@ -66,8 +83,8 @@ public class FileServiceImpl implements FileService {
      * @createTime: 2023/12/05 23:01:29
      */
     @Override
-    public MinioVO getPreSignedObjectUrl(Long userId,UploadUrlDTO uploadUrlDTO) {
-        MinioDTO minioDTO = FileAdapt.buildMinioDTO(userId,uploadUrlDTO);
+    public MinioVO getPreSignedObjectUrl(Long userId, UploadUrlDTO uploadUrlDTO) {
+        MinioDTO minioDTO = FileAdapt.buildMinioDTO(userId, uploadUrlDTO);
         return minioSerivce.getPreSignedObjectUrl(minioDTO);
     }
 
@@ -82,7 +99,73 @@ public class FileServiceImpl implements FileService {
     @Transactional(rollbackFor = Exception.class)
     public void updateQrcodeUrl(Long userId) {
         String qrcodeUrl = getQrcodeUrl(userId);
-        sysUserDao.updateQrcode(userId,qrcodeUrl);
+        sysUserDao.updateQrcode(userId, qrcodeUrl);
         userCache.delete(userId);
+    }
+
+    /**
+     * 扫描二维码信息
+     *
+     * @param userId        用户 ID
+     * @param scanQrcodeDTO 扫描二维码 DTO
+     * @return {@link ScanQrcodeInfoVO }<{@link ? }>
+     * @author qingmeng
+     * @createTime: 2023/12/06 11:19:13
+     */
+    @Override
+    public ScanQrcodeInfoVO<?> scanQrcodeInfo(Long userId,ScanQrcodeDTO scanQrcodeDTO) {
+        if (Objects.equals(scanQrcodeDTO.getScanType(), ScanQrcodeEnum.friend.getCode())) {
+            // 把访问地址转File类型
+            File file = CommonUtils.urlToFile(scanQrcodeDTO.getUrl());
+            // 解析二维码中的数据
+            Long friendId = Long.parseLong(QrCodeUtil.decode(file));
+            // 获取好友
+            SysUser sysUser = getFriend(friendId);
+            // 判断是否为当前用户好友
+            Boolean checkStatus = checkFriend(userId, sysUser);
+            if (checkStatus){
+                // 是好友，返回对应好友的封面信息
+                SysUserFriendSetting friendSetting = userFriendSettingCache.get(CommonUtils.getFriendSettingCacheKey(userId, friendId));
+                // todo 查询共同好友
+                return UserInfoAdapt.scanQrcodeInfoToFriendVO(friendSetting, sysUser, new ArrayList<>());
+            }else {
+                // 非好友，返回对应的好友部分信息
+                return UserInfoAdapt.scanQrcodeInfoToUserPartialVO(sysUser);
+            }
+
+        } else {
+            // todo 查询当前群聊封面信息
+        }
+        return null;
+    }
+
+    /**
+     * 获取朋友
+     *
+     * @param friendId 好友ID
+     * @return {@link SysUser }
+     * @author qingmeng
+     * @createTime: 2023/12/06 11:23:08
+     */
+    private SysUser getFriend(Long friendId) {
+        SysUser sysUser = userCache.get(friendId);
+        AsserUtils.isNull(sysUser, "非法请求");
+        return sysUser;
+    }
+
+    /**
+     * 检查是否为好友
+     *
+     * @param userId  用户 ID
+     * @param sysUser sys 用户
+     * @return {@link Boolean } true 是 false 不是
+     * @author qingmeng
+     * @createTime: 2023/12/06 11:21:10
+     */
+    private Boolean checkFriend(Long userId, SysUser sysUser) {
+        CheckFriendDTO friendDTO = new CheckFriendDTO();
+        friendDTO.setFriendId(sysUser.getId());
+        CheckFriendVO checkFriendVO = sysUserFriendService.checkFriend(userId, friendDTO);
+        return checkFriendVO.getCheckStatus();
     }
 }

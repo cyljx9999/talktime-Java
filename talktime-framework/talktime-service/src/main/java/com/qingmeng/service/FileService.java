@@ -1,6 +1,8 @@
 package com.qingmeng.service;
 
+import com.qingmeng.dto.file.ScanQrcodeDTO;
 import com.qingmeng.dto.file.UploadUrlDTO;
+import com.qingmeng.vo.common.ScanQrcodeInfoVO;
 import com.qingmeng.vo.file.MinioVO;
 
 /**
@@ -41,4 +43,17 @@ public interface FileService {
      * @createTime: 2023/12/05 23:08:15
      */
     void updateQrcodeUrl(Long userId);
+
+
+    /**
+     * 扫描二维码信息
+     *
+     * @param userId        用户 ID
+     * @param scanQrcodeDTO 扫描二维码 DTO
+     * @return {@link ScanQrcodeInfoVO }<{@link ? }>
+     * @author qingmeng
+     * @createTime: 2023/12/06 11:19:17
+     */
+    ScanQrcodeInfoVO<?> scanQrcodeInfo(Long userId,ScanQrcodeDTO scanQrcodeDTO);
+
 }

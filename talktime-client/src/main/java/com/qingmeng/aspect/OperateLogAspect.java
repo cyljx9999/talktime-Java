@@ -1,6 +1,7 @@
 package com.qingmeng.aspect;
 
 import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.qingmeng.annotation.SysLog;
 import com.qingmeng.entity.SysOperateLog;
@@ -104,7 +105,7 @@ public class OperateLogAspect {
         for (StackTraceElement stet : elements) {
             stringBuilder.append(stet).append("\n");
         }
-        String message = exceptionName + ":" + exceptionMessage + "\n\t" + stringBuilder;
+        String message = exceptionName + StrUtil.COLON + exceptionMessage + "\n\t" + stringBuilder;
         message = substring(message,0 ,2000);
         return message;
     }

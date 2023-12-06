@@ -43,6 +43,6 @@ public class RedissonLockAspect {
         //默认方法限定名+注解排名（可能多个）
         String prefix = StrUtil.isBlank(redissonLock.prefixKey()) ? SpElUtils.getMethodKey(method) : redissonLock.prefixKey();
         String key = SpElUtils.parseSpEl(method, joinPoint.getArgs(), redissonLock.key());
-        return lockUtils.executeWithLockThrows(prefix + ":" + key, redissonLock.waitTime(), redissonLock.unit(), joinPoint::proceed);
+        return lockUtils.executeWithLockThrows(prefix + StrUtil.COLON + key, redissonLock.waitTime(), redissonLock.unit(), joinPoint::proceed);
     }
 }

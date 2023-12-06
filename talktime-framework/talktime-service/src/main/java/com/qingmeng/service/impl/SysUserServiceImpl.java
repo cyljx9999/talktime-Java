@@ -303,7 +303,7 @@ public class SysUserServiceImpl implements SysUserService {
         // 删除抽象房间信息
         chatRoomDao.removeById(chatFriendRoom.getRoomId());
         // 删除好友设置
-        userFriendSettingCache.delete(tagKey + ":" + userId);
+        userFriendSettingCache.delete(CommonUtils.getFriendSettingCacheKey(userId,friendId));
         sysUserFriendSettingDao.removeByTagKey(tagKey);
         // 删除好友
         sysUserFriendDao.removeByFriend(userId,friendId);

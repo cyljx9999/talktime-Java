@@ -1,24 +1,16 @@
 package com.qingmeng.vo.user;
 
 import com.qingmeng.enums.user.SexEnum;
-import com.qingmeng.vo.chat.SimpleChatInfoVO;
 import lombok.Data;
-
-import java.util.List;
 
 /**
  * @author 清梦
  * @version 1.0.0
- * @Description 点击好友信息返回类
- * @createTime 2023年12月02日 09:44:00
+ * @Description 用户部分信息
+ * @createTime 2023年12月06日 10:46:00
  */
 @Data
-public class ClickFriendInfoVo {
-
-    /**
-     * 昵称
-     */
-    private String nickName;
+public class UserPartialInfoVO {
 
     /**
      * 用户名
@@ -45,21 +37,5 @@ public class ClickFriendInfoVo {
      * 位置
      */
     private String location;
-
-    /**
-     * 共同群聊
-     */
-    private List<SimpleChatInfoVO> togetherGroupList;
-
-    /**
-     * 添加渠道
-     */
-    private String addChannel;
-
-    /**
-     * 备注状态
-     */
-    private Boolean remarkStatus;
-
 
 }
