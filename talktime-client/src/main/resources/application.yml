@@ -7,7 +7,7 @@ spring:
   application:
     name: talktime
   datasource:
-    url: jdbc:mysql://${talktime.mysql.ip}:${talktime.mysql.port}/${talktime.mysql.db}?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://${talktime.mysql.ip}:${talktime.mysql.port}/${talktime.mysql.db}?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&rewriteBatchedStatements=true
     username: ${talktime.mysql.username}
     password: ${talktime.mysql.password}
     driver-class-name: com.mysql.cj.jdbc.Driver

@@ -10,12 +10,4 @@ package com.qingmeng.service;
  */
 public interface ChatRoomService{
 
-    /**
-     * 保存朋友房间
-     *
-     * @author qingmeng
-     * @createTime: 2023/12/01 16:33:11
-     */
-    void saveFriendRoom();
-
 }

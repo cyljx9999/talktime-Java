@@ -44,4 +44,14 @@ public class PersonalPrivacySettingVO {
      * @see com.qingmeng.enums.user.CloseOrOpenStatusEnum
      */
     private Integer addByQrcode;
+
+    /**
+     * 个性化签名
+     */
+    private String personalizedSignature;
+
+    /**
+     * 拍一拍内容
+     */
+    private String patContent;
 }

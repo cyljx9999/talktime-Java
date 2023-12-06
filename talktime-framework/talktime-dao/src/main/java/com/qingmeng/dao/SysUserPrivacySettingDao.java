@@ -1,10 +1,13 @@
 package com.qingmeng.dao;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.qingmeng.dto.user.PersonalPrivacySettingDTO;
 import com.qingmeng.entity.SysUserPrivacySetting;
 import com.qingmeng.mapper.SysUserPrivacySettingMapper;
 import org.springframework.stereotype.Service;
+
+import java.util.Objects;
 
 /**
  * <p>
@@ -26,6 +29,14 @@ public class SysUserPrivacySettingDao extends ServiceImpl<SysUserPrivacySettingM
      * @createTime: 2023/12/02 11:36:49
      */
     public void alterPersonalPrivacySetting(Long userId, PersonalPrivacySettingDTO personalPrivacySettingDTO) {
-
+        lambdaUpdate()
+                .eq(SysUserPrivacySetting::getUserId, userId)
+                .set(Objects.nonNull(personalPrivacySettingDTO.getAddByAccount()), SysUserPrivacySetting::getAddByAccount, personalPrivacySettingDTO.getAddByAccount())
+                .set(Objects.nonNull(personalPrivacySettingDTO.getAddByCard()), SysUserPrivacySetting::getAddByCard, personalPrivacySettingDTO.getAddByCard())
+                .set(Objects.nonNull(personalPrivacySettingDTO.getAddByGroup()), SysUserPrivacySetting::getAddByGroup, personalPrivacySettingDTO.getAddByGroup())
+                .set(Objects.nonNull(personalPrivacySettingDTO.getAddByQrcode()), SysUserPrivacySetting::getAddByQrcode, personalPrivacySettingDTO.getAddByQrcode())
+                .set(StrUtil.isNotBlank(personalPrivacySettingDTO.getPersonalizedSignature()), SysUserPrivacySetting::getPersonalizedSignature, personalPrivacySettingDTO.getPersonalizedSignature())
+                .set(StrUtil.isNotBlank(personalPrivacySettingDTO.getPatContent()), SysUserPrivacySetting::getPatContent, personalPrivacySettingDTO.getPatContent())
+                .update(new SysUserPrivacySetting());
     }
 }

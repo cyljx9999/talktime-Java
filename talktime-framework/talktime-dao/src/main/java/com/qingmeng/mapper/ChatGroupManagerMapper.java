@@ -1,7 +1,7 @@
 package com.qingmeng.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.qingmeng.entity.ChatGroupManagers;
+import com.qingmeng.entity.ChatGroupManager;
 
 /**
  * <p>
@@ -11,6 +11,6 @@ import com.qingmeng.entity.ChatGroupManagers;
  * @author qingmeng
  * @since 2023-11-26 08:12:03
  */
-public interface ChatGroupManagersMapper extends BaseMapper<ChatGroupManagers> {
+public interface ChatGroupManagerMapper extends BaseMapper<ChatGroupManager> {
 
 }

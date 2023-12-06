@@ -1,7 +1,6 @@
 package com.qingmeng.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
-import com.qingmeng.enums.system.LogicDeleteEnum;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -47,6 +46,12 @@ public class ChatGroupSetting implements Serializable {
     private String groupRoomQrcode;
 
     /**
+     * 邀请确认
+     * @see com.qingmeng.enums.user.CloseOrOpenStatusEnum
+     */
+    private Integer invitationConfirmation;
+
+    /**
      * 创建时间
      */
     @TableField(fill = FieldFill.INSERT)
@@ -57,12 +62,4 @@ public class ChatGroupSetting implements Serializable {
      */
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private Date updateTime;
-
-    /**
-     * 逻辑删除
-     * @see LogicDeleteEnum
-     */
-    @TableLogic
-    @TableField(fill = FieldFill.INSERT)
-    private Integer isDeleted;
 }

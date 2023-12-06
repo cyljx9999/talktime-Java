@@ -2,6 +2,7 @@ package com.qingmeng.dto.user;
 
 import com.qingmeng.valid.custom.IntListValue;
 import lombok.Data;
+import org.hibernate.validator.constraints.Length;
 
 /**
  * @author 清梦
@@ -51,4 +52,16 @@ public class PersonalPrivacySettingDTO {
      */
     @IntListValue(values = {0, 1})
     private Integer addByQrcode;
+
+    /**
+     * 个性化签名
+     */
+    @Length(max = 20)
+    private String personalizedSignature;
+
+    /**
+     * 拍一拍内容
+     */
+    @Length(max = 20)
+    private String patContent;
 }

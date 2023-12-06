@@ -97,6 +97,8 @@ public class UserSettingAdapt {
         vo.setAddByGroup(setting.getAddByGroup());
         vo.setAddByCard(setting.getAddByCard());
         vo.setAddByQrcode(setting.getAddByQrcode());
+        vo.setPersonalizedSignature(setting.getPersonalizedSignature());
+        vo.setPatContent(setting.getPatContent());
         return vo;
     }
 

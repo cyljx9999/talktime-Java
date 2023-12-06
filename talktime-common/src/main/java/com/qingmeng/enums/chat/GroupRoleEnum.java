@@ -15,8 +15,8 @@ public enum GroupRoleEnum {
     /**
      * 群组角色枚举
      */
-    GROUP_OWNER(0, "群主"),
-    GROUP_ADMINISTRATOR(1, "群管理员"),
+    GROUP_OWNER(0, "GroupOwner"),
+    GROUP_ADMINISTRATOR(1, "Management"),
     ;
 
     private final Integer code;

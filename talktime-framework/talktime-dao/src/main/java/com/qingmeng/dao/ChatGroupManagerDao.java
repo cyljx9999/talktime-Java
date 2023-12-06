@@ -1,8 +1,8 @@
 package com.qingmeng.dao;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.qingmeng.entity.ChatGroupManagers;
-import com.qingmeng.mapper.ChatGroupManagersMapper;
+import com.qingmeng.entity.ChatGroupManager;
+import com.qingmeng.mapper.ChatGroupManagerMapper;
 import org.springframework.stereotype.Service;
 
 /**
@@ -14,6 +14,6 @@ import org.springframework.stereotype.Service;
  * @since 2023-11-26 08:12:03
  */
 @Service
-public class ChatGroupManagersDao extends ServiceImpl<ChatGroupManagersMapper, ChatGroupManagers> {
+public class ChatGroupManagerDao extends ServiceImpl<ChatGroupManagerMapper, ChatGroupManager> {
 
 }
