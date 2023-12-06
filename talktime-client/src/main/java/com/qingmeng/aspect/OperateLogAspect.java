@@ -7,6 +7,7 @@ import com.qingmeng.annotation.SysLog;
 import com.qingmeng.entity.SysOperateLog;
 import com.qingmeng.enums.system.OperateEnum;
 import com.qingmeng.event.SysOperateLogEvent;
+import com.qingmeng.utils.CommonUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.*;
 import org.aspectj.lang.reflect.MethodSignature;
@@ -106,70 +107,11 @@ public class OperateLogAspect {
             stringBuilder.append(stet).append("\n");
         }
         String message = exceptionName + StrUtil.COLON + exceptionMessage + "\n\t" + stringBuilder;
-        message = substring(message,0 ,2000);
+        message = CommonUtils.substring(message,0 ,2000);
         return message;
     }
-    /**
-     * 参数拼装
-     */
-    private String argsArrayToString(Object[] paramsArray)
-    {
-        StringBuilder params = new StringBuilder();
-        if (paramsArray != null) {
-            for (Object o : paramsArray) {
-                if (o != null) {
-                    try {
-                        Object jsonObj = JSONUtil.toJsonStr(o);
-                        params.append(jsonObj.toString()).append(" ");
-                    }
-                    catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
-        return params.toString().trim();
-    }
 
 
-    /**
-     * 字符串截取
-     * @param str 字符串
-     * @param start 起始位置
-     * @param end 结束位置
-     * @return {@link String }
-     * @author qingmeng
-     * @createTime: 2023/11/10 11:48:47
-     */
-    private  String substring(String str, int start, int end) {
-        if (str == null) {
-            return null;
-        } else {
-            if (end < 0) {
-                end += str.length();
-            }
-            if (start < 0) {
-                start += str.length();
-            }
-
-            if (end > str.length()) {
-                end = str.length();
-            }
-
-            if (start > end) {
-                return "";
-            } else {
-                if (start < 0) {
-                    start = 0;
-                }
-
-                if (end < 0) {
-                    end = 0;
-                }
-                return str.substring(start, end);
-            }
-        }
-    }
 
     private  SysOperateLog buildSysOperateLogEntity(HttpServletRequest request, Object result,JoinPoint joinPoint,Throwable e,boolean normal){
         // 从切面织入点处通过反射机制获取织入点处的方法
@@ -187,7 +129,7 @@ public class OperateLogAspect {
             sysOperateLog.setContent(annotation.content());
         }
         // 将入参转换成json
-        String params = argsArrayToString(joinPoint.getArgs());
+        String params = CommonUtils.argsArrayToString(joinPoint.getArgs());
         // 获取请求的类名
         String className = joinPoint.getTarget().getClass().getName();
         // 获取请求的方法名

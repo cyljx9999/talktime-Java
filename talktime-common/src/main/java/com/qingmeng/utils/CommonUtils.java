@@ -2,6 +2,7 @@ package com.qingmeng.utils;
 
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import net.sourceforge.pinyin4j.PinyinHelper;
@@ -89,7 +90,7 @@ public class CommonUtils {
         String firstLetter;
 
         if (checkLetter(ch)) {
-            firstLetter = String.valueOf(ch).toUpperCase();
+            firstLetter = java.lang.String.valueOf(ch).toUpperCase();
         } else if (checkChineseCharacter(ch)) {
             firstLetter = PinyinHelper.toHanyuPinyinStringArray(ch)[0].substring(0, 1).toUpperCase();
         } else {
@@ -121,7 +122,7 @@ public class CommonUtils {
      * @createTime: 2023/12/06 11:11:24
      */
     @SneakyThrows
-    public static File urlToFile(String imageUrl){
+    public static File urlToFile(String imageUrl) {
         URL url = new URL(imageUrl);
         File tempFile = File.createTempFile(RandomUtil.randomString(10), ".tmp");
         tempFile.deleteOnExit();
@@ -131,5 +132,73 @@ public class CommonUtils {
         }
 
         return tempFile;
+    }
+
+
+    /**
+     * 字符串截取
+     *
+     * @param str   字符串
+     * @param start 起始位置
+     * @param end   结束位置
+     * @return {@link String }
+     * @author qingmeng
+     * @createTime: 2023/11/10 11:48:47
+     */
+    public static String substring(String str, int start, int end) {
+        if (str == null) {
+            return null;
+        } else {
+            if (end < 0) {
+                end += str.length();
+            }
+            if (start < 0) {
+                start += str.length();
+            }
+
+            if (end > str.length()) {
+                end = str.length();
+            }
+
+            if (start > end) {
+                return "";
+            } else {
+                if (start < 0) {
+                    start = 0;
+                }
+
+                if (end < 0) {
+                    end = 0;
+                }
+                return str.substring(start, end);
+            }
+        }
+    }
+
+
+    /**
+     * 参数拼装
+     *
+     * @param paramsArray params 数组
+     * @return {@link String }
+     * @author qingmeng
+     * @createTime: 2023/12/06 21:37:14
+     */
+    public static String argsArrayToString(Object[] paramsArray) {
+        StringBuilder params = new StringBuilder();
+        if (paramsArray != null) {
+            for (Object o : paramsArray) {
+                if (o != null) {
+                    try {
+                        Object jsonObj = JSONUtil.toJsonStr(o);
+                        params.append(jsonObj.toString()).append(" ");
+                    }
+                    catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+        return params.toString().trim();
     }
 }
