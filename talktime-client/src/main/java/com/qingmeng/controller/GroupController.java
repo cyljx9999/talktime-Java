@@ -4,7 +4,8 @@ import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.dev33.satoken.stp.StpUtil;
 import com.qingmeng.annotation.SysLog;
 import com.qingmeng.domain.rep.CommonResult;
-import com.qingmeng.dto.group.CreatGroupDTO;
+import com.qingmeng.dto.chatGroup.CreatGroupDTO;
+import com.qingmeng.dto.chatGroup.InviteDTO;
 import com.qingmeng.service.GroupService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -39,6 +40,22 @@ public class GroupController {
     @SysLog(title = "群聊模块", content = "创建群聊")
     public CommonResult<String> creatGroup(@Valid @RequestBody CreatGroupDTO creatGroupDTO) {
         groupService.creatGroup(StpUtil.getLoginIdAsLong(), creatGroupDTO);
+        return CommonResult.success("创建成功");
+    }
+
+
+    /**
+     * 邀请
+     *
+     * @param inviteDTO 邀请 DTO
+     * @return {@link CommonResult }<{@link String }>
+     * @author qingmeng
+     * @createTime: 2023/12/07 08:42:41
+     */
+    @PostMapping("/invite")
+    @SysLog(title = "群聊模块", content = "邀请加入群聊")
+    public CommonResult<String> invite(@Valid @RequestBody InviteDTO inviteDTO) {
+        groupService.invite(StpUtil.getLoginIdAsLong(), inviteDTO);
         return CommonResult.success("创建成功");
     }
 

@@ -85,5 +85,14 @@ public class SystemConstant {
      */
     public static final int QRCODE_HEIGHT = 300;
 
+    /**
+     * 成员最大数量
+     */
+    public static Long MEMBER_MAX_COUNT = 500L;
+
+    /**
+     * 邀请提醒计数
+     */
+    public static int INVITE_REMIND_COUNT = 200;
 
 }

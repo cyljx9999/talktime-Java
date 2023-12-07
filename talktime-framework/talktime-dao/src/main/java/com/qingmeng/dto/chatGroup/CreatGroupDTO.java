@@ -1,4 +1,4 @@
-package com.qingmeng.dto.group;
+package com.qingmeng.dto.chatGroup;
 
 import lombok.Data;
 

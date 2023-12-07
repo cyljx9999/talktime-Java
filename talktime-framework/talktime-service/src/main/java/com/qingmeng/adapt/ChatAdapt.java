@@ -1,11 +1,9 @@
 package com.qingmeng.adapt;
 
 import com.qingmeng.entity.*;
-import com.qingmeng.enums.chat.DisplayNameStatusEnum;
-import com.qingmeng.enums.chat.MessageTopStatusEnum;
-import com.qingmeng.enums.chat.RemindStatusEnum;
-import com.qingmeng.enums.chat.RoomStatusEnum;
+import com.qingmeng.enums.chat.*;
 import com.qingmeng.enums.user.CloseOrOpenStatusEnum;
+import com.qingmeng.netty.vo.WsGroupInviteVO;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -64,6 +62,7 @@ public class ChatAdapt {
         ChatGroupManager chatGroupManager = new ChatGroupManager();
         chatGroupManager.setRoomGroupId(roomGroupId);
         chatGroupManager.setUserId(userId);
+        chatGroupManager.setRoleType(GroupRoleEnum.GROUP_OWNER.getCode());
         return chatGroupManager;
     }
 
@@ -108,4 +107,17 @@ public class ChatAdapt {
         return chatGroupSetting;
     }
 
+    /**
+     * 建立邀请组列表
+     *
+     * @param ids              IDS
+     * @param chatGroupSetting 聊天组设置
+     * @param userName         用户名
+     * @return {@link List }<{@link WsGroupInviteVO }>
+     * @author qingmeng
+     * @createTime: 2023/12/07 09:20:58
+     */
+    public static List<WsGroupInviteVO> buildInviteGroupList(List<Long> ids,ChatGroupSetting chatGroupSetting, String userName) {
+        return ids.stream().map(id);
+    }
 }

@@ -16,4 +16,15 @@ import org.springframework.stereotype.Service;
 @Service
 public class ChatGroupMemberDao extends ServiceImpl<ChatGroupMemberMapper, ChatGroupMember> {
 
+    /**
+     * 按组房间 ID 获取成员计数
+     *
+     * @param groupRoomId 组会议室 ID
+     * @return {@link Long }
+     * @author qingmeng
+     * @createTime: 2023/12/07 08:49:21
+     */
+    public Long getMemberCountByGroupRoomId(Long groupRoomId) {
+        return lambdaQuery().eq(ChatGroupMember::getGroupRoomId, groupRoomId).count();
+    }
 }

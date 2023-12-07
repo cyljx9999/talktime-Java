@@ -1,6 +1,7 @@
 package com.qingmeng.service;
 
-import com.qingmeng.dto.group.CreatGroupDTO;
+import com.qingmeng.dto.chatGroup.CreatGroupDTO;
+import com.qingmeng.dto.chatGroup.InviteDTO;
 
 /**
  * @author 清梦
@@ -18,4 +19,14 @@ public interface GroupService {
      * @createTime: 2023/12/06 22:07:59
      */
     void creatGroup(Long userId, CreatGroupDTO creatGroupDTO);
+
+    /**
+     * 邀请
+     *
+     * @param userId    用户 ID
+     * @param inviteDTO 邀请 DTO
+     * @author qingmeng
+     * @createTime: 2023/12/07 08:42:51
+     */
+    void invite(Long userId, InviteDTO inviteDTO);
 }

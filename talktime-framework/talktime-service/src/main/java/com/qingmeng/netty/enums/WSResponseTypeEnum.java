@@ -73,6 +73,11 @@ public enum WSResponseTypeEnum {
      * 成员变动
      */
     MEMBER_CHANGE(11, "成员变动", WsMemberChangeVO.class),
+
+    /**
+     * 群聊邀请
+     */
+    GROUP_INVITE(12, "群聊邀请", WsGroupInviteVO.class),
     ;
 
     /**

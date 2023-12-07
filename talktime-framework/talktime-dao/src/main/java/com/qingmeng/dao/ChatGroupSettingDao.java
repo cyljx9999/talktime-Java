@@ -16,4 +16,15 @@ import org.springframework.stereotype.Service;
 @Service
 public class ChatGroupSettingDao extends ServiceImpl<ChatGroupSettingMapper, ChatGroupSetting>{
 
+    /**
+     * 按组房间 ID 获取设置
+     *
+     * @param groupRoomId 组会议室 ID
+     * @return {@link ChatGroupSetting }
+     * @author qingmeng
+     * @createTime: 2023/12/07 09:17:50
+     */
+    public ChatGroupSetting getSettingByGroupRoomId(Long groupRoomId) {
+        return lambdaQuery().eq(ChatGroupSetting::getGroupRoomId,groupRoomId).one();
+    }
 }
