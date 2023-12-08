@@ -6,9 +6,7 @@ import com.qingmeng.config.annotation.RedissonLock;
 import com.qingmeng.config.cache.UserCache;
 import com.qingmeng.constant.SystemConstant;
 import com.qingmeng.dao.*;
-import com.qingmeng.dto.chatGroup.CreatGroupDTO;
-import com.qingmeng.dto.chatGroup.InviteDTO;
-import com.qingmeng.dto.chatGroup.KickOutDTO;
+import com.qingmeng.dto.chatGroup.*;
 import com.qingmeng.entity.*;
 import com.qingmeng.enums.chat.RoomStatusEnum;
 import com.qingmeng.service.FileService;
@@ -34,7 +32,7 @@ public class GroupServiceImpl implements GroupService {
     @Resource
     private ChatGroupMemberDao chatGroupMemberDao;
     @Resource
-    private ChatGroupManagerDao chatGroupManagersDao;
+    private ChatGroupManagerDao chatGroupManagerDao;
     @Resource
     private ChatGroupRoomDao chatGroupRoomDao;
     @Resource
@@ -58,7 +56,7 @@ public class GroupServiceImpl implements GroupService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void creatGroup(Long userId, CreatGroupDTO creatGroupDTO) {
-        List<Long> ids = preCheckUserList(creatGroupDTO.getMemberIds());
+        List<Long> ids = preCheckUserList(creatGroupDTO.getMemberIds(), SystemConstant.CREATE_GROUP_MIN_COUNT);
         // 创建抽象群聊房间记录
         ChatRoom chatRoom = RoomAdapt.buildDefaultGroupRoom();
         chatRoomDao.save(chatRoom);
@@ -70,8 +68,8 @@ public class GroupServiceImpl implements GroupService {
         // 添加群成员记录
         addGroupMemberRecord(groupRoomId, ids);
         // 添加群管理员(即群主)记录
-        ChatGroupManager chatGroupManager = ChatAdapt.buildChatGroupManager(userId, groupRoomId);
-        chatGroupManagersDao.save(chatGroupManager);
+        ChatGroupManager chatGroupManager = ChatAdapt.buildChatGroupOwner(userId, groupRoomId);
+        chatGroupManagerDao.save(chatGroupManager);
         // 添加对应成员对群聊设置记录
         List<ChatGroupPersonalSetting> builtChatGroupPersonalSettingSaveList = ChatAdapt.buildChatGroupPersonalSettingSaveList(groupRoomId, ids);
         chatGroupPersonalSettingDao.saveBatch(builtChatGroupPersonalSettingSaveList);
@@ -94,7 +92,7 @@ public class GroupServiceImpl implements GroupService {
     @Override
     @RedissonLock(key = "#invite", waitTime = 3000)
     public void invite(Long userId, InviteDTO inviteDTO) {
-        List<Long> ids = preCheckUserList(inviteDTO.getUserIds());
+        List<Long> ids = preCheckUserList(inviteDTO.getUserIds(), SystemConstant.INVITE_MEMBER_MIN_COUNT);
         Long groupRoomId = inviteDTO.getGroupRoomId();
         Long memberCount = chatGroupMemberDao.getMemberCountByGroupRoomId(groupRoomId);
         AssertUtils.equal(memberCount + ids.size(), SystemConstant.MEMBER_MAX_COUNT, "邀请人数已超过限制");
@@ -123,6 +121,7 @@ public class GroupServiceImpl implements GroupService {
     public void acceptInvite(Long userId, Long groupRoomId) {
         checkGroupRoom(groupRoomId);
         checkInGroup(userId, groupRoomId);
+        // todo checkTime()
         // 添加群成员记录
         ChatGroupMember saveChatGroupMember = ChatAdapt.buildSaveChatGroupMember(userId, groupRoomId);
         chatGroupMemberDao.save(saveChatGroupMember);
@@ -131,7 +130,6 @@ public class GroupServiceImpl implements GroupService {
         chatGroupPersonalSettingDao.save(chatGroupPersonalSetting);
         // todo 推送信息
     }
-
 
     /**
      * 踢出
@@ -145,6 +143,35 @@ public class GroupServiceImpl implements GroupService {
         checkGroupRoom(kickOutDTO.getGroupRoomId());
         checkNotInGroup(kickOutDTO.getUserId(), kickOutDTO.getGroupRoomId());
         chatGroupMemberDao.removeMember(kickOutDTO.getUserId(), kickOutDTO.getGroupRoomId());
+    }
+
+    /**
+     * 更改设置
+     *
+     * @param alterGroupSettingDTO 更改组设置 DTO
+     * @author qingmeng
+     * @createTime: 2023/12/08 10:32:12
+     */
+    @Override
+    public void alterSetting(AlterGroupSettingDTO alterGroupSettingDTO) {
+        checkGroupRoom(alterGroupSettingDTO.getGroupRoomId());
+        chatGroupSettingDao.updateSetting(alterGroupSettingDTO);
+    }
+
+    /**
+     * 添加管理
+     *
+     * @param addManagementDTO 添加管理 DTO
+     * @author qingmeng
+     * @createTime: 2023/12/08 10:39:57
+     */
+    @Override
+    public void addManagement(AddManagementDTO addManagementDTO) {
+        List<Long> ids = preCheckUserList(addManagementDTO.getUserIds(), SystemConstant.ADD_MANAGEMENT_MIN_COUNT);
+        Long managementCount = chatGroupManagerDao.getManagementCountByByGroupRoomId(addManagementDTO.getGroupRoomId());
+        AssertUtils.checkGreaterThan(managementCount + ids.size(), SystemConstant.MANAGEMENT_MAX_COUNT, "群管理员最多可能添加" + SystemConstant.MANAGEMENT_MAX_COUNT + "个");
+        List<ChatGroupManager> chatGroupManagers = ChatAdapt.buildChatGroupManagementList(addManagementDTO.getGroupRoomId(), ids);
+        chatGroupManagerDao.saveBatch(chatGroupManagers);
     }
 
     /**
@@ -207,9 +234,9 @@ public class GroupServiceImpl implements GroupService {
      * @author qingmeng
      * @createTime: 2023/12/07 08:44:15
      */
-    private List<Long> preCheckUserList(List<Long> userIds) {
+    private List<Long> preCheckUserList(List<Long> userIds, Integer minNum) {
         List<Long> ids = userIds.stream().distinct().collect(Collectors.toList());
-        AssertUtils.equal(ids.size(), 3, "不得少于三人");
+        AssertUtils.checkLessThan(ids.size(), minNum, "用户数量不能少于" + minNum);
         return ids;
     }
 }

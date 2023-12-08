@@ -1,9 +1,13 @@
 package com.qingmeng.dao;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.qingmeng.dto.chatGroup.AlterGroupSettingDTO;
 import com.qingmeng.entity.ChatGroupSetting;
 import com.qingmeng.mapper.ChatGroupSettingMapper;
 import org.springframework.stereotype.Service;
+
+import java.util.Objects;
 
 /**
  * <p>
@@ -26,5 +30,22 @@ public class ChatGroupSettingDao extends ServiceImpl<ChatGroupSettingMapper, Cha
      */
     public ChatGroupSetting getSettingByGroupRoomId(Long groupRoomId) {
         return lambdaQuery().eq(ChatGroupSetting::getGroupRoomId,groupRoomId).one();
+    }
+
+    /**
+     * 更新设置
+     *
+     * @param alterGroupSettingDTO 更改组设置 DTO
+     * @author qingmeng
+     * @createTime: 2023/12/08 10:34:06
+     */
+    public void updateSetting(AlterGroupSettingDTO alterGroupSettingDTO) {
+        lambdaUpdate()
+                .set(StrUtil.isNotBlank(alterGroupSettingDTO.getGroupRoomAvatar()),ChatGroupSetting::getGroupRoomAvatar,alterGroupSettingDTO.getGroupRoomAvatar())
+                .set(StrUtil.isNotBlank(alterGroupSettingDTO.getGroupRoomName()),ChatGroupSetting::getGroupRoomName,alterGroupSettingDTO.getGroupRoomName())
+                .set(Objects.nonNull(alterGroupSettingDTO.getInvitationConfirmation()),ChatGroupSetting::getInvitationConfirmation,alterGroupSettingDTO.getInvitationConfirmation())
+                .eq(ChatGroupSetting::getGroupRoomId,alterGroupSettingDTO.getGroupRoomId())
+                .update(new ChatGroupSetting());
+
     }
 }

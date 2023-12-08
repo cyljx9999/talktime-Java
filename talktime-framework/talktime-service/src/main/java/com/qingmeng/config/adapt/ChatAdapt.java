@@ -60,7 +60,7 @@ public class ChatAdapt {
      * @author qingmeng
      * @createTime: 2023/12/06 22:38:35
      */
-    public static ChatGroupManager buildChatGroupManager(Long userId, Long roomGroupId) {
+    public static ChatGroupManager buildChatGroupOwner(Long userId, Long roomGroupId) {
         ChatGroupManager chatGroupManager = new ChatGroupManager();
         chatGroupManager.setRoomGroupId(roomGroupId);
         chatGroupManager.setUserId(userId);
@@ -148,5 +148,24 @@ public class ChatAdapt {
      */
     public static ChatGroupPersonalSetting buildChatGroupSetting(Long userId, Long groupRoomId) {
         return buildChatGroupPersonalSettingSaveList(userId,Collections.singletonList(groupRoomId)).get(0);
+    }
+
+    /**
+     * 建立聊天群管理列表
+     *
+     * @param groupRoomId 组会议室 ID
+     * @param ids         IDS
+     * @return {@link List }<{@link ChatGroupManager }>
+     * @author qingmeng
+     * @createTime: 2023/12/08 11:32:59
+     */
+    public static List<ChatGroupManager> buildChatGroupManagementList(Long groupRoomId, List<Long> ids) {
+        return ids.stream().map(id -> {
+            ChatGroupManager chatGroupManager = new ChatGroupManager();
+            chatGroupManager.setRoomGroupId(groupRoomId);
+            chatGroupManager.setUserId(id);
+            chatGroupManager.setRoleType(GroupRoleEnum.GROUP_MANAGEMENT.getCode());
+            return chatGroupManager;
+        }).collect(Collectors.toList());
     }
 }

@@ -144,12 +144,42 @@ public class AssertUtils {
      * 不为空
      *
      * @param object 对象
-     * @param msg    味精
+     * @param msg    信息
      * @author qingmeng
      * @createTime: 2023/12/01 16:39:32
      */
     public static void isNotEmpty(Object object, String msg) {
         if (ObjectUtil.isEmpty(object)) {
+            throwException(null,msg);
+        }
+    }
+
+    /**
+     * 检查小于
+     *
+     * @param size   大小
+     * @param minNum 最小数量
+     * @param msg    信息
+     * @author qingmeng
+     * @createTime: 2023/12/08 10:50:59
+     */
+    public static void checkLessThan(int size,int minNum, String msg){
+        if (size < minNum) {
+            throwException(null,msg);
+        }
+    }
+
+    /**
+     * 检查大于
+     *
+     * @param size   大小
+     * @param maxNum 最大数量
+     * @param msg    信息
+     * @author qingmeng
+     * @createTime: 2023/12/08 11:28:56
+     */
+    public static void checkGreaterThan(Long size,Long maxNum, String msg){
+        if (size > maxNum) {
             throwException(null,msg);
         }
     }

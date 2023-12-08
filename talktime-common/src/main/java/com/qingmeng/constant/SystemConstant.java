@@ -95,4 +95,24 @@ public class SystemConstant {
      */
     public static int INVITE_REMIND_COUNT = 200;
 
+    /**
+     * 创建组最小计数
+     */
+    public static int CREATE_GROUP_MIN_COUNT = 3;
+
+    /**
+     * 邀请成员最小计数
+     */
+    public static int INVITE_MEMBER_MIN_COUNT = 1;
+
+    /**
+     * 添加管理最小计数
+     */
+    public static int ADD_MANAGEMENT_MIN_COUNT = 1;
+
+    /**
+     * 管理最大计数
+     */
+    public static Long MANAGEMENT_MAX_COUNT = 3L;
+
 }

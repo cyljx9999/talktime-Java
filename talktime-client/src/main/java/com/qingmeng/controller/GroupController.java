@@ -6,9 +6,7 @@ import cn.dev33.satoken.annotation.SaMode;
 import cn.dev33.satoken.stp.StpUtil;
 import com.qingmeng.annotation.SysLog;
 import com.qingmeng.domain.rep.CommonResult;
-import com.qingmeng.dto.chatGroup.CreatGroupDTO;
-import com.qingmeng.dto.chatGroup.InviteDTO;
-import com.qingmeng.dto.chatGroup.KickOutDTO;
+import com.qingmeng.dto.chatGroup.*;
 import com.qingmeng.service.GroupService;
 import org.springframework.web.bind.annotation.*;
 
@@ -87,6 +85,40 @@ public class GroupController {
     @SysLog(title = "群聊模块", content = "踢出群聊")
     public CommonResult<String> kickOut(@Valid @RequestBody KickOutDTO kickOutDTO) {
         groupService.kickOut(kickOutDTO);
+        return CommonResult.success();
+    }
+
+
+    /**
+     * 更改设置
+     *
+     * @param alterGroupSettingDTO 更改组设置 DTO
+     * @return {@link CommonResult }<{@link String }>
+     * @author qingmeng
+     * @createTime: 2023/12/08 10:32:06
+     */
+    @PutMapping("/alterSetting")
+    @SaCheckRole(value = {"GroupOwner","Management"},mode = SaMode.OR)
+    @SysLog(title = "群聊模块", content = "修改群聊设置")
+    public CommonResult<String> alterSetting(@Valid @RequestBody AlterGroupSettingDTO alterGroupSettingDTO) {
+        groupService.alterSetting(alterGroupSettingDTO);
+        return CommonResult.success();
+    }
+
+
+    /**
+     * 添加管理
+     *
+     * @param addManagementDTO 添加管理 DTO
+     * @return {@link CommonResult }<{@link String }>
+     * @author qingmeng
+     * @createTime: 2023/12/08 10:39:52
+     */
+    @PostMapping("/addManagement")
+    @SaCheckRole("GroupOwner")
+    @SysLog(title = "群聊模块", content = "添加管理员")
+    public CommonResult<String> addManagement(@Valid @RequestBody AddManagementDTO addManagementDTO) {
+        groupService.addManagement(addManagementDTO);
         return CommonResult.success();
     }
 

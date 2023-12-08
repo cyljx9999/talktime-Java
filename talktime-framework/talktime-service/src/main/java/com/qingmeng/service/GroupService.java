@@ -1,8 +1,6 @@
 package com.qingmeng.service;
 
-import com.qingmeng.dto.chatGroup.CreatGroupDTO;
-import com.qingmeng.dto.chatGroup.InviteDTO;
-import com.qingmeng.dto.chatGroup.KickOutDTO;
+import com.qingmeng.dto.chatGroup.*;
 
 /**
  * @author 清梦
@@ -49,4 +47,22 @@ public interface GroupService {
      * @createTime: 2023/12/08 09:26:28
      */
     void kickOut(KickOutDTO kickOutDTO);
+
+    /**
+     * 更改设置
+     *
+     * @param alterGroupSettingDTO 更改组设置 DTO
+     * @author qingmeng
+     * @createTime: 2023/12/08 10:32:12
+     */
+    void alterSetting(AlterGroupSettingDTO alterGroupSettingDTO);
+
+    /**
+     * 添加管理
+     *
+     * @param addManagementDTO 添加管理 DTO
+     * @author qingmeng
+     * @createTime: 2023/12/08 10:39:57
+     */
+    void addManagement(AddManagementDTO addManagementDTO);
 }
