@@ -31,7 +31,8 @@ public class ChatGroupRoom implements Serializable {
     private Long roomId;
 
     /**
-     * 群聊状态
+     * 群聊状态 0 正常 1封禁
+     * @see com.qingmeng.enums.chat.RoomStatusEnum
      */
     private Integer roomStatus;
 

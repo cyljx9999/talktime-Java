@@ -1,9 +1,9 @@
 package com.qingmeng.service.impl;
 
-import com.qingmeng.adapt.FriendAdapt;
-import com.qingmeng.adapt.UserSettingAdapt;
-import com.qingmeng.cache.UserCache;
-import com.qingmeng.cache.UserFriendSettingCache;
+import com.qingmeng.config.adapt.FriendAdapt;
+import com.qingmeng.config.adapt.UserSettingAdapt;
+import com.qingmeng.config.cache.UserCache;
+import com.qingmeng.config.cache.UserFriendSettingCache;
 import com.qingmeng.dao.SysUserFriendDao;
 import com.qingmeng.dao.SysUserFriendSettingDao;
 import com.qingmeng.dto.login.CheckFriendDTO;

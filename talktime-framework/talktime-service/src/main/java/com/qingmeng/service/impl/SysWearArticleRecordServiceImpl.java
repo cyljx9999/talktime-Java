@@ -1,6 +1,6 @@
 package com.qingmeng.service.impl;
 
-import com.qingmeng.adapt.ArticleAdapt;
+import com.qingmeng.config.adapt.ArticleAdapt;
 import com.qingmeng.dao.SysWearArticleRecordDao;
 import com.qingmeng.entity.SysWearArticleRecord;
 import com.qingmeng.service.SysWearArticleRecordService;

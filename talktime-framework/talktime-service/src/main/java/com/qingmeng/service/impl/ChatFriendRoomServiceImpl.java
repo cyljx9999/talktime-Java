@@ -1,6 +1,6 @@
 package com.qingmeng.service.impl;
 
-import com.qingmeng.adapt.RoomAdapt;
+import com.qingmeng.config.adapt.RoomAdapt;
 import com.qingmeng.dao.ChatFriendRoomDao;
 import com.qingmeng.dao.ChatRoomDao;
 import com.qingmeng.entity.ChatFriendRoom;

@@ -19,9 +19,9 @@ public enum RoomStatusEnum {
     NORMAL(0, "正常"),
 
     /**
-     * 已删除
+     * 封禁
      */
-    IS_DELETE(1, "已删除");
+    BANNED(1, "封禁");
 
     private final Integer code;
 

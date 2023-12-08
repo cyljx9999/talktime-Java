@@ -1,8 +1,8 @@
 package com.qingmeng.service.impl;
 
 import cn.dev33.satoken.stp.StpUtil;
-import com.qingmeng.adapt.ArticleAdapt;
-import com.qingmeng.cache.ArticleCache;
+import com.qingmeng.config.adapt.ArticleAdapt;
+import com.qingmeng.config.cache.ArticleCache;
 import com.qingmeng.dao.SysUserArticleDao;
 import com.qingmeng.dao.SysWearArticleRecordDao;
 import com.qingmeng.dto.article.WearArticleDTO;

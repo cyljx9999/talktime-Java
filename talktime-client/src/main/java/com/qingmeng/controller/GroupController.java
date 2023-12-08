@@ -1,16 +1,16 @@
 package com.qingmeng.controller;
 
 import cn.dev33.satoken.annotation.SaCheckLogin;
+import cn.dev33.satoken.annotation.SaCheckRole;
+import cn.dev33.satoken.annotation.SaMode;
 import cn.dev33.satoken.stp.StpUtil;
 import com.qingmeng.annotation.SysLog;
 import com.qingmeng.domain.rep.CommonResult;
 import com.qingmeng.dto.chatGroup.CreatGroupDTO;
 import com.qingmeng.dto.chatGroup.InviteDTO;
+import com.qingmeng.dto.chatGroup.KickOutDTO;
 import com.qingmeng.service.GroupService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
@@ -56,8 +56,38 @@ public class GroupController {
     @SysLog(title = "群聊模块", content = "邀请加入群聊")
     public CommonResult<String> invite(@Valid @RequestBody InviteDTO inviteDTO) {
         groupService.invite(StpUtil.getLoginIdAsLong(), inviteDTO);
-        return CommonResult.success("创建成功");
+        return CommonResult.success();
     }
 
+    /**
+     * 接受邀请
+     *
+     * @param groupRoomId 组会议室 ID
+     * @return {@link CommonResult }<{@link String }>
+     * @author qingmeng
+     * @createTime: 2023/12/08 08:33:28
+     */
+    @PostMapping("/acceptInvite/{groupRoomId}")
+    @SysLog(title = "群聊模块", content = "接受邀请")
+    public CommonResult<String> acceptInvite(@PathVariable Long groupRoomId) {
+        groupService.acceptInvite(StpUtil.getLoginIdAsLong(), groupRoomId);
+        return CommonResult.success("加入成功");
+    }
+
+    /**
+     * 踢出
+     *
+     * @param kickOutDTO 踢出 DTO
+     * @return {@link CommonResult }<{@link String }>
+     * @author qingmeng
+     * @createTime: 2023/12/08 09:22:49
+     */
+    @PostMapping("/kickOut")
+    @SaCheckRole(value = {"GroupOwner","Management"},mode = SaMode.OR)
+    @SysLog(title = "群聊模块", content = "踢出群聊")
+    public CommonResult<String> kickOut(@Valid @RequestBody KickOutDTO kickOutDTO) {
+        groupService.kickOut(kickOutDTO);
+        return CommonResult.success();
+    }
 
 }
