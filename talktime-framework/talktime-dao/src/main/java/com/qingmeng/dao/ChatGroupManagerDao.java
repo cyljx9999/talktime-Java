@@ -46,4 +46,16 @@ public class ChatGroupManagerDao extends ServiceImpl<ChatGroupManagerMapper, Cha
     public Long getManagementCountByByGroupRoomId(Long groupRoomId) {
         return lambdaQuery().eq(ChatGroupManager::getRoomGroupId, groupRoomId).count();
     }
+
+    /**
+     * 按组房间 ID 获取管理列表
+     *
+     * @param groupRoomId 组会议室 ID
+     * @return {@link List }<{@link ChatGroupManager }>
+     * @author qingmeng
+     * @createTime: 2023/12/09 13:26:05
+     */
+    public List<ChatGroupManager> getManagementListByGroupRoomId(Long groupRoomId) {
+        return lambdaQuery().eq(ChatGroupManager::getRoomGroupId, groupRoomId).list();
+    }
 }

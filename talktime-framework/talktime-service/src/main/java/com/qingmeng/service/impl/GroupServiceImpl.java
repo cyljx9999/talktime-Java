@@ -16,7 +16,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -92,8 +95,9 @@ public class GroupServiceImpl implements GroupService {
     @Override
     @RedissonLock(key = "#invite", waitTime = 3000)
     public void invite(Long userId, InviteDTO inviteDTO) {
-        List<Long> ids = preCheckUserList(inviteDTO.getUserIds(), SystemConstant.INVITE_MEMBER_MIN_COUNT);
         Long groupRoomId = inviteDTO.getGroupRoomId();
+        checkGroupRoom(groupRoomId);
+        List<Long> ids = preCheckUserList(inviteDTO.getUserIds(), SystemConstant.INVITE_MEMBER_MIN_COUNT);
         Long memberCount = chatGroupMemberDao.getMemberCountByGroupRoomId(groupRoomId);
         AssertUtils.equal(memberCount + ids.size(), SystemConstant.MEMBER_MAX_COUNT, "邀请人数已超过限制");
         if (memberCount > SystemConstant.INVITE_REMIND_COUNT) {
@@ -167,11 +171,37 @@ public class GroupServiceImpl implements GroupService {
      */
     @Override
     public void addManagement(AddManagementDTO addManagementDTO) {
+        // 检查群组ID是否有效
+        checkGroupRoom(addManagementDTO.getGroupRoomId());
+        // 检查用户ID是否有效
         List<Long> ids = preCheckUserList(addManagementDTO.getUserIds(), SystemConstant.ADD_MANAGEMENT_MIN_COUNT);
+        //  检查用户是否已经在管理员中
+        List<Long> managementIds = chatGroupManagerDao.getManagementListByGroupRoomId(addManagementDTO.getGroupRoomId()).stream().map(ChatGroupManager::getUserId).collect(Collectors.toList());
+        List<Long> saveIds = checkManagement(ids, managementIds);
+        // 获取群管理员数量
         Long managementCount = chatGroupManagerDao.getManagementCountByByGroupRoomId(addManagementDTO.getGroupRoomId());
-        AssertUtils.checkGreaterThan(managementCount + ids.size(), SystemConstant.MANAGEMENT_MAX_COUNT, "群管理员最多可能添加" + SystemConstant.MANAGEMENT_MAX_COUNT + "个");
-        List<ChatGroupManager> chatGroupManagers = ChatAdapt.buildChatGroupManagementList(addManagementDTO.getGroupRoomId(), ids);
+        // 检查群管理员数量是否超过最大值
+        AssertUtils.checkGreaterThan(managementCount + saveIds.size(), SystemConstant.MANAGEMENT_MAX_COUNT, "群管理员最多可能添加" + SystemConstant.MANAGEMENT_MAX_COUNT + "个");
+        // 根据群组ID和用户ID构建群管理员列表
+        List<ChatGroupManager> chatGroupManagers = ChatAdapt.buildChatGroupManagementList(addManagementDTO.getGroupRoomId(), saveIds);
+        // 保存群管理员列表
         chatGroupManagerDao.saveBatch(chatGroupManagers);
+    }
+
+    /**
+     * 检查管理
+     *
+     * @param ids           IDS
+     * @param managementIds 管理 ID
+     * @return {@link List }<{@link Long }>
+     * @author qingmeng
+     * @createTime: 2023/12/09 13:27:05
+     */
+    private List<Long> checkManagement(List<Long> ids, List<Long> managementIds) {
+        Set<Long> set = new LinkedHashSet<>(ids);
+        // 合并managementIds，并自动去重
+        set.addAll(managementIds);
+        return new ArrayList<>(set);
     }
 
     /**
