@@ -8,6 +8,7 @@ import com.qingmeng.annotation.SysLog;
 import com.qingmeng.domain.rep.CommonResult;
 import com.qingmeng.dto.chatGroup.*;
 import com.qingmeng.service.GroupService;
+import com.qingmeng.vo.chat.GroupDetailInfo;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -81,7 +82,7 @@ public class GroupController {
      * @createTime: 2023/12/08 09:22:49
      */
     @PostMapping("/kickOut")
-    @SaCheckRole(value = {"GroupOwner","Management"},mode = SaMode.OR)
+    @SaCheckRole(value = {"GroupOwner", "Management"}, mode = SaMode.OR)
     @SysLog(title = "群聊模块", content = "踢出群聊")
     public CommonResult<String> kickOut(@Valid @RequestBody KickOutDTO kickOutDTO) {
         groupService.kickOut(kickOutDTO);
@@ -98,7 +99,7 @@ public class GroupController {
      * @createTime: 2023/12/08 10:32:06
      */
     @PutMapping("/alterSetting")
-    @SaCheckRole(value = {"GroupOwner","Management"},mode = SaMode.OR)
+    @SaCheckRole(value = {"GroupOwner", "Management"}, mode = SaMode.OR)
     @SysLog(title = "群聊模块", content = "修改群聊设置")
     public CommonResult<String> alterSetting(@Valid @RequestBody AlterGroupSettingDTO alterGroupSettingDTO) {
         groupService.alterSetting(alterGroupSettingDTO);
@@ -119,6 +120,67 @@ public class GroupController {
     @SysLog(title = "群聊模块", content = "添加管理员")
     public CommonResult<String> addManagement(@Valid @RequestBody AddManagementDTO addManagementDTO) {
         groupService.addManagement(addManagementDTO);
+        return CommonResult.success();
+    }
+
+    /**
+     * 删除管理
+     *
+     * @param removeManagementDTO 移除管理 DTO
+     * @return {@link CommonResult }<{@link String }>
+     * @author qingmeng
+     * @createTime: 2023/12/09 13:30:05
+     */
+    @PostMapping("/removeManagement")
+    @SaCheckRole("GroupOwner")
+    @SysLog(title = "群聊模块", content = "移除管理员")
+    public CommonResult<String> removeManagement(@Valid @RequestBody RemoveManagementDTO removeManagementDTO) {
+        groupService.removeManagement(removeManagementDTO);
+        return CommonResult.success();
+    }
+
+    /**
+     * 修改个人设置
+     *
+     * @param alterGroupPersonalSettingDTO 修改个人设置 DTO
+     * @return {@link CommonResult }<{@link String }>
+     * @author qingmeng
+     * @createTime: 2023/12/09 13:39:11
+     */
+    @PutMapping("/alterPersonSetting")
+    @SysLog(title = "群聊模块", content = "修改个人群聊设置")
+    public CommonResult<String> alterPersonSetting(@Valid @RequestBody AlterGroupPersonalSettingDTO alterGroupPersonalSettingDTO) {
+        groupService.alterPersonSetting(StpUtil.getLoginIdAsLong(), alterGroupPersonalSettingDTO);
+        return CommonResult.success();
+    }
+
+    /**
+     * 获取组详细信息
+     *
+     * @param groupRoomId 组会议室 ID
+     * @return {@link CommonResult }<{@link GroupDetailInfo }>
+     * @author qingmeng
+     * @createTime: 2023/12/09 13:59:09
+     */
+    @GetMapping("/getGroupDetailInfo/{groupRoomId}")
+    @SysLog(title = "群聊模块", content = "获取群聊详细信息")
+    public CommonResult<GroupDetailInfo> getGroupDetailInfo(@PathVariable Long groupRoomId) {
+        GroupDetailInfo groupDetailInfo = groupService.getGroupDetailInfo(StpUtil.getLoginIdAsLong(), groupRoomId);
+        return CommonResult.success(groupDetailInfo);
+    }
+
+    /**
+     * 退出聊天群
+     *
+     * @param groupRoomId 组会议室 ID
+     * @return {@link CommonResult }<{@link String }>
+     * @author qingmeng
+     * @createTime: 2023/12/09 14:58:05
+     */
+    @PostMapping("/quitChatGroup/{groupRoomId}")
+    @SysLog(title = "群聊模块", content = "退出群聊")
+    public CommonResult<String> quitChatGroup(@PathVariable Long groupRoomId) {
+        groupService.quitChatGroup(StpUtil.getLoginIdAsLong(), groupRoomId);
         return CommonResult.success();
     }
 

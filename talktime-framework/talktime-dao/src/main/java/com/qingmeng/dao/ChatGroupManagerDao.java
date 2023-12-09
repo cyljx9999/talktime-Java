@@ -1,5 +1,6 @@
 package com.qingmeng.dao;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.qingmeng.entity.ChatGroupManager;
 import com.qingmeng.mapper.ChatGroupManagerMapper;
@@ -57,5 +58,20 @@ public class ChatGroupManagerDao extends ServiceImpl<ChatGroupManagerMapper, Cha
      */
     public List<ChatGroupManager> getManagementListByGroupRoomId(Long groupRoomId) {
         return lambdaQuery().eq(ChatGroupManager::getRoomGroupId, groupRoomId).list();
+    }
+
+    /**
+     * 删除管理
+     *
+     * @param groupRoomId 组会议室 ID
+     * @param userId      用户 ID
+     * @author qingmeng
+     * @createTime: 2023/12/09 13:32:45
+     */
+    public void removeManagement(Long groupRoomId, Long userId) {
+        LambdaQueryWrapper<ChatGroupManager> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(ChatGroupManager::getRoomGroupId, groupRoomId);
+        wrapper.eq(ChatGroupManager::getUserId, userId);
+        remove(wrapper);
     }
 }

@@ -1,13 +1,15 @@
 package com.qingmeng.config.adapt;
 
+import cn.hutool.core.util.StrUtil;
 import com.qingmeng.config.netty.vo.WsGroupInviteVO;
 import com.qingmeng.entity.*;
 import com.qingmeng.enums.chat.*;
 import com.qingmeng.enums.user.CloseOrOpenStatusEnum;
+import com.qingmeng.utils.CommonUtils;
+import com.qingmeng.vo.chat.GroupDetailInfo;
+import com.qingmeng.vo.user.SimpleUserInfo;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -119,7 +121,7 @@ public class ChatAdapt {
      * @author qingmeng
      * @createTime: 2023/12/07 09:20:58
      */
-    public static List<WsGroupInviteVO> buildInviteGroupList(List<Long> ids,ChatGroupSetting chatGroupSetting, String userName) {
+    public static List<WsGroupInviteVO> buildInviteGroupList(List<Long> ids, ChatGroupSetting chatGroupSetting, String userName) {
         // todo
         return new ArrayList<>();
     }
@@ -147,7 +149,7 @@ public class ChatAdapt {
      * @createTime: 2023/12/08 08:50:58
      */
     public static ChatGroupPersonalSetting buildChatGroupSetting(Long userId, Long groupRoomId) {
-        return buildChatGroupPersonalSettingSaveList(userId,Collections.singletonList(groupRoomId)).get(0);
+        return buildChatGroupPersonalSettingSaveList(userId, Collections.singletonList(groupRoomId)).get(0);
     }
 
     /**
@@ -166,6 +168,91 @@ public class ChatAdapt {
             chatGroupManager.setUserId(id);
             chatGroupManager.setRoleType(GroupRoleEnum.GROUP_MANAGEMENT.getCode());
             return chatGroupManager;
+        }).collect(Collectors.toList());
+    }
+
+    /**
+     * 构造 群聊详细信息
+     *
+     * @param userId                      用户 ID
+     * @param memberIds                   会员 ID
+     * @param friendIds                   好友ID
+     * @param chatGroupSetting            聊天组设置
+     * @param chatGroupPersonalSetting    聊天组个人设置
+     * @param friendSettingList           好友设置列表
+     * @param userMap                     用户集合
+     * @param chatGroupPersonalSettingMap 聊天群个人设置集合
+     * @return {@link GroupDetailInfo }
+     * @author qingmeng
+     * @createTime: 2023/12/09 14:55:20
+     */
+    public static GroupDetailInfo buildGroupDetailInfo(Long userId,
+                                                       List<Long> memberIds,
+                                                       List<Long> friendIds,
+                                                       ChatGroupSetting chatGroupSetting,
+                                                       ChatGroupPersonalSetting chatGroupPersonalSetting,
+                                                       List<SysUserFriendSetting> friendSettingList,
+                                                       Map<Long, SysUser> userMap,
+                                                       Map<String, ChatGroupPersonalSetting> chatGroupPersonalSettingMap) {
+        GroupDetailInfo groupDetailInfo = new GroupDetailInfo();
+        groupDetailInfo.setGroupRoomName(chatGroupSetting.getGroupRoomName());
+        groupDetailInfo.setGroupRoomAvatar(chatGroupSetting.getGroupRoomAvatar());
+        groupDetailInfo.setGroupNotice(chatGroupSetting.getGroupNotice());
+        groupDetailInfo.setInvitationConfirmation(chatGroupSetting.getInvitationConfirmation());
+        groupDetailInfo.setGroupRoomQrCode(chatGroupSetting.getGroupRoomQrcode());
+        groupDetailInfo.setTopStatus(chatGroupPersonalSetting.getTopStatus());
+        groupDetailInfo.setDisplayNameStatus(chatGroupPersonalSetting.getDisplayNameStatus());
+        groupDetailInfo.setNickName(chatGroupPersonalSetting.getNickName());
+        groupDetailInfo.setRemindStatus(chatGroupPersonalSetting.getRemindStatus());
+        groupDetailInfo.setMemberList(getMemberList(userId, memberIds, friendIds, friendSettingList, userMap, chatGroupPersonalSettingMap));
+        return groupDetailInfo;
+    }
+
+    /**
+     * 获取成员列表
+     *
+     * @param userId                      用户 ID
+     * @param memberIds                   会员 ID
+     * @param friendIds                   好友ID
+     * @param friendSettingList           好友设置列表
+     * @param userMap                     用户集合
+     * @param chatGroupPersonalSettingMap 聊天群个人设置集合
+     * @return {@link List }<{@link SimpleUserInfo }>
+     * @author qingmeng
+     * @createTime: 2023/12/09 14:55:06
+     */
+    private static List<SimpleUserInfo> getMemberList(Long userId,
+                                                      List<Long> memberIds,
+                                                      List<Long> friendIds,
+                                                      List<SysUserFriendSetting> friendSettingList,
+                                                      Map<Long, SysUser> userMap,
+                                                      Map<String, ChatGroupPersonalSetting> chatGroupPersonalSettingMap) {
+        return memberIds.stream().map(id -> {
+            SimpleUserInfo userInfo = new SimpleUserInfo();
+            boolean isFriend = friendIds.contains(id);
+            if (isFriend) {
+                // 获取 当前用户 对 对方 的设置数据，判断是否进行备注
+                SysUserFriendSetting friendSetting = friendSettingList.stream()
+                        .filter(setting -> {
+                            // 通过tagKey和userId定位数据 tagKey:1-2 userId:1 表示用户1对用户2的设置
+                            boolean flagA = setting.getTagKey().equals(CommonUtils.getKeyBySort(Arrays.asList(userId, id)));
+                            boolean flagB = setting.getUserId().equals(userId);
+                            return flagA && flagB;
+                        })
+                        .findAny()
+                        .orElse(new SysUserFriendSetting());
+                SysUser sysUser = userMap.get(id);
+                userInfo.setUserAvatar(sysUser.getUserAvatar());
+                // 如果有备注则采用备注，否则则使用对方原本的用户名
+                userInfo.setUserName(StrUtil.isNotBlank(friendSetting.getNickName()) ? friendSetting.getNickName() : sysUser.getUserName());
+            } else {
+                SysUser sysUser = userMap.get(id);
+                userInfo.setUserAvatar(sysUser.getUserAvatar());
+                ChatGroupPersonalSetting chatGroupPersonalSetting = chatGroupPersonalSettingMap.get("");
+                // 如果有群昵称则采用群昵称，否则则使用对方原本的用户名
+                userInfo.setUserName(StrUtil.isNotBlank(chatGroupPersonalSetting.getNickName()) ? chatGroupPersonalSetting.getNickName() : sysUser.getUserName());
+            }
+            return userInfo;
         }).collect(Collectors.toList());
     }
 }

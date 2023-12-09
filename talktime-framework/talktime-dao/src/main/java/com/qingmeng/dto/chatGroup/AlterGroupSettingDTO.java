@@ -34,6 +34,12 @@ public class AlterGroupSettingDTO {
     @URL
     private String groupRoomAvatar;
 
+    /**
+     * 群公告
+     */
+    @Length(max = 100)
+    private String groupNotice;
+
 
     /**
      * 邀请确认 0关闭 1开启

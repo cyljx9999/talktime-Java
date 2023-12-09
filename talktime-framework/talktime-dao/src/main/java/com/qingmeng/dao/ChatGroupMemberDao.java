@@ -6,6 +6,8 @@ import com.qingmeng.entity.ChatGroupMember;
 import com.qingmeng.mapper.ChatGroupMemberMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * <p>
  * 群聊成员表 服务实现类
@@ -58,5 +60,17 @@ public class ChatGroupMemberDao extends ServiceImpl<ChatGroupMemberMapper, ChatG
         wrapper.eq(ChatGroupMember::getUserId, userId);
         wrapper.eq(ChatGroupMember::getGroupRoomId, groupRoomId);
         remove(wrapper);
+    }
+
+    /**
+     * 获取群成员列表
+     *
+     * @param groupRoomId 组会议室 ID
+     * @return {@link List }<{@link ChatGroupMember }>
+     * @author qingmeng
+     * @createTime: 2023/12/09 14:08:58
+     */
+    public List<ChatGroupMember> getGroupMemberList(Long groupRoomId) {
+        return lambdaQuery().eq(ChatGroupMember::getGroupRoomId,groupRoomId).list();
     }
 }

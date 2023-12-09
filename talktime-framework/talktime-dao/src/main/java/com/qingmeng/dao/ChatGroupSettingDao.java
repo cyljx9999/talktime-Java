@@ -43,6 +43,7 @@ public class ChatGroupSettingDao extends ServiceImpl<ChatGroupSettingMapper, Cha
         lambdaUpdate()
                 .set(StrUtil.isNotBlank(alterGroupSettingDTO.getGroupRoomAvatar()),ChatGroupSetting::getGroupRoomAvatar,alterGroupSettingDTO.getGroupRoomAvatar())
                 .set(StrUtil.isNotBlank(alterGroupSettingDTO.getGroupRoomName()),ChatGroupSetting::getGroupRoomName,alterGroupSettingDTO.getGroupRoomName())
+                .set(StrUtil.isNotBlank(alterGroupSettingDTO.getGroupNotice()),ChatGroupSetting::getGroupNotice,alterGroupSettingDTO.getGroupNotice())
                 .set(Objects.nonNull(alterGroupSettingDTO.getInvitationConfirmation()),ChatGroupSetting::getInvitationConfirmation,alterGroupSettingDTO.getInvitationConfirmation())
                 .eq(ChatGroupSetting::getGroupRoomId,alterGroupSettingDTO.getGroupRoomId())
                 .update(new ChatGroupSetting());

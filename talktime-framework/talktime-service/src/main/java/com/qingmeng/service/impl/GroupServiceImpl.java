@@ -4,6 +4,7 @@ import com.qingmeng.config.adapt.ChatAdapt;
 import com.qingmeng.config.adapt.RoomAdapt;
 import com.qingmeng.config.annotation.RedissonLock;
 import com.qingmeng.config.cache.UserCache;
+import com.qingmeng.config.cache.UserFriendSettingCache;
 import com.qingmeng.constant.SystemConstant;
 import com.qingmeng.dao.*;
 import com.qingmeng.dto.chatGroup.*;
@@ -12,14 +13,13 @@ import com.qingmeng.enums.chat.RoomStatusEnum;
 import com.qingmeng.service.FileService;
 import com.qingmeng.service.GroupService;
 import com.qingmeng.utils.AssertUtils;
+import com.qingmeng.utils.CommonUtils;
+import com.qingmeng.vo.chat.GroupDetailInfo;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -46,6 +46,10 @@ public class GroupServiceImpl implements GroupService {
     private UserCache userCache;
     @Resource
     private FileService fileService;
+    @Resource
+    private SysUserFriendDao sysUserFriendDao;
+    @Resource
+    private UserFriendSettingCache userFriendSettingCache;
 
 
     /**
@@ -186,6 +190,110 @@ public class GroupServiceImpl implements GroupService {
         List<ChatGroupManager> chatGroupManagers = ChatAdapt.buildChatGroupManagementList(addManagementDTO.getGroupRoomId(), saveIds);
         // 保存群管理员列表
         chatGroupManagerDao.saveBatch(chatGroupManagers);
+    }
+
+    /**
+     * 删除管理
+     *
+     * @param removeManagementDTO 删除管理 DTO
+     * @author qingmeng
+     * @createTime: 2023/12/09 13:31:55
+     */
+    @Override
+    public void removeManagement(RemoveManagementDTO removeManagementDTO) {
+        // 检查群组ID是否有效
+        checkGroupRoom(removeManagementDTO.getGroupRoomId());
+        chatGroupManagerDao.removeManagement(removeManagementDTO.getGroupRoomId(), removeManagementDTO.getUserId());
+    }
+
+    /**
+     * 更改人员设置
+     *
+     * @param userId                       用户 ID
+     * @param alterGroupPersonalSettingDTO 修改个人设置参数
+     * @author qingmeng
+     * @createTime: 2023/12/09 13:38:55
+     */
+    @Override
+    public void alterPersonSetting(Long userId, AlterGroupPersonalSettingDTO alterGroupPersonalSettingDTO) {
+        // 检查群组ID是否有效
+        checkGroupRoom(alterGroupPersonalSettingDTO.getGroupRoomId());
+        //  检查用户是否在群聊里
+        checkNotInGroup(userId, alterGroupPersonalSettingDTO.getGroupRoomId());
+        chatGroupPersonalSettingDao.alterPersonSetting(userId, alterGroupPersonalSettingDTO);
+    }
+
+    /**
+     * 获取组详细信息
+     *
+     * @param userId      用户 ID
+     * @param groupRoomId 组会议室 ID
+     * @return {@link GroupDetailInfo }
+     * @author qingmeng
+     * @createTime: 2023/12/09 13:59:21
+     */
+    @Override
+    public GroupDetailInfo getGroupDetailInfo(Long userId, Long groupRoomId) {
+        checkGroupRoom(groupRoomId);
+        ChatGroupSetting chatGroupSetting = chatGroupSettingDao.getSettingByGroupRoomId(groupRoomId);
+        // 获取个人的群聊设置
+        ChatGroupPersonalSetting chatGroupPersonalSetting = chatGroupPersonalSettingDao.getSettingByUserId(userId, groupRoomId);
+        // 获取当前群聊成员的ids
+        List<Long> memberIds = chatGroupMemberDao.getGroupMemberList(groupRoomId).stream().map(ChatGroupMember::getUserId).collect(Collectors.toList());
+        // 获取当前用户的所有好友id列表
+        List<Long> addFriendIds = sysUserFriendDao.getFriendListById(userId)
+                .stream().distinct()
+                .map(SysUserFriend::getFriendId)
+                .collect(Collectors.toList());
+        // 获取当前群聊中的好友id
+        List<Long> friendIds = getFriendIdByMemberId(memberIds, addFriendIds);
+        // 获取对好友的设置列表
+        List<String> keys = friendIds.stream().map(friendId -> CommonUtils.getFriendSettingCacheKey(userId, friendId)).collect(Collectors.toList());
+        List<SysUserFriendSetting> friendSettingList = new ArrayList<>(userFriendSettingCache.getBatch(keys).values());
+        // 获取当前群聊的所有用户信息
+        Map<Long, SysUser> userMap = userCache.getBatch(memberIds);
+        // todo 获取所有群成员的个人群聊设置
+        Map<String, ChatGroupPersonalSetting> chatGroupPersonalSettingMap = new HashMap<>();
+        return ChatAdapt.buildGroupDetailInfo(
+                userId,
+                memberIds,
+                friendIds,
+                chatGroupSetting,
+                chatGroupPersonalSetting,
+                friendSettingList,
+                userMap,
+                chatGroupPersonalSettingMap
+        );
+    }
+
+    /**
+     * 退出聊天群
+     *
+     * @param userId      用户 ID
+     * @param groupRoomId 组会议室 ID
+     * @author qingmeng
+     * @createTime: 2023/12/09 14:58:19
+     */
+    @Override
+    public void quitChatGroup(Long userId, Long groupRoomId) {
+        checkGroupRoom(groupRoomId);
+        checkNotInGroup(userId, groupRoomId);
+        chatGroupMemberDao.removeMember(userId, groupRoomId);
+    }
+
+    /**
+     * 从成员id中找出我的好友id
+     *
+     * @param memberIds    成员id
+     * @param addFriendIds 所有好友id
+     * @return {@link List }<{@link Long }>
+     * @author qingmeng
+     * @createTime: 2023/12/09 14:21:49
+     */
+    private List<Long> getFriendIdByMemberId(List<Long> memberIds, List<Long> addFriendIds) {
+        List<Long> intersection = new ArrayList<>(memberIds);
+        intersection.retainAll(addFriendIds);
+        return intersection;
     }
 
     /**

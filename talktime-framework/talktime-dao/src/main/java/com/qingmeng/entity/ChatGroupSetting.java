@@ -41,6 +41,11 @@ public class ChatGroupSetting implements Serializable {
     private String groupRoomAvatar;
 
     /**
+     * 群公告
+     */
+    private String groupNotice;
+
+    /**
      * 群聊二维码
      */
     private String groupRoomQrcode;

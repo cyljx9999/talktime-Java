@@ -1,6 +1,7 @@
 package com.qingmeng.service;
 
 import com.qingmeng.dto.chatGroup.*;
+import com.qingmeng.vo.chat.GroupDetailInfo;
 
 /**
  * @author 清梦
@@ -65,4 +66,44 @@ public interface GroupService {
      * @createTime: 2023/12/08 10:39:57
      */
     void addManagement(AddManagementDTO addManagementDTO);
+
+    /**
+     * 删除管理
+     *
+     * @param removeManagementDTO 删除管理 DTO
+     * @author qingmeng
+     * @createTime: 2023/12/09 13:31:55
+     */
+    void removeManagement(RemoveManagementDTO removeManagementDTO);
+
+    /**
+     * 更改人员设置
+     *
+     * @param userId                       用户 ID
+     * @param alterGroupPersonalSettingDTO 修改个人设置参数
+     * @author qingmeng
+     * @createTime: 2023/12/09 13:39:01
+     */
+    void alterPersonSetting(Long userId, AlterGroupPersonalSettingDTO alterGroupPersonalSettingDTO);
+
+    /**
+     * 获取组详细信息
+     *
+     * @param userId      用户 ID
+     * @param groupRoomId 组会议室 ID
+     * @return {@link GroupDetailInfo }
+     * @author qingmeng
+     * @createTime: 2023/12/09 13:59:21
+     */
+    GroupDetailInfo getGroupDetailInfo(Long userId, Long groupRoomId);
+
+    /**
+     * 退出聊天群
+     *
+     * @param userId      用户 ID
+     * @param groupRoomId 组会议室 ID
+     * @author qingmeng
+     * @createTime: 2023/12/09 14:58:19
+     */
+    void quitChatGroup(Long userId, Long groupRoomId);
 }
