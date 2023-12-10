@@ -17,10 +17,10 @@ import javax.validation.constraints.NotNull;
 public class AlterGroupSettingDTO {
 
     /**
-     * 群聊房间
+     * 房间 ID
      */
     @NotNull
-    private Long groupRoomId;
+    private Long roomId;
 
     /**
      * 群聊名字

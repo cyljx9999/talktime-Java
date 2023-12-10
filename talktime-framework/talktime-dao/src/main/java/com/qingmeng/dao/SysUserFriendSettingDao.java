@@ -71,4 +71,20 @@ public class SysUserFriendSettingDao extends ServiceImpl<SysUserFriendSettingMap
             saveOrUpdate(item, wrapper);
         });
     }
+
+    /**
+     * 通过标签键和用户 ID 获取设置
+     *
+     * @param tagKey 标签键
+     * @param userId 用户 ID
+     * @return {@link SysUserFriendSetting }
+     * @author qingmeng
+     * @createTime: 2023/12/10 11:39:31
+     */
+    public SysUserFriendSetting getSettingByTagKeyAndUserId(String tagKey, String userId) {
+        return lambdaQuery()
+                .eq(SysUserFriendSetting::getTagKey, tagKey)
+                .eq(SysUserFriendSetting::getUserId, Long.parseLong(userId))
+                .one();
+    }
 }

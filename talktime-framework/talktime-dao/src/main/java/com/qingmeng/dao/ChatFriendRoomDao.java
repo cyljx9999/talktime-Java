@@ -5,6 +5,8 @@ import com.qingmeng.entity.ChatFriendRoom;
 import com.qingmeng.mapper.ChatFriendRoomMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * <p>
  * 单聊表 服务实现类
@@ -26,5 +28,18 @@ public class ChatFriendRoomDao extends ServiceImpl<ChatFriendRoomMapper, ChatFri
      */
     public ChatFriendRoom getInfoByKey(String tagKey) {
         return lambdaQuery().eq(ChatFriendRoom::getRoomKey,tagKey).one();
+    }
+
+
+    /**
+     * 按房间 ID 列出
+     *
+     * @param roomIds 房间 ID
+     * @return {@link List }<{@link ChatFriendRoom }>
+     * @author qingmeng
+     * @createTime: 2023/12/10 09:54:24
+     */
+    public List<ChatFriendRoom> listByRoomIds(List<Long> roomIds) {
+        return lambdaQuery().in(ChatFriendRoom::getRoomId,roomIds).list();
     }
 }

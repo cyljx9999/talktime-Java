@@ -60,4 +60,41 @@ public class RedisConstant {
      */
     public static final String USER_FRIEND_SETTING_KEY = "user:friend:setting:";
     public static final long USER_FRIEND_SETTING_EXPIRE = 7L;
+
+    /**
+     * 抽象群聊缓存key和过期时间
+     */
+    public static final String CHAT_ROOM_KEY = "chat:room:";
+    public static final long CHAT_ROOM_EXPIRE = 5L;
+
+    /**
+     * 好友房间缓存key和过期时间
+     */
+    public static final String CHAT_FRIEND_ROOM_KEY = "chat:friend:room:";
+    public static final long CHAT_FRIEND_ROOM_EXPIRE = 7L;
+
+    /**
+     * 群聊房间缓存key和过期时间
+     */
+    public static final String CHAT_GROUP_ROOM_KEY = "chat:group:room:";
+    public static final long CHAT_GROUP_ROOM_EXPIRE = 7L;
+
+    /**
+     * 群聊管理员缓存key和过期时间
+     */
+    public static final String CHAT_GROUP_MANAGER_KEY = "chat:manager:room:";
+    public static final long CHAT_GROUP_MANAGER_EXPIRE = 7L;
+
+    /**
+     * 个人群聊设置缓存key和过期时间
+     */
+    public static final String CHAT_PERSONAL_SETTING_KEY = "chat:personal:setting:";
+    public static final long CHAT_PERSONAL_SETTING_EXPIRE = 7L;
+
+    /**
+     * 群聊设置缓存key和过期时间
+     */
+    public static final String CHAT_SETTING_KEY = "chat:setting:";
+    public static final long CHAT_SETTING_EXPIRE = 7L;
+
 }

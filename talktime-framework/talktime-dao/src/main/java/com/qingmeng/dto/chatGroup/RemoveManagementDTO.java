@@ -17,7 +17,7 @@ public class RemoveManagementDTO {
      * 组会议室 ID
      */
     @NotNull
-    private Long groupRoomId;
+    private Long roomId;
 
     /**
      * 用户 ID

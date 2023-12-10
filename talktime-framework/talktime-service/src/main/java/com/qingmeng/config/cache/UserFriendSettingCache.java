@@ -1,7 +1,6 @@
 package com.qingmeng.config.cache;
 
 import cn.hutool.core.util.StrUtil;
-import com.qingmeng.cache.AbstractRedisStringCache;
 import com.qingmeng.constant.RedisConstant;
 import com.qingmeng.constant.SystemConstant;
 import com.qingmeng.dao.SysUserFriendSettingDao;
@@ -59,10 +58,7 @@ public class UserFriendSettingCache extends AbstractRedisStringCache<String, Sys
         List<SysUserFriendSetting> list = new ArrayList<>();
         keys.forEach(key -> {
             String[] split = key.split(StrUtil.COLON);
-            SysUserFriendSetting userFriendSetting = sysUserFriendSettingDao.lambdaQuery()
-                    .eq(SysUserFriendSetting::getTagKey, split[0])
-                    .eq(SysUserFriendSetting::getUserId, split[1])
-                    .one();
+            SysUserFriendSetting userFriendSetting = sysUserFriendSettingDao.getSettingByTagKeyAndUserId(split[0], split[1]);
             list.add(userFriendSetting);
         });
         return list.stream().collect(Collectors.toMap(item -> item.getTagKey() + StrUtil.COLON + item.getUserId(), Function.identity()));

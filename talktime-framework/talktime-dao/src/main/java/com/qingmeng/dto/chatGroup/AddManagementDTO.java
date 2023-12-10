@@ -16,10 +16,10 @@ import java.util.List;
 public class AddManagementDTO {
 
     /**
-     * 组会议室 ID
+     * 房间 ID
      */
     @NotNull
-    private Long groupRoomId;
+    private Long roomId;
 
     /**
      * 用户 ID

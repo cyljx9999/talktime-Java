@@ -43,11 +43,12 @@ public interface GroupService {
     /**
      * 踢出
      *
+     * @param userId     用户 ID
      * @param kickOutDTO 踢出 DTO
      * @author qingmeng
-     * @createTime: 2023/12/08 09:26:28
+     * @createTime: 2023/12/10 11:48:41
      */
-    void kickOut(KickOutDTO kickOutDTO);
+    void kickOut(Long userId,KickOutDTO kickOutDTO);
 
     /**
      * 更改设置

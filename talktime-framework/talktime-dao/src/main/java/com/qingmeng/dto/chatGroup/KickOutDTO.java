@@ -14,10 +14,10 @@ import javax.validation.constraints.NotNull;
 public class KickOutDTO {
 
     /**
-     * 组会议室 ID
+     *  ID
      */
     @NotNull
-    private Long groupRoomId;
+    private Long roomId;
 
     /**
      * 用户 ID

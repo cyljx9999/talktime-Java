@@ -1,6 +1,5 @@
 package com.qingmeng.config.cache;
 
-import com.qingmeng.cache.AbstractRedisStringCache;
 import com.qingmeng.constant.RedisConstant;
 import com.qingmeng.constant.SystemConstant;
 import com.qingmeng.dao.SysArticleDao;

@@ -1,11 +1,13 @@
 package com.qingmeng.dao;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.qingmeng.dto.chatGroup.AlterGroupPersonalSettingDTO;
 import com.qingmeng.entity.ChatGroupPersonalSetting;
 import com.qingmeng.mapper.ChatGroupPersonalSettingMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -51,5 +53,48 @@ public class ChatGroupPersonalSettingDao extends ServiceImpl<ChatGroupPersonalSe
                 .eq(ChatGroupPersonalSetting::getUserId,userId)
                 .eq(ChatGroupPersonalSetting::getGroupRoomId,groupRoomId)
                 .one();
+    }
+
+    /**
+     * 按组会议室 ID 列出
+     *
+     * @param groupRoomIds 组聊天室 ID
+     * @return {@link List }<{@link ChatGroupPersonalSetting }>
+     * @author qingmeng
+     * @createTime: 2023/12/10 10:20:15
+     */
+    public List<ChatGroupPersonalSetting> listByGroupRoomIds(List<Long> groupRoomIds) {
+        return lambdaQuery().in(ChatGroupPersonalSetting::getGroupRoomId,groupRoomIds).list();
+    }
+
+    /**
+     * 按组房间 ID 和用户 ID 获取
+     *
+     * @param groupRoomId 组会议室 ID
+     * @param userId      用户 ID
+     * @return {@link ChatGroupPersonalSetting }
+     * @author qingmeng
+     * @createTime: 2023/12/10 11:37:38
+     */
+    public ChatGroupPersonalSetting getByGroupRoomIdAndUserId(String groupRoomId, String userId) {
+        return lambdaQuery()
+                .eq(ChatGroupPersonalSetting::getGroupRoomId,Long.valueOf(groupRoomId))
+                .eq(ChatGroupPersonalSetting::getUserId,Long.valueOf(userId))
+                .one();
+    }
+
+    /**
+     * 删除设置
+     *
+     * @param userId      用户 ID
+     * @param groupRoomId 组会议室 ID
+     * @author qingmeng
+     * @createTime: 2023/12/10 11:43:14
+     */
+    public void removeSetting(Long userId, Long groupRoomId) {
+        LambdaQueryWrapper<ChatGroupPersonalSetting> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(ChatGroupPersonalSetting::getUserId, userId);
+        wrapper.eq(ChatGroupPersonalSetting::getGroupRoomId, groupRoomId);
+        remove(wrapper);
     }
 }

@@ -85,7 +85,7 @@ public class GroupController {
     @SaCheckRole(value = {"GroupOwner", "Management"}, mode = SaMode.OR)
     @SysLog(title = "群聊模块", content = "踢出群聊")
     public CommonResult<String> kickOut(@Valid @RequestBody KickOutDTO kickOutDTO) {
-        groupService.kickOut(kickOutDTO);
+        groupService.kickOut(StpUtil.getLoginIdAsLong(),kickOutDTO);
         return CommonResult.success();
     }
 

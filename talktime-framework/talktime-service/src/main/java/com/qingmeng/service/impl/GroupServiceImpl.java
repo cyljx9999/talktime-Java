@@ -3,13 +3,13 @@ package com.qingmeng.service.impl;
 import com.qingmeng.config.adapt.ChatAdapt;
 import com.qingmeng.config.adapt.RoomAdapt;
 import com.qingmeng.config.annotation.RedissonLock;
-import com.qingmeng.config.cache.UserCache;
-import com.qingmeng.config.cache.UserFriendSettingCache;
+import com.qingmeng.config.cache.*;
 import com.qingmeng.constant.SystemConstant;
 import com.qingmeng.dao.*;
 import com.qingmeng.dto.chatGroup.*;
 import com.qingmeng.entity.*;
 import com.qingmeng.enums.chat.RoomStatusEnum;
+import com.qingmeng.enums.chat.RoomTypeEnum;
 import com.qingmeng.service.FileService;
 import com.qingmeng.service.GroupService;
 import com.qingmeng.utils.AssertUtils;
@@ -50,6 +50,18 @@ public class GroupServiceImpl implements GroupService {
     private SysUserFriendDao sysUserFriendDao;
     @Resource
     private UserFriendSettingCache userFriendSettingCache;
+    @Resource
+    private ChatGroupMemberCache chatGroupMemberCache;
+    @Resource
+    private ChatRoomCache chatRoomCache;
+    @Resource
+    private ChatGroupRoomCache chatGroupRoomCache;
+    @Resource
+    private ChatGroupSettingCache chatGroupSettingCache;
+    @Resource
+    private ChatGroupPersonalSettingCache chatGroupPersonalSettingCache;
+    @Resource
+    private ChatGroupManagerCache chatGroupManagerCache;
 
 
     /**
@@ -99,35 +111,38 @@ public class GroupServiceImpl implements GroupService {
     @Override
     @RedissonLock(key = "#invite", waitTime = 3000)
     public void invite(Long userId, InviteDTO inviteDTO) {
-        Long groupRoomId = inviteDTO.getGroupRoomId();
+        Long roomId = inviteDTO.getRoomId();
+        checkChatRoom(roomId);
+        ChatGroupRoom chatGroupRoom = chatGroupRoomCache.get(roomId);
+        Long groupRoomId = chatGroupRoom.getId();
         checkGroupRoom(groupRoomId);
-        List<Long> ids = preCheckUserList(inviteDTO.getUserIds(), SystemConstant.INVITE_MEMBER_MIN_COUNT);
-        Long memberCount = chatGroupMemberDao.getMemberCountByGroupRoomId(groupRoomId);
-        AssertUtils.equal(memberCount + ids.size(), SystemConstant.MEMBER_MAX_COUNT, "邀请人数已超过限制");
+        List<Long> inviteIds = preCheckUserList(inviteDTO.getUserIds(), SystemConstant.INVITE_MEMBER_MIN_COUNT);
+        int memberCount = chatGroupMemberCache.getMemberUserIdList(roomId).size();
+        AssertUtils.equal(memberCount + inviteIds.size(), SystemConstant.MEMBER_MAX_COUNT, "邀请人数已超过限制");
         if (memberCount > SystemConstant.INVITE_REMIND_COUNT) {
             SysUser sysUser = userCache.get(userId);
-            // todo 缓存改造
-            ChatGroupSetting chatGroupSetting = chatGroupSettingDao.getSettingByGroupRoomId(groupRoomId);
-            //List<WsGroupInviteVO> wsGroupInviteListVO = ChatAdapt.buildInviteGroupList(userId,ids,chatGroupSetting,sysUser.getUserName());
-            // 发送邀请加群通知
+            ChatGroupSetting chatGroupSetting = chatGroupSettingCache.get(roomId);
+            // todo 发送邀请加群通知
         } else {
             // 直接添加群成员记录
-            addGroupMemberRecord(groupRoomId, ids);
+            addGroupMemberRecord(groupRoomId, inviteIds);
         }
     }
 
     /**
      * 接受邀请
      *
-     * @param userId      用户 ID
-     * @param groupRoomId 组会议室 ID
+     * @param userId 用户 ID
+     * @param roomId id
      * @author qingmeng
-     * @createTime: 2023/12/08 08:33:39
+     * @createTime: 2023/12/10 11:28:29
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void acceptInvite(Long userId, Long groupRoomId) {
-        checkGroupRoom(groupRoomId);
+    public void acceptInvite(Long userId, Long roomId) {
+        ChatGroupRoom chatGroupRoom = chatGroupRoomCache.get(roomId);
+        Long groupRoomId = chatGroupRoom.getId();
+        checkGroupRoom(roomId);
         checkInGroup(userId, groupRoomId);
         // todo checkTime()
         // 添加群成员记录
@@ -142,15 +157,23 @@ public class GroupServiceImpl implements GroupService {
     /**
      * 踢出
      *
+     * @param userId     用户 ID
      * @param kickOutDTO 踢出 DTO
      * @author qingmeng
-     * @createTime: 2023/12/08 09:29:11
+     * @createTime: 2023/12/10 11:48:53
      */
     @Override
-    public void kickOut(KickOutDTO kickOutDTO) {
-        checkGroupRoom(kickOutDTO.getGroupRoomId());
-        checkNotInGroup(kickOutDTO.getUserId(), kickOutDTO.getGroupRoomId());
-        chatGroupMemberDao.removeMember(kickOutDTO.getUserId(), kickOutDTO.getGroupRoomId());
+    @Transactional(rollbackFor = Exception.class)
+    public void kickOut(Long userId, KickOutDTO kickOutDTO) {
+        ChatGroupRoom chatGroupRoom = chatGroupRoomCache.get(kickOutDTO.getRoomId());
+        Long groupRoomId = chatGroupRoom.getId();
+        checkGroupRoom(kickOutDTO.getRoomId());
+        checkNotInGroup(kickOutDTO.getUserId(), groupRoomId);
+        chatGroupMemberDao.removeMember(kickOutDTO.getUserId(), groupRoomId);
+        chatGroupPersonalSettingDao.removeSetting(kickOutDTO.getUserId(), groupRoomId);
+        // 删除相关缓存
+        chatGroupMemberCache.evictMemberUidList(kickOutDTO.getRoomId());
+        chatGroupPersonalSettingCache.delete(groupRoomId + ":" + userId);
     }
 
     /**
@@ -161,9 +184,11 @@ public class GroupServiceImpl implements GroupService {
      * @createTime: 2023/12/08 10:32:12
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void alterSetting(AlterGroupSettingDTO alterGroupSettingDTO) {
-        checkGroupRoom(alterGroupSettingDTO.getGroupRoomId());
+        checkGroupRoom(alterGroupSettingDTO.getRoomId());
         chatGroupSettingDao.updateSetting(alterGroupSettingDTO);
+        chatGroupSettingCache.delete(alterGroupSettingDTO.getRoomId());
     }
 
     /**
@@ -175,21 +200,22 @@ public class GroupServiceImpl implements GroupService {
      */
     @Override
     public void addManagement(AddManagementDTO addManagementDTO) {
+        Long roomId = addManagementDTO.getRoomId();
         // 检查群组ID是否有效
-        checkGroupRoom(addManagementDTO.getGroupRoomId());
+        checkGroupRoom(roomId);
+        ChatGroupRoom chatGroupRoom = chatGroupRoomCache.get(roomId);
         // 检查用户ID是否有效
         List<Long> ids = preCheckUserList(addManagementDTO.getUserIds(), SystemConstant.ADD_MANAGEMENT_MIN_COUNT);
         //  检查用户是否已经在管理员中
-        List<Long> managementIds = chatGroupManagerDao.getManagementListByGroupRoomId(addManagementDTO.getGroupRoomId()).stream().map(ChatGroupManager::getUserId).collect(Collectors.toList());
+        List<Long> managementIds = chatGroupManagerCache.getManagerIdList(roomId);
         List<Long> saveIds = checkManagement(ids, managementIds);
-        // 获取群管理员数量
-        Long managementCount = chatGroupManagerDao.getManagementCountByByGroupRoomId(addManagementDTO.getGroupRoomId());
         // 检查群管理员数量是否超过最大值
-        AssertUtils.checkGreaterThan(managementCount + saveIds.size(), SystemConstant.MANAGEMENT_MAX_COUNT, "群管理员最多可能添加" + SystemConstant.MANAGEMENT_MAX_COUNT + "个");
+        AssertUtils.checkGreaterThan((long) (managementIds.size() + saveIds.size()), SystemConstant.MANAGEMENT_MAX_COUNT, "群管理员最多可能添加" + SystemConstant.MANAGEMENT_MAX_COUNT + "个");
         // 根据群组ID和用户ID构建群管理员列表
-        List<ChatGroupManager> chatGroupManagers = ChatAdapt.buildChatGroupManagementList(addManagementDTO.getGroupRoomId(), saveIds);
+        List<ChatGroupManager> chatGroupManagers = ChatAdapt.buildChatGroupManagementList(chatGroupRoom.getId(), saveIds);
         // 保存群管理员列表
         chatGroupManagerDao.saveBatch(chatGroupManagers);
+        chatGroupManagerCache.evictManagerIdList(roomId);
     }
 
     /**
@@ -201,9 +227,13 @@ public class GroupServiceImpl implements GroupService {
      */
     @Override
     public void removeManagement(RemoveManagementDTO removeManagementDTO) {
+        Long roomId = removeManagementDTO.getRoomId();
+        checkGroupRoom(roomId);
+        ChatGroupRoom chatGroupRoom = chatGroupRoomCache.get(roomId);
         // 检查群组ID是否有效
-        checkGroupRoom(removeManagementDTO.getGroupRoomId());
-        chatGroupManagerDao.removeManagement(removeManagementDTO.getGroupRoomId(), removeManagementDTO.getUserId());
+        checkGroupRoom(roomId);
+        chatGroupManagerDao.removeManagement(chatGroupRoom.getId(), removeManagementDTO.getUserId());
+        chatGroupManagerCache.evictManagerIdList(roomId);
     }
 
     /**
@@ -282,6 +312,21 @@ public class GroupServiceImpl implements GroupService {
     }
 
     /**
+     * 获取聊天室
+     *
+     * @param roomId 房间 ID
+     * @return {@link ChatRoom }
+     * @author qingmeng
+     * @createTime: 2023/12/10 11:12:33
+     */
+    private ChatRoom checkChatRoom(Long roomId) {
+        ChatRoom chatRoom = chatRoomCache.get(roomId);
+        AssertUtils.isNull(chatRoom, "邀请失败，群不存在");
+        AssertUtils.equal(chatRoom.getRoomType(), RoomTypeEnum.GROUP.getCode(), "类型校验失败");
+        return chatRoom;
+    }
+
+    /**
      * 从成员id中找出我的好友id
      *
      * @param memberIds    成员id
@@ -341,12 +386,12 @@ public class GroupServiceImpl implements GroupService {
     /**
      * 检查小组房间
      *
-     * @param groupRoomId 组会议室 ID
+     * @param roomId ID
      * @author qingmeng
      * @createTime: 2023/12/08 09:26:08
      */
-    private void checkGroupRoom(Long groupRoomId) {
-        ChatGroupRoom chatGroupRoom = chatGroupRoomDao.getById(groupRoomId);
+    private void checkGroupRoom(Long roomId) {
+        ChatGroupRoom chatGroupRoom = chatGroupRoomDao.getByRoomId(roomId);
         AssertUtils.isNull(chatGroupRoom, "群聊不存在");
         AssertUtils.equal(chatGroupRoom.getRoomStatus(), RoomStatusEnum.BANNED.getCode(), "该群聊不可操作");
     }

@@ -7,6 +7,7 @@ import com.qingmeng.entity.SysUserPrivacySetting;
 import com.qingmeng.mapper.SysUserPrivacySettingMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -38,5 +39,17 @@ public class SysUserPrivacySettingDao extends ServiceImpl<SysUserPrivacySettingM
                 .set(StrUtil.isNotBlank(personalPrivacySettingDTO.getPersonalizedSignature()), SysUserPrivacySetting::getPersonalizedSignature, personalPrivacySettingDTO.getPersonalizedSignature())
                 .set(StrUtil.isNotBlank(personalPrivacySettingDTO.getPatContent()), SysUserPrivacySetting::getPatContent, personalPrivacySettingDTO.getPatContent())
                 .update(new SysUserPrivacySetting());
+    }
+
+    /**
+     * 按用户 ID 获取列表
+     *
+     * @param userIds 用户 ID
+     * @return {@link List }<{@link SysUserPrivacySetting }>
+     * @author qingmeng
+     * @createTime: 2023/12/10 09:56:01
+     */
+    public List<SysUserPrivacySetting> getListByUserIds(List<Long> userIds) {
+        return lambdaQuery().in(SysUserPrivacySetting::getUserId, userIds).list();
     }
 }

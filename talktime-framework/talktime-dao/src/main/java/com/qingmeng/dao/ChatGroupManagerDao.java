@@ -74,4 +74,16 @@ public class ChatGroupManagerDao extends ServiceImpl<ChatGroupManagerMapper, Cha
         wrapper.eq(ChatGroupManager::getUserId, userId);
         remove(wrapper);
     }
+
+    /**
+     * 按房间 ID 列出
+     *
+     * @param roomGroupId 会议室组 ID
+     * @return {@link List }<{@link ChatGroupManager }>
+     * @author qingmeng
+     * @createTime: 2023/12/10 10:03:23
+     */
+    public List<ChatGroupManager> listByRoomIds(Long roomGroupId) {
+        return lambdaQuery().eq(ChatGroupManager::getRoomGroupId,roomGroupId ).list();
+    }
 }

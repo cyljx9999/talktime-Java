@@ -1,4 +1,4 @@
-package com.qingmeng.cache;
+package com.qingmeng.config.cache;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.qingmeng.utils.RedisUtils;

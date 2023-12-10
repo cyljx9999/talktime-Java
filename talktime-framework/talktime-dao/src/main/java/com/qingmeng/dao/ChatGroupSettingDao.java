@@ -7,6 +7,7 @@ import com.qingmeng.entity.ChatGroupSetting;
 import com.qingmeng.mapper.ChatGroupSettingMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -48,5 +49,17 @@ public class ChatGroupSettingDao extends ServiceImpl<ChatGroupSettingMapper, Cha
                 .eq(ChatGroupSetting::getGroupRoomId,alterGroupSettingDTO.getGroupRoomId())
                 .update(new ChatGroupSetting());
 
+    }
+
+    /**
+     * 按组会议室 ID 列出
+     *
+     * @param groupRoomIds 组聊天室 ID
+     * @return {@link List }<{@link ChatGroupSetting }>
+     * @author qingmeng
+     * @createTime: 2023/12/10 10:21:31
+     */
+    public List<ChatGroupSetting> listByGroupRoomIds(List<Long> groupRoomIds) {
+        return lambdaQuery().in(ChatGroupSetting::getGroupRoomId,groupRoomIds).list();
     }
 }

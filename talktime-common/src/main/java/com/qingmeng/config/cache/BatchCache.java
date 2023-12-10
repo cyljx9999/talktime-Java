@@ -1,4 +1,4 @@
-package com.qingmeng.cache;
+package com.qingmeng.config.cache;
 
 import java.util.List;
 import java.util.Map;
