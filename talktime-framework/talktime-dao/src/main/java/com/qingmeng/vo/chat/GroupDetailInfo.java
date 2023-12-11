@@ -1,5 +1,6 @@
 package com.qingmeng.vo.chat;
 
+import com.qingmeng.vo.user.ManagerInfo;
 import com.qingmeng.vo.user.SimpleUserInfo;
 import lombok.Data;
 
@@ -71,4 +72,8 @@ public class GroupDetailInfo {
      */
     private List<SimpleUserInfo> memberList;
 
+    /**
+     * 管理员列表
+     */
+    private List<ManagerInfo> managerList;
 }

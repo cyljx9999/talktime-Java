@@ -7,6 +7,7 @@ import com.qingmeng.enums.chat.*;
 import com.qingmeng.enums.user.CloseOrOpenStatusEnum;
 import com.qingmeng.utils.CommonUtils;
 import com.qingmeng.vo.chat.GroupDetailInfo;
+import com.qingmeng.vo.user.ManagerInfo;
 import com.qingmeng.vo.user.SimpleUserInfo;
 
 import java.util.*;
@@ -193,7 +194,8 @@ public class ChatAdapt {
                                                        ChatGroupPersonalSetting chatGroupPersonalSetting,
                                                        List<SysUserFriendSetting> friendSettingList,
                                                        Map<Long, SysUser> userMap,
-                                                       Map<String, ChatGroupPersonalSetting> chatGroupPersonalSettingMap) {
+                                                       Map<String, ChatGroupPersonalSetting> chatGroupPersonalSettingMap,
+                                                       List<ChatGroupManager> managerAllList) {
         GroupDetailInfo groupDetailInfo = new GroupDetailInfo();
         groupDetailInfo.setGroupRoomName(chatGroupSetting.getGroupRoomName());
         groupDetailInfo.setGroupRoomAvatar(chatGroupSetting.getGroupRoomAvatar());
@@ -204,7 +206,9 @@ public class ChatAdapt {
         groupDetailInfo.setDisplayNameStatus(chatGroupPersonalSetting.getDisplayNameStatus());
         groupDetailInfo.setNickName(chatGroupPersonalSetting.getNickName());
         groupDetailInfo.setRemindStatus(chatGroupPersonalSetting.getRemindStatus());
-        groupDetailInfo.setMemberList(getMemberList(userId, memberIds, friendIds, friendSettingList, userMap, chatGroupPersonalSettingMap));
+        Map<String, List<?>> map = getMemberListAndManagerList(userId, memberIds, friendIds, friendSettingList, userMap, chatGroupPersonalSettingMap, managerAllList);
+        groupDetailInfo.setMemberList((List<SimpleUserInfo>) map.get("memberList"));
+        groupDetailInfo.setManagerList((List<ManagerInfo>) map.get("managerInfoList"));
         return groupDetailInfo;
     }
 
@@ -217,17 +221,22 @@ public class ChatAdapt {
      * @param friendSettingList           好友设置列表
      * @param userMap                     用户集合
      * @param chatGroupPersonalSettingMap 聊天群个人设置集合
-     * @return {@link List }<{@link SimpleUserInfo }>
+     * @param managerAllList              管理员 列表
+     * @return {@link Map }<{@link String }, {@link List }<{@link ? }>>
      * @author qingmeng
-     * @createTime: 2023/12/09 14:55:06
+     * @createTime: 2023/12/11 11:06:48
      */
-    private static List<SimpleUserInfo> getMemberList(Long userId,
-                                                      List<Long> memberIds,
-                                                      List<Long> friendIds,
-                                                      List<SysUserFriendSetting> friendSettingList,
-                                                      Map<Long, SysUser> userMap,
-                                                      Map<String, ChatGroupPersonalSetting> chatGroupPersonalSettingMap) {
-        return memberIds.stream().map(id -> {
+    private static Map<String, List<?>> getMemberListAndManagerList(Long userId,
+                                                                    List<Long> memberIds,
+                                                                    List<Long> friendIds,
+                                                                    List<SysUserFriendSetting> friendSettingList,
+                                                                    Map<Long, SysUser> userMap,
+                                                                    Map<String, ChatGroupPersonalSetting> chatGroupPersonalSettingMap,
+                                                                    List<ChatGroupManager> managerAllList) {
+        Map<String, List<?>> map = new HashMap<>(2);
+        List<SimpleUserInfo> memberList = new ArrayList<>();
+        List<ManagerInfo> managerInfoList = new ArrayList<>();
+        memberIds.forEach(id -> {
             SimpleUserInfo userInfo = new SimpleUserInfo();
             boolean isFriend = friendIds.contains(id);
             if (isFriend) {
@@ -252,7 +261,21 @@ public class ChatAdapt {
                 // 如果有群昵称则采用群昵称，否则则使用对方原本的用户名
                 userInfo.setUserName(StrUtil.isNotBlank(chatGroupPersonalSetting.getNickName()) ? chatGroupPersonalSetting.getNickName() : sysUser.getUserName());
             }
-            return userInfo;
-        }).collect(Collectors.toList());
+            ChatGroupManager chatGroupManager = managerAllList.stream().filter(manager -> manager.getUserId().equals(id)).findAny().orElse(new ChatGroupManager());
+            if (Objects.nonNull(chatGroupManager.getId())) {
+                ManagerInfo managerInfo = new ManagerInfo();
+                managerInfo.setUserAvatar(userInfo.getUserAvatar());
+                managerInfo.setUserName(userInfo.getUserName());
+                Integer roleType = chatGroupManager.getRoleType();
+                String roleName = GroupRoleEnum.GROUP_OWNER.getCode().equals(roleType) ? "群主" : "管理员";
+                managerInfo.setRoleName(roleName);
+                managerInfoList.add(managerInfo);
+            }
+            memberList.add(userInfo);
+        });
+        map.put("memberList", memberList);
+        map.put("managerInfoList", managerInfoList);
+        return map;
     }
+
 }

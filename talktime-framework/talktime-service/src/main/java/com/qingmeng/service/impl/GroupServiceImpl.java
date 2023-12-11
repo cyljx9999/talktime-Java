@@ -143,7 +143,7 @@ public class GroupServiceImpl implements GroupService {
         ChatGroupRoom chatGroupRoom = chatGroupRoomCache.get(roomId);
         Long groupRoomId = chatGroupRoom.getId();
         checkGroupRoom(roomId);
-        checkInGroup(userId, groupRoomId);
+        checkInGroup(userId, roomId);
         // todo checkTime()
         // 添加群成员记录
         ChatGroupMember saveChatGroupMember = ChatAdapt.buildSaveChatGroupMember(userId, groupRoomId);
@@ -168,7 +168,7 @@ public class GroupServiceImpl implements GroupService {
         ChatGroupRoom chatGroupRoom = chatGroupRoomCache.get(kickOutDTO.getRoomId());
         Long groupRoomId = chatGroupRoom.getId();
         checkGroupRoom(kickOutDTO.getRoomId());
-        checkNotInGroup(kickOutDTO.getUserId(), groupRoomId);
+        checkNotInGroup(kickOutDTO.getUserId(), kickOutDTO.getRoomId());
         chatGroupMemberDao.removeMember(kickOutDTO.getUserId(), groupRoomId);
         chatGroupPersonalSettingDao.removeSetting(kickOutDTO.getUserId(), groupRoomId);
         // 删除相关缓存
@@ -187,7 +187,8 @@ public class GroupServiceImpl implements GroupService {
     @Transactional(rollbackFor = Exception.class)
     public void alterSetting(AlterGroupSettingDTO alterGroupSettingDTO) {
         checkGroupRoom(alterGroupSettingDTO.getRoomId());
-        chatGroupSettingDao.updateSetting(alterGroupSettingDTO);
+        ChatGroupRoom chatGroupRoom = chatGroupRoomCache.get(alterGroupSettingDTO.getRoomId());
+        chatGroupSettingDao.updateSetting(alterGroupSettingDTO, chatGroupRoom.getId());
         chatGroupSettingCache.delete(alterGroupSettingDTO.getRoomId());
     }
 
@@ -245,31 +246,39 @@ public class GroupServiceImpl implements GroupService {
      * @createTime: 2023/12/09 13:38:55
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void alterPersonSetting(Long userId, AlterGroupPersonalSettingDTO alterGroupPersonalSettingDTO) {
         // 检查群组ID是否有效
-        checkGroupRoom(alterGroupPersonalSettingDTO.getGroupRoomId());
+        Long roomId = alterGroupPersonalSettingDTO.getRoomId();
+        checkGroupRoom(roomId);
+        ChatGroupRoom chatGroupRoom = chatGroupRoomCache.get(roomId);
         //  检查用户是否在群聊里
-        checkNotInGroup(userId, alterGroupPersonalSettingDTO.getGroupRoomId());
-        chatGroupPersonalSettingDao.alterPersonSetting(userId, alterGroupPersonalSettingDTO);
+        Long groupRoomId = chatGroupRoom.getId();
+        checkNotInGroup(userId, roomId);
+        chatGroupPersonalSettingDao.alterPersonSetting(userId, groupRoomId, alterGroupPersonalSettingDTO);
+        chatGroupPersonalSettingCache.delete(groupRoomId + ":" + userId);
     }
 
     /**
      * 获取组详细信息
      *
-     * @param userId      用户 ID
-     * @param groupRoomId 组会议室 ID
+     * @param userId 用户 ID
+     * @param roomId 房间 ID
      * @return {@link GroupDetailInfo }
      * @author qingmeng
      * @createTime: 2023/12/09 13:59:21
      */
     @Override
-    public GroupDetailInfo getGroupDetailInfo(Long userId, Long groupRoomId) {
-        checkGroupRoom(groupRoomId);
-        ChatGroupSetting chatGroupSetting = chatGroupSettingDao.getSettingByGroupRoomId(groupRoomId);
+    public GroupDetailInfo getGroupDetailInfo(Long userId, Long roomId) {
+        checkGroupRoom(roomId);
+        ChatGroupRoom chatGroupRoom = chatGroupRoomCache.get(roomId);
+        Long groupRoomId = chatGroupRoom.getId();
+        // 获取群聊设置
+        ChatGroupSetting chatGroupSetting = chatGroupSettingCache.get(roomId);
         // 获取个人的群聊设置
-        ChatGroupPersonalSetting chatGroupPersonalSetting = chatGroupPersonalSettingDao.getSettingByUserId(userId, groupRoomId);
+        ChatGroupPersonalSetting chatGroupPersonalSetting = chatGroupPersonalSettingCache.get(groupRoomId + ":" + userId);
         // 获取当前群聊成员的ids
-        List<Long> memberIds = chatGroupMemberDao.getGroupMemberList(groupRoomId).stream().map(ChatGroupMember::getUserId).collect(Collectors.toList());
+        List<Long> memberIds = chatGroupMemberCache.getMemberUserIdList(roomId);
         // 获取当前用户的所有好友id列表
         List<Long> addFriendIds = sysUserFriendDao.getFriendListById(userId)
                 .stream().distinct()
@@ -282,8 +291,11 @@ public class GroupServiceImpl implements GroupService {
         List<SysUserFriendSetting> friendSettingList = new ArrayList<>(userFriendSettingCache.getBatch(keys).values());
         // 获取当前群聊的所有用户信息
         Map<Long, SysUser> userMap = userCache.getBatch(memberIds);
-        // todo 获取所有群成员的个人群聊设置
-        Map<String, ChatGroupPersonalSetting> chatGroupPersonalSettingMap = new HashMap<>();
+        // 获取所有群成员的个人群聊设置
+        List<String> personalSettingKeys = memberIds.stream().map(id -> groupRoomId + ":" + id).collect(Collectors.toList());
+        Map<String, ChatGroupPersonalSetting> chatGroupPersonalSettingMap = chatGroupPersonalSettingCache.getBatch(personalSettingKeys);
+        // 获取群聊的管理员列表
+        List<ChatGroupManager> managerAllList = chatGroupManagerCache.getManagerAllList(roomId);
         return ChatAdapt.buildGroupDetailInfo(
                 userId,
                 memberIds,
@@ -292,52 +304,75 @@ public class GroupServiceImpl implements GroupService {
                 chatGroupPersonalSetting,
                 friendSettingList,
                 userMap,
-                chatGroupPersonalSettingMap
+                chatGroupPersonalSettingMap,
+                managerAllList
         );
     }
 
     /**
      * 退出聊天群
      *
-     * @param userId      用户 ID
-     * @param groupRoomId 组会议室 ID
+     * @param userId 用户 ID
+     * @param roomId 房间 ID
      * @author qingmeng
      * @createTime: 2023/12/09 14:58:19
      */
     @Override
-    public void quitChatGroup(Long userId, Long groupRoomId) {
-        checkGroupRoom(groupRoomId);
-        checkNotInGroup(userId, groupRoomId);
+    @Transactional(rollbackFor = Exception.class)
+    public void quitChatGroup(Long userId, Long roomId) {
+        checkGroupRoom(roomId);
+        ChatGroupRoom chatGroupRoom = chatGroupRoomCache.get(roomId);
+        Long groupRoomId = chatGroupRoom.getId();
+        checkNotInGroup(userId, roomId);
         chatGroupMemberDao.removeMember(userId, groupRoomId);
+        chatGroupPersonalSettingCache.delete(groupRoomId + ":" + userId);
+        chatGroupMemberCache.evictMemberUidList(roomId);
+        // 检查是否为群管理员
+        boolean flag = hasGroupManager(groupRoomId, userId);
+        if (flag) {
+            chatGroupManagerCache.evictManagerIdList(roomId);
+            chatGroupManagerCache.evictManagerAllList(roomId);
+        }
+    }
+
+    /**
+     * 判断是否为管理员
+     *
+     * @param groupRoomId 组会议室 ID
+     * @param userId      用户 ID
+     * @return boolean true是管理员 false不是管理员
+     * @author qingmeng
+     * @createTime: 2023/12/11 11:16:12
+     */
+    private boolean hasGroupManager(Long groupRoomId, Long userId) {
+        return Objects.nonNull(chatGroupManagerDao.getManager(groupRoomId, userId));
     }
 
     /**
      * 获取聊天室
      *
      * @param roomId 房间 ID
-     * @return {@link ChatRoom }
      * @author qingmeng
      * @createTime: 2023/12/10 11:12:33
      */
-    private ChatRoom checkChatRoom(Long roomId) {
+    private void checkChatRoom(Long roomId) {
         ChatRoom chatRoom = chatRoomCache.get(roomId);
         AssertUtils.isNull(chatRoom, "邀请失败，群不存在");
         AssertUtils.equal(chatRoom.getRoomType(), RoomTypeEnum.GROUP.getCode(), "类型校验失败");
-        return chatRoom;
     }
 
     /**
      * 从成员id中找出我的好友id
      *
      * @param memberIds    成员id
-     * @param addFriendIds 所有好友id
+     * @param allFriendIds 所有好友id
      * @return {@link List }<{@link Long }>
      * @author qingmeng
      * @createTime: 2023/12/09 14:21:49
      */
-    private List<Long> getFriendIdByMemberId(List<Long> memberIds, List<Long> addFriendIds) {
+    private List<Long> getFriendIdByMemberId(List<Long> memberIds, List<Long> allFriendIds) {
         List<Long> intersection = new ArrayList<>(memberIds);
-        intersection.retainAll(addFriendIds);
+        intersection.retainAll(allFriendIds);
         return intersection;
     }
 
@@ -360,27 +395,29 @@ public class GroupServiceImpl implements GroupService {
     /**
      * 检测是否在群里
      *
-     * @param userId      用户 ID
-     * @param groupRoomId 组会议室 ID
+     * @param userId 用户 ID
+     * @param roomId 组会议室 ID
      * @author qingmeng
      * @createTime: 2023/12/08 09:28:01
      */
-    private void checkNotInGroup(Long userId, Long groupRoomId) {
-        ChatGroupMember chatGroupMember = chatGroupMemberDao.getByUserIdAndGroupRoomId(userId, groupRoomId);
-        AssertUtils.isNull(chatGroupMember, "非群聊成员，无法操作");
+    private void checkNotInGroup(Long userId, Long roomId) {
+        List<Long> memberUserIdList = chatGroupMemberCache.getMemberUserIdList(roomId);
+        boolean contains = memberUserIdList.contains(userId);
+        AssertUtils.isTrue(contains, "非群聊成员，无法操作");
     }
 
     /**
      * 检测是否在群里
      *
-     * @param userId      用户 ID
-     * @param groupRoomId 组会议室 ID
+     * @param userId 用户 ID
+     * @param roomId 房间 ID
      * @author qingmeng
      * @createTime: 2023/12/08 09:28:01
      */
-    private void checkInGroup(Long userId, Long groupRoomId) {
-        ChatGroupMember chatGroupMember = chatGroupMemberDao.getByUserIdAndGroupRoomId(userId, groupRoomId);
-        AssertUtils.isNotNull(chatGroupMember, "已加入群聊，请勿重复操作");
+    private void checkInGroup(Long userId, Long roomId) {
+        List<Long> memberUserIdList = chatGroupMemberCache.getMemberUserIdList(roomId);
+        boolean contains = memberUserIdList.contains(userId);
+        AssertUtils.isTrue(contains, "已加入群聊，请勿重复操作");
     }
 
     /**
@@ -391,7 +428,7 @@ public class GroupServiceImpl implements GroupService {
      * @createTime: 2023/12/08 09:26:08
      */
     private void checkGroupRoom(Long roomId) {
-        ChatGroupRoom chatGroupRoom = chatGroupRoomDao.getByRoomId(roomId);
+        ChatGroupRoom chatGroupRoom = chatGroupRoomCache.get(roomId);
         AssertUtils.isNull(chatGroupRoom, "群聊不存在");
         AssertUtils.equal(chatGroupRoom.getRoomStatus(), RoomStatusEnum.BANNED.getCode(), "该群聊不可操作");
     }

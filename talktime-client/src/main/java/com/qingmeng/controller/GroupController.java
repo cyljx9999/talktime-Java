@@ -157,15 +157,15 @@ public class GroupController {
     /**
      * 获取组详细信息
      *
-     * @param groupRoomId 组会议室 ID
+     * @param roomId 房间 ID
      * @return {@link CommonResult }<{@link GroupDetailInfo }>
      * @author qingmeng
      * @createTime: 2023/12/09 13:59:09
      */
-    @GetMapping("/getGroupDetailInfo/{groupRoomId}")
+    @GetMapping("/getGroupDetailInfo/{roomId}")
     @SysLog(title = "群聊模块", content = "获取群聊详细信息")
-    public CommonResult<GroupDetailInfo> getGroupDetailInfo(@PathVariable Long groupRoomId) {
-        GroupDetailInfo groupDetailInfo = groupService.getGroupDetailInfo(StpUtil.getLoginIdAsLong(), groupRoomId);
+    public CommonResult<GroupDetailInfo> getGroupDetailInfo(@PathVariable Long roomId) {
+        GroupDetailInfo groupDetailInfo = groupService.getGroupDetailInfo(StpUtil.getLoginIdAsLong(), roomId);
         return CommonResult.success(groupDetailInfo);
     }
 

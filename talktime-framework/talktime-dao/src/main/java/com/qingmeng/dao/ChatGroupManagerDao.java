@@ -37,18 +37,6 @@ public class ChatGroupManagerDao extends ServiceImpl<ChatGroupManagerMapper, Cha
     }
 
     /**
-     * 按组会议室 ID 获取管理计数
-     *
-     * @param groupRoomId 组会议室 ID
-     * @return int
-     * @author qingmeng
-     * @createTime: 2023/12/08 11:27:12
-     */
-    public Long getManagementCountByByGroupRoomId(Long groupRoomId) {
-        return lambdaQuery().eq(ChatGroupManager::getRoomGroupId, groupRoomId).count();
-    }
-
-    /**
      * 按组房间 ID 获取管理列表
      *
      * @param groupRoomId 组会议室 ID
@@ -84,6 +72,22 @@ public class ChatGroupManagerDao extends ServiceImpl<ChatGroupManagerMapper, Cha
      * @createTime: 2023/12/10 10:03:23
      */
     public List<ChatGroupManager> listByRoomIds(Long roomGroupId) {
-        return lambdaQuery().eq(ChatGroupManager::getRoomGroupId,roomGroupId ).list();
+        return lambdaQuery().eq(ChatGroupManager::getRoomGroupId, roomGroupId).list();
+    }
+
+    /**
+     * 获取管理员
+     *
+     * @param groupRoomId 组会议室 ID
+     * @param userId      用户 ID
+     * @return {@link ChatGroupManager }
+     * @author qingmeng
+     * @createTime: 2023/12/11 11:14:44
+     */
+    public ChatGroupManager getManager(Long groupRoomId, Long userId) {
+        return lambdaQuery()
+                .eq(ChatGroupManager::getRoomGroupId, groupRoomId)
+                .eq(ChatGroupManager::getUserId, userId)
+                .one();
     }
 }

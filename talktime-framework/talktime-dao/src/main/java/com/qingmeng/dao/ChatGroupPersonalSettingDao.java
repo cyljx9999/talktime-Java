@@ -29,13 +29,13 @@ public class ChatGroupPersonalSettingDao extends ServiceImpl<ChatGroupPersonalSe
      * @author qingmeng
      * @createTime: 2023/12/09 13:40:43
      */
-    public void alterPersonSetting(Long userId, AlterGroupPersonalSettingDTO alterGroupPersonalSettingDTO) {
+    public void alterPersonSetting(Long userId,Long groupRoomId, AlterGroupPersonalSettingDTO alterGroupPersonalSettingDTO) {
         lambdaUpdate()
                 .set(Objects.nonNull(alterGroupPersonalSettingDTO.getDisplayNameStatus()),ChatGroupPersonalSetting::getDisplayNameStatus, alterGroupPersonalSettingDTO.getDisplayNameStatus())
                 .set(Objects.nonNull(alterGroupPersonalSettingDTO.getRemindStatus()),ChatGroupPersonalSetting::getRemindStatus, alterGroupPersonalSettingDTO.getRemindStatus())
                 .set(Objects.nonNull(alterGroupPersonalSettingDTO.getTopStatus()),ChatGroupPersonalSetting::getTopStatus, alterGroupPersonalSettingDTO.getTopStatus())
                 .eq(ChatGroupPersonalSetting::getUserId, userId)
-                .eq(ChatGroupPersonalSetting::getGroupRoomId, alterGroupPersonalSettingDTO.getGroupRoomId())
+                .eq(ChatGroupPersonalSetting::getGroupRoomId, groupRoomId)
                 .update(new ChatGroupPersonalSetting());
     }
 

@@ -15,10 +15,10 @@ import javax.validation.constraints.NotNull;
 @Data
 public class AlterGroupPersonalSettingDTO {
     /**
-     * 群聊房间id
+     * 房间id
      */
     @NotNull
-    private Long groupRoomId;
+    private Long roomId;
 
     /**
      * 置顶状态 0不置顶 1置顶

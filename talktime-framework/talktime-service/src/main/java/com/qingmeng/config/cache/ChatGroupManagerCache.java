@@ -43,6 +43,28 @@ public class ChatGroupManagerCache {
         return chatGroupManagerDao.listByRoomIds(chatGroupRoom.getId()).stream().map(ChatGroupManager::getUserId).collect(Collectors.toList());
     }
 
+    /**
+     * 获取经理全部列表
+     *
+     * @param roomId 房间 ID
+     * @return {@link List }<{@link ChatGroupManager }>
+     * @author qingmeng
+     * @createTime: 2023/12/11 10:59:53
+     */
+    @Cacheable(cacheNames = "managerAll", key = "'groupManagerAll:'+#roomId")
+    public List<ChatGroupManager> getManagerAllList(Long roomId) {
+        ChatGroupRoom chatGroupRoom = chatGroupRoomCache.get(roomId);
+        if (Objects.isNull(chatGroupRoom)) {
+            return new ArrayList<>();
+        }
+        return chatGroupManagerDao.listByRoomIds(chatGroupRoom.getId());
+    }
+
+    @CacheEvict(cacheNames = "managerAll", key = "'groupManagerAll:'+#roomId")
+    public List<Long> evictManagerAllList(Long roomId) {
+        return null;
+    }
+
     @CacheEvict(cacheNames = "member", key = "'groupManager:'+#roomId")
     public List<Long> evictManagerIdList(Long roomId) {
         return null;

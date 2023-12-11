@@ -19,7 +19,7 @@ import java.util.Objects;
  * @since 2023-11-26 08:12:03
  */
 @Service
-public class ChatGroupSettingDao extends ServiceImpl<ChatGroupSettingMapper, ChatGroupSetting>{
+public class ChatGroupSettingDao extends ServiceImpl<ChatGroupSettingMapper, ChatGroupSetting> {
 
     /**
      * 按组房间 ID 获取设置
@@ -30,23 +30,24 @@ public class ChatGroupSettingDao extends ServiceImpl<ChatGroupSettingMapper, Cha
      * @createTime: 2023/12/07 09:17:50
      */
     public ChatGroupSetting getSettingByGroupRoomId(Long groupRoomId) {
-        return lambdaQuery().eq(ChatGroupSetting::getGroupRoomId,groupRoomId).one();
+        return lambdaQuery().eq(ChatGroupSetting::getGroupRoomId, groupRoomId).one();
     }
 
     /**
      * 更新设置
      *
      * @param alterGroupSettingDTO 更改组设置 DTO
+     * @param groupRoomId          组会议室 ID
      * @author qingmeng
-     * @createTime: 2023/12/08 10:34:06
+     * @createTime: 2023/12/11 10:28:47
      */
-    public void updateSetting(AlterGroupSettingDTO alterGroupSettingDTO) {
+    public void updateSetting(AlterGroupSettingDTO alterGroupSettingDTO, Long groupRoomId) {
         lambdaUpdate()
-                .set(StrUtil.isNotBlank(alterGroupSettingDTO.getGroupRoomAvatar()),ChatGroupSetting::getGroupRoomAvatar,alterGroupSettingDTO.getGroupRoomAvatar())
-                .set(StrUtil.isNotBlank(alterGroupSettingDTO.getGroupRoomName()),ChatGroupSetting::getGroupRoomName,alterGroupSettingDTO.getGroupRoomName())
-                .set(StrUtil.isNotBlank(alterGroupSettingDTO.getGroupNotice()),ChatGroupSetting::getGroupNotice,alterGroupSettingDTO.getGroupNotice())
-                .set(Objects.nonNull(alterGroupSettingDTO.getInvitationConfirmation()),ChatGroupSetting::getInvitationConfirmation,alterGroupSettingDTO.getInvitationConfirmation())
-                .eq(ChatGroupSetting::getGroupRoomId,alterGroupSettingDTO.getGroupRoomId())
+                .set(StrUtil.isNotBlank(alterGroupSettingDTO.getGroupRoomAvatar()), ChatGroupSetting::getGroupRoomAvatar, alterGroupSettingDTO.getGroupRoomAvatar())
+                .set(StrUtil.isNotBlank(alterGroupSettingDTO.getGroupRoomName()), ChatGroupSetting::getGroupRoomName, alterGroupSettingDTO.getGroupRoomName())
+                .set(StrUtil.isNotBlank(alterGroupSettingDTO.getGroupNotice()), ChatGroupSetting::getGroupNotice, alterGroupSettingDTO.getGroupNotice())
+                .set(Objects.nonNull(alterGroupSettingDTO.getInvitationConfirmation()), ChatGroupSetting::getInvitationConfirmation, alterGroupSettingDTO.getInvitationConfirmation())
+                .eq(ChatGroupSetting::getGroupRoomId, groupRoomId)
                 .update(new ChatGroupSetting());
 
     }
@@ -60,6 +61,6 @@ public class ChatGroupSettingDao extends ServiceImpl<ChatGroupSettingMapper, Cha
      * @createTime: 2023/12/10 10:21:31
      */
     public List<ChatGroupSetting> listByGroupRoomIds(List<Long> groupRoomIds) {
-        return lambdaQuery().in(ChatGroupSetting::getGroupRoomId,groupRoomIds).list();
+        return lambdaQuery().in(ChatGroupSetting::getGroupRoomId, groupRoomIds).list();
     }
 }

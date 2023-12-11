@@ -48,7 +48,7 @@ public interface GroupService {
      * @author qingmeng
      * @createTime: 2023/12/10 11:48:41
      */
-    void kickOut(Long userId,KickOutDTO kickOutDTO);
+    void kickOut(Long userId, KickOutDTO kickOutDTO);
 
     /**
      * 更改设置
@@ -90,13 +90,13 @@ public interface GroupService {
     /**
      * 获取组详细信息
      *
-     * @param userId      用户 ID
-     * @param groupRoomId 组会议室 ID
+     * @param userId 用户 ID
+     * @param roomId 房间 ID
      * @return {@link GroupDetailInfo }
      * @author qingmeng
      * @createTime: 2023/12/09 13:59:21
      */
-    GroupDetailInfo getGroupDetailInfo(Long userId, Long groupRoomId);
+    GroupDetailInfo getGroupDetailInfo(Long userId, Long roomId);
 
     /**
      * 退出聊天群
