@@ -115,4 +115,5 @@ public class SystemConstant {
      */
     public static Long MANAGEMENT_MAX_COUNT = 3L;
 
+    public static String ZERO_STRING = "0";
 }

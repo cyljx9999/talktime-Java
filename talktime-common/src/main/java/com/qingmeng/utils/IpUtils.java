@@ -2,6 +2,7 @@ package com.qingmeng.utils;
 
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpUtil;
+import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.qingmeng.constant.SystemConstant;
@@ -91,12 +92,16 @@ public class IpUtils {
     public static String getIpHomeLocal(HttpServletRequest request){
         String ip = getIpAddr(request);
         if (SystemConstant.LOCAL_IP.equals(ip)){
-            return "内网ip";
+            return "本机ip";
         }
-        String result= HttpUtil.get("https://api.vore.top/api/IPdata?ip="+ip);
+        String result= HttpUtil.get("http://opendata.baidu.com/api.php?query="+ip+"&co=&resource_id=6006&oe=utf8");
         JSONObject object = JSONUtil.parseObj(result);
-        Map entity = (Map) object.get("adcode");
-        return entity.get("n").toString();
+        if (!SystemConstant.ZERO_STRING.equals(object.get("status"))){
+            return "解析失败";
+        }
+        JSONArray array = JSONUtil.parseArray(object.get("data"));
+        JSONObject entity = JSONUtil.parseObj(array.get(0));
+        return entity.get("location").toString();
     }
 
     /**
