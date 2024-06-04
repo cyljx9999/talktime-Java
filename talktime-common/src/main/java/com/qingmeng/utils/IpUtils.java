@@ -119,6 +119,7 @@ public class IpUtils {
         String result= HttpUtil.get("https://api.vore.top/api/IPdata?ip="+ip);
         JSONObject object = JSONUtil.parseObj(result);
         Map entity = (Map) object.get("adcode");
-        return entity.get("n").toString();
+        String string = entity.get("n").toString();
+        return string != null ? string : "未知IP";
     }
 }
