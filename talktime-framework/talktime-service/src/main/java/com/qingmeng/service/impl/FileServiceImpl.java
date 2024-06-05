@@ -42,7 +42,7 @@ import java.util.Objects;
 @Service
 public class FileServiceImpl implements FileService {
     @Resource
-    private MinioService minioSerivce;
+    private MinioService minioService;
     @Resource
     private UserCache userCache;
     @Resource
@@ -70,7 +70,7 @@ public class FileServiceImpl implements FileService {
                 userId.toString(),
                 config,
                 new File(RandomUtil.randomString(10)));
-        return minioSerivce.uploadFileByStream(userId, UploadSceneEnum.QRCODE.getType(), file);
+        return minioService.uploadFileByStream(userId, UploadSceneEnum.QRCODE.getType(), file);
     }
 
     /**
@@ -85,7 +85,7 @@ public class FileServiceImpl implements FileService {
     @Override
     public MinioVO getPreSignedObjectUrl(Long userId, UploadUrlDTO uploadUrlDTO) {
         MinioDTO minioDTO = FileAdapt.buildMinioDTO(userId, uploadUrlDTO);
-        return minioSerivce.getPreSignedObjectUrl(minioDTO);
+        return minioService.getPreSignedObjectUrl(minioDTO);
     }
 
     /**
