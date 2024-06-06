@@ -88,32 +88,33 @@ public class SystemConstant {
     /**
      * 成员最大数量
      */
-    public static Long MEMBER_MAX_COUNT = 500L;
+    public static final Long MEMBER_MAX_COUNT = 500L;
 
     /**
      * 邀请提醒计数
      */
-    public static int INVITE_REMIND_COUNT = 200;
+    public static final int INVITE_REMIND_COUNT = 200;
 
     /**
      * 创建组最小计数
      */
-    public static int CREATE_GROUP_MIN_COUNT = 3;
+    public static final int CREATE_GROUP_MIN_COUNT = 3;
 
     /**
      * 邀请成员最小计数
      */
-    public static int INVITE_MEMBER_MIN_COUNT = 1;
+    public static final int INVITE_MEMBER_MIN_COUNT = 1;
 
     /**
      * 添加管理最小计数
      */
-    public static int ADD_MANAGEMENT_MIN_COUNT = 1;
+    public static final int ADD_MANAGEMENT_MIN_COUNT = 1;
 
     /**
      * 管理最大计数
      */
-    public static Long MANAGEMENT_MAX_COUNT = 3L;
+    public static final Long MANAGEMENT_MAX_COUNT = 3L;
 
-    public static String ZERO_STRING = "0";
+    public static final String ZERO_STRING = "0";
+    public static final int CAN_CALLBACK_GAP_COUNT = 200;
 }

@@ -1,6 +1,7 @@
 package com.qingmeng.config.strategy.message;
 
 import com.qingmeng.dto.chat.ChatMessageDTO;
+import com.qingmeng.entity.ChatMessage;
 
 /**
  * @author 清梦
@@ -18,4 +19,55 @@ public interface MessageStrategy {
      * @createTime: 2024/06/04 22:04:39
      */
     void saveMessage(ChatMessageDTO chatMessageDTO,Long userId);
+
+    /**
+     * 检查消息
+     *
+     * @param messageDTO 消息 DTO
+     * @param userId     用户 ID
+     * @author qingmeng
+     * @createTime: 2024/06/04 21:56:34
+     */
+    void checkMsg(ChatMessageDTO messageDTO,Long userId);
+
+    /**
+     * 展示消息
+     *
+     * @param msg 消息
+     * @return {@link Object }
+     * @author qingmeng
+     * @createTime: 2024/06/06 10:43:34
+     */
+    Object showMsg(ChatMessage msg);
+
+    /**
+     *  被回复时——展示的消息
+     *
+     * @param msg 消息
+     * @return {@link Object }
+     * @author qingmeng
+     * @createTime: 2024/06/04 21:57:24
+     */
+    Object showReplyMsg(ChatMessage msg);
+
+
+    /**
+     * 会话列表——展示的消息
+     *
+     * @param msg 消息
+     * @return {@link String }
+     * @author qingmeng
+     * @createTime: 2024/06/04 21:57:14
+     */
+    String showContactMsg(ChatMessage msg);
+
+    /**
+     * 保存额外消息
+     *
+     * @param msg        消息
+     * @param messageDTO 消息 DTO
+     * @author qingmeng
+     * @createTime: 2024/06/04 21:59:46
+     */
+    void saveExtraMessage(ChatMessage msg, ChatMessageDTO messageDTO);
 }

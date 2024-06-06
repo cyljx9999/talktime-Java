@@ -8,7 +8,7 @@ import com.qingmeng.annotation.SysLog;
 import com.qingmeng.domain.rep.CommonResult;
 import com.qingmeng.dto.chatGroup.*;
 import com.qingmeng.service.GroupService;
-import com.qingmeng.vo.chat.GroupDetailInfo;
+import com.qingmeng.vo.chat.GroupDetailInfoVO;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -158,14 +158,14 @@ public class GroupController {
      * 获取组详细信息
      *
      * @param roomId 房间 ID
-     * @return {@link CommonResult }<{@link GroupDetailInfo }>
+     * @return {@link CommonResult }<{@link GroupDetailInfoVO }>
      * @author qingmeng
      * @createTime: 2023/12/09 13:59:09
      */
     @GetMapping("/getGroupDetailInfo/{roomId}")
     @SysLog(title = "群聊模块", content = "获取群聊详细信息")
-    public CommonResult<GroupDetailInfo> getGroupDetailInfo(@PathVariable Long roomId) {
-        GroupDetailInfo groupDetailInfo = groupService.getGroupDetailInfo(StpUtil.getLoginIdAsLong(), roomId);
+    public CommonResult<GroupDetailInfoVO> getGroupDetailInfo(@PathVariable Long roomId) {
+        GroupDetailInfoVO groupDetailInfo = groupService.getGroupDetailInfo(StpUtil.getLoginIdAsLong(), roomId);
         return CommonResult.success(groupDetailInfo);
     }
 

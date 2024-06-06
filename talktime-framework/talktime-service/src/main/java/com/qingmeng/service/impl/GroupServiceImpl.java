@@ -14,7 +14,7 @@ import com.qingmeng.service.FileService;
 import com.qingmeng.service.GroupService;
 import com.qingmeng.utils.AssertUtils;
 import com.qingmeng.utils.CommonUtils;
-import com.qingmeng.vo.chat.GroupDetailInfo;
+import com.qingmeng.vo.chat.GroupDetailInfoVO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -264,12 +264,12 @@ public class GroupServiceImpl implements GroupService {
      *
      * @param userId 用户 ID
      * @param roomId 房间 ID
-     * @return {@link GroupDetailInfo }
+     * @return {@link GroupDetailInfoVO }
      * @author qingmeng
      * @createTime: 2023/12/09 13:59:21
      */
     @Override
-    public GroupDetailInfo getGroupDetailInfo(Long userId, Long roomId) {
+    public GroupDetailInfoVO getGroupDetailInfo(Long userId, Long roomId) {
         checkGroupRoom(roomId);
         ChatGroupRoom chatGroupRoom = chatGroupRoomCache.get(roomId);
         Long groupRoomId = chatGroupRoom.getId();

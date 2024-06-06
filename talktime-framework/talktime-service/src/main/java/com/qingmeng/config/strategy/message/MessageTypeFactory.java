@@ -15,9 +15,9 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Component
 public class MessageTypeFactory {
-    private final Map<String, MessageStrategy> strategyMap = new ConcurrentHashMap<>();
+    private final Map<Integer, MessageStrategy> strategyMap = new ConcurrentHashMap<>();
 
-    public MessageTypeFactory(Map<String, MessageStrategy> strategyMap) {
+    public MessageTypeFactory(Map<Integer, MessageStrategy> strategyMap) {
         this.strategyMap.putAll(strategyMap);
     }
 
@@ -29,7 +29,7 @@ public class MessageTypeFactory {
      * @author qingmeng
      * @createTime: 2024/06/04 21:09:02
      */
-    public MessageStrategy getStrategyWithType(String messageType) {
+    public MessageStrategy getStrategyWithType(Integer messageType) {
         MessageStrategy applyFriendStrategy = strategyMap.get(messageType);
         Optional.ofNullable(applyFriendStrategy).orElseThrow(() -> new TalkTimeException("不存在该消息类型"));
         return applyFriendStrategy;

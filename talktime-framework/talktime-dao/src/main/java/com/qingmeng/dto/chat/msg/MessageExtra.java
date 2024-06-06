@@ -30,17 +30,17 @@ public class MessageExtra implements Serializable {
     /**
      * 消息撤回详情
      */
-    private MsgRecall recall;
+    private MsgRecallDTO msgRecallDTO;
 
     /**
-     * 艾特的uid
+     * 艾特的userId
      */
-    private List<Long> atUidList;
+    private List<Long> atUserIdList;
 
     /**
      * 文件消息
      */
-    private FileMsgDTO fileMsg;
+    private FileMsgDTO fileMsgDTO;
 
     /**
      * 图片消息

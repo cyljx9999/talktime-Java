@@ -61,7 +61,7 @@ public class ChatMessage implements Serializable {
     /**
      * 与回复消息的间隔条数
      */
-    private Integer gapCount;
+    private Long gapCount;
 
     /**
      * 消息类型

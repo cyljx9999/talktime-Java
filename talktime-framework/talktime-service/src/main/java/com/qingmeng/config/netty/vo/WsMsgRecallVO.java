@@ -1,6 +1,8 @@
 package com.qingmeng.config.netty.vo;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @author 清梦
@@ -9,6 +11,8 @@ import lombok.Data;
  * @createTime 2023年11月13日 10:44:36
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class WsMsgRecallVO {
     /**
      * 消息id
@@ -21,7 +25,7 @@ public class WsMsgRecallVO {
     private Long roomId;
 
     /**
-     * 撤回的用户
+     * 撤回的用户id
      */
-    private Long recallUid;
+    private Long recallUserId;
 }

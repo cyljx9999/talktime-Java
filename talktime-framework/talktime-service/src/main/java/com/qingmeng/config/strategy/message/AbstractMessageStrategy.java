@@ -27,7 +27,7 @@ public abstract class AbstractMessageStrategy implements MessageStrategy {
      * @author qingmeng
      * @createTime: 2024/06/04 21:56:34
      */
-    protected abstract void checkMsg(ChatMessageDTO messageDTO,Long userId);
+    public abstract void checkMsg(ChatMessageDTO messageDTO,Long userId);
 
     /**
      * 展示消息
@@ -35,7 +35,7 @@ public abstract class AbstractMessageStrategy implements MessageStrategy {
      * @param msg 消息
      * @return {@link Object }
      * @author qingmeng
-     * @createTime: 2024/06/04 21:57:30
+     * @createTime: 2024/06/06 10:43:34
      */
     public abstract Object showMsg(ChatMessage msg);
 
@@ -65,11 +65,10 @@ public abstract class AbstractMessageStrategy implements MessageStrategy {
      *
      * @param msg        消息
      * @param messageDTO 消息 DTO
-     * @return {@link String }
      * @author qingmeng
      * @createTime: 2024/06/04 21:59:46
      */
-    public abstract String saveExtraMessage(ChatMessage msg,ChatMessageDTO messageDTO);
+    public abstract void saveExtraMessage(ChatMessage msg,ChatMessageDTO messageDTO);
 
     /**
      * 保存消息

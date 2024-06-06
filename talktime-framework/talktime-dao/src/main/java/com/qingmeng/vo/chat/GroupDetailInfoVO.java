@@ -13,7 +13,7 @@ import java.util.List;
  * @createTime 2023年12月09日 13:54:00
  */
 @Data
-public class GroupDetailInfo {
+public class GroupDetailInfoVO {
 
     /**
      * 群聊名字

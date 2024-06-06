@@ -1,7 +1,7 @@
 package com.qingmeng.service;
 
 import com.qingmeng.dto.chatGroup.*;
-import com.qingmeng.vo.chat.GroupDetailInfo;
+import com.qingmeng.vo.chat.GroupDetailInfoVO;
 
 /**
  * @author 清梦
@@ -92,11 +92,11 @@ public interface GroupService {
      *
      * @param userId 用户 ID
      * @param roomId 房间 ID
-     * @return {@link GroupDetailInfo }
+     * @return {@link GroupDetailInfoVO }
      * @author qingmeng
      * @createTime: 2023/12/09 13:59:21
      */
-    GroupDetailInfo getGroupDetailInfo(Long userId, Long roomId);
+    GroupDetailInfoVO getGroupDetailInfo(Long userId, Long roomId);
 
     /**
      * 退出聊天群

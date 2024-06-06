@@ -6,7 +6,7 @@ import com.qingmeng.entity.*;
 import com.qingmeng.enums.chat.*;
 import com.qingmeng.enums.user.CloseOrOpenStatusEnum;
 import com.qingmeng.utils.CommonUtils;
-import com.qingmeng.vo.chat.GroupDetailInfo;
+import com.qingmeng.vo.chat.GroupDetailInfoVO;
 import com.qingmeng.vo.user.ManagerInfo;
 import com.qingmeng.vo.user.SimpleUserInfo;
 
@@ -183,20 +183,20 @@ public class ChatAdapt {
      * @param friendSettingList           好友设置列表
      * @param userMap                     用户集合
      * @param chatGroupPersonalSettingMap 聊天群个人设置集合
-     * @return {@link GroupDetailInfo }
+     * @return {@link GroupDetailInfoVO }
      * @author qingmeng
      * @createTime: 2023/12/09 14:55:20
      */
-    public static GroupDetailInfo buildGroupDetailInfo(Long userId,
-                                                       List<Long> memberIds,
-                                                       List<Long> friendIds,
-                                                       ChatGroupSetting chatGroupSetting,
-                                                       ChatGroupPersonalSetting chatGroupPersonalSetting,
-                                                       List<SysUserFriendSetting> friendSettingList,
-                                                       Map<Long, SysUser> userMap,
-                                                       Map<String, ChatGroupPersonalSetting> chatGroupPersonalSettingMap,
-                                                       List<ChatGroupManager> managerAllList) {
-        GroupDetailInfo groupDetailInfo = new GroupDetailInfo();
+    public static GroupDetailInfoVO buildGroupDetailInfo(Long userId,
+                                                         List<Long> memberIds,
+                                                         List<Long> friendIds,
+                                                         ChatGroupSetting chatGroupSetting,
+                                                         ChatGroupPersonalSetting chatGroupPersonalSetting,
+                                                         List<SysUserFriendSetting> friendSettingList,
+                                                         Map<Long, SysUser> userMap,
+                                                         Map<String, ChatGroupPersonalSetting> chatGroupPersonalSettingMap,
+                                                         List<ChatGroupManager> managerAllList) {
+        GroupDetailInfoVO groupDetailInfo = new GroupDetailInfoVO();
         groupDetailInfo.setGroupRoomName(chatGroupSetting.getGroupRoomName());
         groupDetailInfo.setGroupRoomAvatar(chatGroupSetting.getGroupRoomAvatar());
         groupDetailInfo.setGroupNotice(chatGroupSetting.getGroupNotice());
