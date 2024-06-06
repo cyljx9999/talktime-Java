@@ -27,7 +27,7 @@ public class ChatGroupManagerCache {
     private ChatGroupRoomCache chatGroupRoomCache;
 
     /**
-     * 获取成员用户 ID 列表
+     * 获取管理成员用户 ID 列表
      *
      * @param roomId 房间 ID
      * @return {@link List }<{@link Long }>
@@ -44,7 +44,7 @@ public class ChatGroupManagerCache {
     }
 
     /**
-     * 获取经理全部列表
+     * 获取管理全部列表
      *
      * @param roomId 房间 ID
      * @return {@link List }<{@link ChatGroupManager }>
@@ -71,4 +71,19 @@ public class ChatGroupManagerCache {
     }
 
 
+    /**
+     * 获取成员UID列表
+     *
+     * @param roomId 房间 ID
+     * @return {@link List }<{@link Long }>
+     * @author qingmeng
+     * @createTime: 2024/06/07 00:15:09
+     */
+    public List<Long> getMemberUidList(Long roomId) {
+        ChatGroupRoom roomGroup = chatGroupRoomCache.get(roomId);
+        if (Objects.isNull(roomGroup)) {
+            return null;
+        }
+        return chatGroupManagerDao.getMemberUidList(roomGroup.getId());
+    }
 }

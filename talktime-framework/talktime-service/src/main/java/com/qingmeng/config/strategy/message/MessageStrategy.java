@@ -15,10 +15,11 @@ public interface MessageStrategy {
      *
      * @param chatMessageDTO 聊天消息 DTO
      * @param userId         用户 ID
+     * @return {@link ChatMessage }
      * @author qingmeng
-     * @createTime: 2024/06/04 22:04:39
+     * @createTime: 2024/06/06 22:59:04
      */
-    void saveMessage(ChatMessageDTO chatMessageDTO,Long userId);
+    ChatMessage saveMessage(ChatMessageDTO chatMessageDTO,Long userId);
 
     /**
      * 检查消息

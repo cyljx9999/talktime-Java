@@ -16,7 +16,7 @@ public class ChatMessageAdapter {
         chatMessage.setRoomId(chatMessageDTO.getRoomId());
         chatMessage.setFromUserId(userId);
         chatMessage.setStatus(0);
-        chatMessage.setMessageType(chatMessageDTO.getMsgType());
+        chatMessage.setMessageType(chatMessageDTO.getMessageType());
         return chatMessage;
     }
 

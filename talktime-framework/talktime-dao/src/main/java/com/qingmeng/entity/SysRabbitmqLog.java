@@ -33,6 +33,12 @@ public class SysRabbitmqLog implements Serializable {
     private String data;
 
     /**
+     * 0 为正常队列信息 1为延迟队列消息, 2为交换机消息
+     * @see com.qingmeng.enums.system.RabbitmqQueueTypeEnum
+     */
+    private Integer flag;
+
+    /**
      * 0 消息投递中   1 投递成功   2投递失败
      * @see com.qingmeng.enums.system.RabbitmqSendEnum
      */

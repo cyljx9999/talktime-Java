@@ -10,11 +10,12 @@ public class RabbitMqConstant {
     /**
      * 聊天队列名字
      */
-    public static final String CHAT_QUEUE_NAME = "chat.queue";
+    public static final String FANOUT_CHAT_QUEUE_NAME = "fanout.chat.queue";
 
     /**
-     * 登陆队列名字
+     * 交换机名称
      */
-    public static final String Login_QUEUE_NAME = "login.queue";
+    public static final String FANOUT_CHAT_EXCHANGE_NAME = "fanout.chat.exchange";
+
 
 }

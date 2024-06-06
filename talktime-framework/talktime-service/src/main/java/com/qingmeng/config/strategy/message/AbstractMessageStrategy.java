@@ -75,12 +75,15 @@ public abstract class AbstractMessageStrategy implements MessageStrategy {
      *
      * @param chatMessageDTO 聊天消息 DTO
      * @param userId         用户 ID
+     * @return {@link ChatMessage }
      * @author qingmeng
-     * @createTime: 2024/06/04 22:04:48
+     * @createTime: 2024/06/06 22:59:08
      */
     @Override
-    public void saveMessage(ChatMessageDTO chatMessageDTO,Long userId) {
+    public ChatMessage saveMessage(ChatMessageDTO chatMessageDTO,Long userId) {
         checkMsg(chatMessageDTO,userId);
-        chatMessageDao.save(ChatMessageAdapter.buildChatMessageSave(chatMessageDTO,userId));
+        ChatMessage chatMessage = ChatMessageAdapter.buildChatMessageSave(chatMessageDTO, userId);
+        chatMessageDao.save(chatMessage);
+        return chatMessage;
     }
 }

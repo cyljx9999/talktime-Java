@@ -73,4 +73,5 @@ public class ChatGroupMemberDao extends ServiceImpl<ChatGroupMemberMapper, ChatG
     public List<ChatGroupMember> getGroupMemberList(Long groupRoomId) {
         return lambdaQuery().eq(ChatGroupMember::getGroupRoomId,groupRoomId).list();
     }
+
 }

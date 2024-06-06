@@ -42,4 +42,18 @@ public class ChatFriendRoomDao extends ServiceImpl<ChatFriendRoomMapper, ChatFri
     public List<ChatFriendRoom> listByRoomIds(List<Long> roomIds) {
         return lambdaQuery().in(ChatFriendRoom::getRoomId,roomIds).list();
     }
+
+    /**
+     * 按房间 ID 获取
+     *
+     * @param roomId 房间 ID
+     * @return {@link ChatFriendRoom }
+     * @author qingmeng
+     * @createTime: 2024/06/06 22:45:41
+     */
+    public ChatFriendRoom getByRoomId(Long roomId) {
+        return lambdaQuery()
+                .eq(ChatFriendRoom::getRoomId, roomId)
+                .one();
+    }
 }

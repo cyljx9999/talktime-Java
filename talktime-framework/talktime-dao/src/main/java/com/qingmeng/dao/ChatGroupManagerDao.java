@@ -90,4 +90,20 @@ public class ChatGroupManagerDao extends ServiceImpl<ChatGroupManagerMapper, Cha
                 .eq(ChatGroupManager::getUserId, userId)
                 .one();
     }
+
+    /**
+     * 获取成员UID列表
+     *
+     * @param groupId 组 ID
+     * @return {@link List }<{@link Long }>
+     * @author qingmeng
+     * @createTime: 2024/06/07 00:15:02
+     */
+    public List<Long> getMemberUidList(Long groupId) {
+        List<ChatGroupManager> list = lambdaQuery()
+                .eq(ChatGroupManager::getRoomGroupId, groupId)
+                .select(ChatGroupManager::getUserId)
+                .list();
+        return list.stream().map(ChatGroupManager::getUserId).collect(Collectors.toList());
+    }
 }
