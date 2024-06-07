@@ -2,7 +2,7 @@ package com.qingmeng.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 import com.qingmeng.enums.article.ArticleTypeEnum;
-import com.qingmeng.enums.system.LogicDeleteEnum;
+import com.qingmeng.enums.common.LogicDeleteEnum;
 import lombok.Data;
 
 import java.io.Serializable;

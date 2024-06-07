@@ -1,5 +1,6 @@
 package com.qingmeng.dto.file;
 
+import com.qingmeng.enums.chat.UploadSceneEnum;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
@@ -21,7 +22,7 @@ public class UploadUrlDTO {
 
     /**
      * 上传场景 1聊天 2表情包 3二维码
-     * @see com.qingmeng.enums.system.UploadSceneEnum
+     * @see UploadSceneEnum
      */
     @NotNull
     private Integer uploadScene;

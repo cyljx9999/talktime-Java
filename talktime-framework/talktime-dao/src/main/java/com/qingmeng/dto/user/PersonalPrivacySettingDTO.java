@@ -1,5 +1,6 @@
 package com.qingmeng.dto.user;
 
+import com.qingmeng.enums.common.CloseOrOpenStatusEnum;
 import com.qingmeng.valid.custom.IntListValue;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
@@ -16,7 +17,7 @@ public class PersonalPrivacySettingDTO {
     /**
      * 账号添加 0 关闭 1 开启
      *
-     * @see com.qingmeng.enums.user.CloseOrOpenStatusEnum
+     * @see CloseOrOpenStatusEnum
      */
     @IntListValue(values = {0, 1})
     private Integer addByAccount;
@@ -24,7 +25,7 @@ public class PersonalPrivacySettingDTO {
     /**
      * 手机号添加 0 关闭 1 开启
      *
-     * @see com.qingmeng.enums.user.CloseOrOpenStatusEnum
+     * @see CloseOrOpenStatusEnum
      */
     @IntListValue(values = {0, 1})
     private Integer addByPhone;
@@ -32,7 +33,7 @@ public class PersonalPrivacySettingDTO {
     /**
      * 群聊添加 0 关闭 1 开启
      *
-     * @see com.qingmeng.enums.user.CloseOrOpenStatusEnum
+     * @see CloseOrOpenStatusEnum
      */
     @IntListValue(values = {0, 1})
     private Integer addByGroup;
@@ -40,7 +41,7 @@ public class PersonalPrivacySettingDTO {
     /**
      * 分享卡片添加 0 关闭 1 开启
      *
-     * @see com.qingmeng.enums.user.CloseOrOpenStatusEnum
+     * @see CloseOrOpenStatusEnum
      */
     @IntListValue(values = {0, 1})
     private Integer addByCard;
@@ -48,7 +49,7 @@ public class PersonalPrivacySettingDTO {
     /**
      * 扫码添加 0 关闭 1 开启
      *
-     * @see com.qingmeng.enums.user.CloseOrOpenStatusEnum
+     * @see CloseOrOpenStatusEnum
      */
     @IntListValue(values = {0, 1})
     private Integer addByQrcode;

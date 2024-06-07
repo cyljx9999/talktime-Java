@@ -15,20 +15,20 @@ import org.springframework.context.annotation.Configuration;
  * @createTime 2023年11月12日 15:18:31
  */
 @Configuration
-public class ChatQueueConfig {
+public class CommonChatQueueConfig {
     /**
      * 聊天队列
      *
      * @return {@link Queue}
      */
     @Bean
-    public Queue chatQueue() {
-        return new Queue(RabbitMqConstant.FANOUT_CHAT_QUEUE_NAME);
+    public Queue commonChatQueue() {
+        return new Queue(RabbitMqConstant.COMMON_FANOUT_CHAT_QUEUE_NAME);
     }
 
     @Bean
-    public FanoutExchange fanoutExchange() {
-        return new FanoutExchange(RabbitMqConstant.FANOUT_CHAT_EXCHANGE_NAME);
+    public FanoutExchange commonFanoutExchange() {
+        return new FanoutExchange(RabbitMqConstant.COMMON_FANOUT_CHAT_EXCHANGE_NAME);
     }
 
     /**
@@ -37,8 +37,8 @@ public class ChatQueueConfig {
      * @return 绑定对象
      */
     @Bean
-    public Binding bingQueue1ToExchange() {
-        return BindingBuilder.bind(chatQueue()).to(fanoutExchange());
+    public Binding bingCommonChatQueueToExchange() {
+        return BindingBuilder.bind(commonChatQueue()).to(commonFanoutExchange());
     }
 
 }

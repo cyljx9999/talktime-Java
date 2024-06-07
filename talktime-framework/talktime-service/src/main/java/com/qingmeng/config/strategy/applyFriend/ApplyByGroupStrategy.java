@@ -3,7 +3,7 @@ package com.qingmeng.config.strategy.applyFriend;
 import com.qingmeng.config.cache.UserSettingCache;
 import com.qingmeng.dto.user.ApplyFriendDTO;
 import com.qingmeng.entity.SysUserPrivacySetting;
-import com.qingmeng.enums.user.CloseOrOpenStatusEnum;
+import com.qingmeng.enums.common.CloseOrOpenStatusEnum;
 import com.qingmeng.utils.AssertUtils;
 import org.springframework.stereotype.Component;
 

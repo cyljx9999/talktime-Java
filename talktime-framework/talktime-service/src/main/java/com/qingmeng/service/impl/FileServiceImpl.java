@@ -16,7 +16,7 @@ import com.qingmeng.dto.login.CheckFriendDTO;
 import com.qingmeng.entity.SysUser;
 import com.qingmeng.entity.SysUserFriendSetting;
 import com.qingmeng.enums.system.ScanQrcodeEnum;
-import com.qingmeng.enums.system.UploadSceneEnum;
+import com.qingmeng.enums.chat.UploadSceneEnum;
 import com.qingmeng.service.FileService;
 import com.qingmeng.service.MinioService;
 import com.qingmeng.service.SysUserFriendService;

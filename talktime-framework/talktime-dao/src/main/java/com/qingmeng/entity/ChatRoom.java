@@ -37,6 +37,11 @@ public class ChatRoom implements Serializable {
     private Long lastMsgId;
 
     /**
+     * 活动时间
+     */
+    private Date activeTime;
+
+    /**
      * 创建时间
      */
     @TableField(fill = FieldFill.INSERT)

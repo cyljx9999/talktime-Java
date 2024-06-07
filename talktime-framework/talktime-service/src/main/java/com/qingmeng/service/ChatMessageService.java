@@ -1,6 +1,8 @@
 package com.qingmeng.service;
 
 import com.qingmeng.dto.chat.ChatMessageDTO;
+import com.qingmeng.entity.ChatMessage;
+import com.qingmeng.vo.chat.ChatMessageVO;
 
 /**
  * @author 清梦
@@ -19,4 +21,26 @@ public interface ChatMessageService {
      * @createTime: 2024/06/06 22:40:57
      */
     Long sendMsg(ChatMessageDTO chatMessageDTO, Long userId);
+
+    /**
+     * 获取聊天消息 VO
+     *
+     * @param msgId      消息 ID
+     * @param receiveUid 接收 UID
+     * @return {@link ChatMessageVO }
+     * @author qingmeng
+     * @createTime: 2024/06/07 22:53:52
+     */
+    ChatMessageVO getChatMessageVO(Long msgId, Long receiveUid);
+
+    /**
+     * 获取聊天消息 VO
+     *
+     * @param chatMessage 聊天消息
+     * @param receiveUid  接收 UID
+     * @return {@link ChatMessageVO }
+     * @author qingmeng
+     * @createTime: 2024/06/07 22:54:47
+     */
+    ChatMessageVO getChatMessageVO(ChatMessage chatMessage, Long receiveUid);
 }

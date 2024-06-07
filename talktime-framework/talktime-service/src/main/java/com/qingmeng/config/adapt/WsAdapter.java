@@ -5,6 +5,7 @@ import com.qingmeng.config.netty.enums.WSResponseTypeEnum;
 import com.qingmeng.config.netty.vo.*;
 import com.qingmeng.entity.SysUser;
 import com.qingmeng.enums.user.UsageStatusEnum;
+import com.qingmeng.vo.chat.ChatMessageVO;
 import me.chanjar.weixin.mp.bean.result.WxMpQrCodeTicket;
 
 import java.util.Collections;
@@ -163,5 +164,12 @@ public class WsAdapter {
         WsBaseVO<String> wsBaseVO = new WsBaseVO<>();
         wsBaseVO.setType(WSResponseTypeEnum.APPLY.getType());
         return wsBaseVO;
+    }
+
+    public static WsBaseVO<ChatMessageVO> buildMsgSend(ChatMessageVO chatMessageVO) {
+        WsBaseVO<ChatMessageVO> wsBaseResp = new WsBaseVO<>();
+        wsBaseResp.setType(WSResponseTypeEnum.MESSAGE.getType());
+        wsBaseResp.setData(chatMessageVO);
+        return wsBaseResp;
     }
 }

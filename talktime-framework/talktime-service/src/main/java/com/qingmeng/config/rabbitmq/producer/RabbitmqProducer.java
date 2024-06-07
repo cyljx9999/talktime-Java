@@ -26,7 +26,24 @@ public class RabbitmqProducer {
      * @author qingmeng
      * @createTime: 2024/06/06 23:42:16
      */
-    public void sendReliableMsgBySimpleMode(String signId,Object data,String queueName) {
+    public void sendReliableMsg(String signId, Object data, String queueName) {
+        rabbitTemplate.convertAndSend(
+                queueName,
+                data,
+                new CorrelationData(signId)
+        );
+    }
+
+    /**
+     * 发送普通消息
+     *
+     * @param signId    签名 ID
+     * @param data      数据
+     * @param queueName 队列名称
+     * @author qingmeng
+     * @createTime: 2024/06/06 23:42:16
+     */
+    public void sendCommonMsg(String signId, Object data, String queueName) {
         rabbitTemplate.convertAndSend(
                 queueName,
                 data,

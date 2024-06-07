@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.qingmeng.enums.system.LogicDeleteEnum;
+import com.qingmeng.enums.common.LogicDeleteEnum;
 import lombok.Data;
 
 import java.io.Serializable;

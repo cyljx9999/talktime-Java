@@ -4,7 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import com.qingmeng.adapt.FileAdapt;
 import com.qingmeng.config.MinioProperties;
 import com.qingmeng.dto.file.MinioDTO;
-import com.qingmeng.enums.system.UploadSceneEnum;
+import com.qingmeng.enums.chat.UploadSceneEnum;
 import com.qingmeng.vo.file.MinioVO;
 import io.minio.*;
 import io.minio.http.Method;

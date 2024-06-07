@@ -1,7 +1,8 @@
 package com.qingmeng.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
-import com.qingmeng.enums.system.LogicDeleteEnum;
+import com.qingmeng.enums.chat.ReadStatusEnum;
+import com.qingmeng.enums.common.LogicDeleteEnum;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -54,7 +55,7 @@ public class SysUserApply implements Serializable {
 
     /**
      * 阅读状态 0未读 1已读
-     * @see com.qingmeng.enums.user.ReadStatusEnum
+     * @see ReadStatusEnum
      */
     private Integer readStatus;
 

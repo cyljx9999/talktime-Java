@@ -1,8 +1,10 @@
 package com.qingmeng.config.rabbitmq.listen;
 
 
+import com.qingmeng.config.adapt.WsAdapter;
 import com.qingmeng.config.cache.ChatGroupManagerCache;
 import com.qingmeng.config.cache.ChatRoomCache;
+import com.qingmeng.config.netty.dto.PushMessageDTO;
 import com.qingmeng.config.rabbitmq.producer.RabbitmqProducer;
 import com.qingmeng.constant.RabbitMqConstant;
 import com.qingmeng.dao.ChatFriendRoomDao;
@@ -12,13 +14,13 @@ import com.qingmeng.entity.ChatFriendRoom;
 import com.qingmeng.entity.ChatMessage;
 import com.qingmeng.entity.ChatRoom;
 import com.qingmeng.enums.chat.RoomTypeEnum;
-import com.qingmeng.utils.RedisUtils;
+import com.qingmeng.service.ChatMessageService;
+import com.qingmeng.utils.IdUtils;
 import com.qingmeng.vo.chat.ChatMessageVO;
 import com.rabbitmq.client.Channel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.support.AmqpHeaders;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.stereotype.Component;
@@ -39,9 +41,7 @@ import java.util.Objects;
  */
 @Slf4j
 @Component
-public class ChatQueueConsumer {
-    @Resource
-    private RedisUtils redisUtil;
+public class ReliableChatQueueConsumer {
     @Resource
     private ChatMessageDao chatMessageDao;
     @Resource
@@ -54,18 +54,11 @@ public class ChatQueueConsumer {
     private ChatFriendRoomDao chatFriendRoomDao;
     @Resource
     private RabbitmqProducer rabbitmqProducer;
+    @Resource
+    private ChatMessageService chatMessageService;
 
-    /**
-     * 聊天队列
-     *
-     * @param message 消息
-     * @param channel 渠道
-     * @author qingmeng
-     * @createTime: 2024/06/06 23:49:45
-     */
-    @Value("${ali.sms.accessKeyId}")
 
-    @RabbitListener(queues = RabbitMqConstant.FANOUT_CHAT_QUEUE_NAME)
+    @RabbitListener(queues = RabbitMqConstant.RELIABLE_FANOUT_CHAT_QUEUE_NAME)
     public void receiveChatMessageQueue(Message<?> message, Channel channel) throws IOException{
         Long msgId = (Long) message.getPayload();
         MessageHeaders headers = message.getHeaders();
@@ -75,26 +68,22 @@ public class ChatQueueConsumer {
 
             ChatMessage chatMessage = chatMessageDao.getById(msgId);
             ChatRoom chatRoom = chatRoomCache.get(chatMessage.getRoomId());
-            ChatMessageVO msgResp = chatService.getMsgResp(chatMessage, null);
+            ChatMessageVO chatMessageVO = chatMessageService.getChatMessageVO(chatMessage, null);
             // 所有房间更新房间最新消息
             chatRoomDao.refreshActiveTime(chatRoom.getId(), chatMessage.getId(), chatMessage.getCreateTime());
             chatRoomCache.delete(chatRoom.getId());
 
             List<Long> memberUidList = new ArrayList<>();
             if (Objects.equals(chatRoom.getRoomType(), RoomTypeEnum.GROUP.getCode())) {
-                //普通群聊推送所有群成员
+                // 普通群聊推送所有群成员
                 memberUidList = chatGroupManagerCache.getMemberUidList(chatRoom.getId());
             } else if (Objects.equals(chatRoom.getRoomType(), RoomTypeEnum.FRIEND.getCode())) {
-                //单聊对象推送
+                // 单聊对象推送
                 ChatFriendRoom chatFriendRoom = chatFriendRoomDao.getByRoomId(chatRoom.getId());
                 memberUidList = Arrays.asList(chatFriendRoom.getUserId(), chatFriendRoom.getOtherUserId());
             }
-            //更新所有群成员的会话时间
-            contactDao.refreshOrCreateActiveTime(chatRoom.getId(), memberUidList, chatMessage.getId(), chatMessage.getCreateTime());
-            //推送房间成员
-            rabbitmqProducer.sendReliableMsgBySimpleMode(WSAdapter.buildMsgSend(msgResp), memberUidList);
-
-
+            // 推送房间成员
+            rabbitmqProducer.sendCommonMsg(IdUtils.simpleUUID(), new PushMessageDTO(memberUidList,WsAdapter.buildMsgSend(chatMessageVO)), RabbitMqConstant.COMMON_FANOUT_CHAT_QUEUE_NAME);
 
             channel.basicAck(deliveryTag, false);
             log.info("聊天信息已发送");

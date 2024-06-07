@@ -3,7 +3,7 @@ package com.qingmeng.config.adapt;
 import com.qingmeng.entity.SysUserFriendSetting;
 import com.qingmeng.entity.SysUserPrivacySetting;
 import com.qingmeng.enums.chat.MessageTopStatusEnum;
-import com.qingmeng.enums.user.CloseOrOpenStatusEnum;
+import com.qingmeng.enums.common.CloseOrOpenStatusEnum;
 import com.qingmeng.enums.user.FriendStausEnum;
 import com.qingmeng.vo.user.PersonalPrivacySettingVO;
 import com.qingmeng.vo.user.UserFriendSettingVO;

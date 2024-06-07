@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.qingmeng.entity.SysUserApply;
 import com.qingmeng.enums.user.ApplyStatusEnum;
-import com.qingmeng.enums.user.ReadStatusEnum;
+import com.qingmeng.enums.chat.ReadStatusEnum;
 import com.qingmeng.mapper.SysUserApplyMapper;
 import org.springframework.stereotype.Service;
 

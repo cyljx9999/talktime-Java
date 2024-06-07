@@ -21,8 +21,8 @@ public class ChatRoomDao extends ServiceImpl<ChatRoomMapper, ChatRoom>{
      * 刷新消息时间
      *
      * @param roomId  房间 ID
-     * @param msgId   味精 ID
-     * @param msgTime 味精时间
+     * @param msgId   消息 ID
+     * @param msgTime 消息时间
      * @author qingmeng
      * @createTime: 2024/06/07 00:07:18
      */

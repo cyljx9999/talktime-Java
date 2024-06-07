@@ -1,5 +1,8 @@
 package com.qingmeng.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.collection.CollectionUtil;
+import com.qingmeng.config.adapt.ChatMessageAdapter;
 import com.qingmeng.config.cache.ChatGroupRoomCache;
 import com.qingmeng.config.cache.ChatRoomCache;
 import com.qingmeng.config.event.MessageSendEvent;
@@ -7,18 +10,20 @@ import com.qingmeng.config.strategy.message.MessageStrategy;
 import com.qingmeng.config.strategy.message.MessageTypeFactory;
 import com.qingmeng.dao.ChatFriendRoomDao;
 import com.qingmeng.dao.ChatGroupMemberDao;
+import com.qingmeng.dao.ChatMessageMarkDao;
 import com.qingmeng.dto.chat.ChatMessageDTO;
 import com.qingmeng.entity.*;
 import com.qingmeng.enums.chat.RoomStatusEnum;
 import com.qingmeng.enums.chat.RoomTypeEnum;
 import com.qingmeng.service.ChatMessageService;
 import com.qingmeng.utils.AssertUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.qingmeng.vo.chat.ChatMessageVO;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author 清梦
@@ -38,8 +43,10 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     private ChatGroupMemberDao chatGroupMemberDao;
     @Resource
     private MessageTypeFactory messageTypeFactory;
-    @Autowired
+    @Resource
     private ApplicationEventPublisher applicationEventPublisher;
+    @Resource
+    private ChatMessageMarkDao chatMessageMarkDao;
 
     /**
      * 发送消息
@@ -55,10 +62,54 @@ public class ChatMessageServiceImpl implements ChatMessageService {
         preCheck(chatMessageDTO, userId);
         MessageStrategy strategyWithType = messageTypeFactory.getStrategyWithType(chatMessageDTO.getMessageType());
         ChatMessage chatMessage = strategyWithType.saveMessage(chatMessageDTO, userId);
-        strategyWithType.saveExtraMessage(chatMessage,chatMessageDTO);
+        strategyWithType.saveExtraMessage(chatMessage, chatMessageDTO);
         Long msgId = chatMessage.getId();
         applicationEventPublisher.publishEvent(new MessageSendEvent(this, msgId));
         return msgId;
+    }
+
+    /**
+     * 获取聊天消息 VO
+     *
+     * @param msgId      消息 ID
+     * @param receiveUid 接收 UID
+     * @return {@link ChatMessageVO }
+     * @author qingmeng
+     * @createTime: 2024/06/07 22:53:52
+     */
+    @Override
+    public ChatMessageVO getChatMessageVO(Long msgId, Long receiveUid) {
+        return null;
+    }
+
+    /**
+     * 获取聊天消息 VO
+     *
+     * @param chatMessage 聊天消息
+     * @param receiveUid  接收 UID
+     * @return {@link ChatMessageVO }
+     * @author qingmeng
+     * @createTime: 2024/06/07 22:54:47
+     */
+    @Override
+    public ChatMessageVO getChatMessageVO(ChatMessage chatMessage, Long receiveUid) {
+        return CollUtil.getFirst(getBatchMsgVO(Collections.singletonList(chatMessage), receiveUid));
+    }
+
+    private List<ChatMessageVO> getBatchMsgVO(List<ChatMessage> chatMessages, Long receiveUid) {
+        if (CollectionUtil.isEmpty(chatMessages)) {
+            return new ArrayList<>();
+        }
+        //查询消息标志
+        List<Long> msgIds = chatMessages.stream().map(ChatMessage::getId).collect(Collectors.toList());
+        List<ChatMessageMark> msgMark = chatMessageMarkDao.getValidMarkByMsgIdBatch(msgIds);
+        Map<Integer, Object> msgMap = new HashMap<>(2);
+        chatMessages.forEach(item -> {
+            MessageStrategy strategyWithType = messageTypeFactory.getStrategyWithType(item.getMessageType());
+            Object object = strategyWithType.showMsg(item);
+            msgMap.put(item.getMessageType(), object);
+        });
+        return ChatMessageAdapter.buildBatchMsgVO(chatMessages, msgMark, receiveUid, msgMap);
     }
 
     private void preCheck(ChatMessageDTO chatMessageDTO, Long userId) {
@@ -70,7 +121,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
         }
         if (Objects.equals(room.getRoomType(), RoomTypeEnum.GROUP.getCode())) {
             ChatGroupRoom groupRoom = chatGroupRoomCache.get(chatMessageDTO.getRoomId());
-            ChatGroupMember member = chatGroupMemberDao.getByUserIdAndGroupRoomId(userId,groupRoom.getId());
+            ChatGroupMember member = chatGroupMemberDao.getByUserIdAndGroupRoomId(userId, groupRoom.getId());
             AssertUtils.isNotEmpty(member, "您已经被移除该群");
             AssertUtils.equal(RoomStatusEnum.NORMAL.getCode(), groupRoom.getRoomStatus(), "群聊已封禁");
         }

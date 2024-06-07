@@ -3,9 +3,9 @@ package com.qingmeng.config.adapt;
 import com.qingmeng.constant.RabbitMqConstant;
 import com.qingmeng.entity.SysRabbitmqLog;
 import com.qingmeng.enums.system.RabbitmqSendEnum;
+import com.qingmeng.utils.IdUtils;
 
 import java.util.Date;
-import java.util.UUID;
 
 /**
  * @author 清梦
@@ -17,17 +17,18 @@ public class RabbitmqAdapt {
 
     public static SysRabbitmqLog getMsgLog(Object data){
         SysRabbitmqLog rabbitmqLog = new SysRabbitmqLog();
-        String signId = UUID.randomUUID().toString();
+        String signId = IdUtils.simpleUUID();
         rabbitmqLog.setMsgId(signId);
         rabbitmqLog.setData(String.valueOf(data));
         rabbitmqLog.setStatus(RabbitmqSendEnum.SENDING.getCode());
-        rabbitmqLog.setQueue(RabbitMqConstant.FANOUT_CHAT_QUEUE_NAME);
-        rabbitmqLog.setExchange(RabbitMqConstant.FANOUT_CHAT_EXCHANGE_NAME);
+        rabbitmqLog.setQueue(RabbitMqConstant.RELIABLE_FANOUT_CHAT_QUEUE_NAME);
+        rabbitmqLog.setExchange(RabbitMqConstant.RELIABLE_FANOUT_CHAT_EXCHANGE_NAME);
         rabbitmqLog.setCount(0);
-        rabbitmqLog.setTryTime(new Date());
+        // 设置tryTime为一分钟后重试
+        rabbitmqLog.setTryTime(new Date(System.currentTimeMillis() + 1000 * 60 * 1));
         rabbitmqLog.setCreateTime(new Date());
         rabbitmqLog.setUpdateTime(new Date());
-
+        return rabbitmqLog;
     }
 
 }

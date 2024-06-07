@@ -2,7 +2,7 @@ package com.qingmeng.adapt;
 
 import com.qingmeng.dto.file.MinioDTO;
 import com.qingmeng.dto.file.UploadUrlDTO;
-import com.qingmeng.enums.system.UploadSceneEnum;
+import com.qingmeng.enums.chat.UploadSceneEnum;
 import com.qingmeng.vo.file.MinioVO;
 
 /**

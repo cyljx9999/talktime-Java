@@ -1,4 +1,4 @@
-package com.qingmeng.enums.user;
+package com.qingmeng.enums.common;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

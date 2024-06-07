@@ -18,7 +18,6 @@ public enum LoginDeviceEnum {
     PC(0, "pc"),
     H5(1, "h5"),
     APP(2, "app"),
-    MINI_PROGRAM(3, "miniProgram"),
     ;
 
     private final Integer code;

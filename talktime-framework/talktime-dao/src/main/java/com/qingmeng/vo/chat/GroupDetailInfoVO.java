@@ -1,5 +1,6 @@
 package com.qingmeng.vo.chat;
 
+import com.qingmeng.enums.common.CloseOrOpenStatusEnum;
 import com.qingmeng.vo.user.ManagerInfo;
 import com.qingmeng.vo.user.SimpleUserInfo;
 import lombok.Data;
@@ -32,7 +33,7 @@ public class GroupDetailInfoVO {
 
     /**
      * 邀请确认 0关闭 1开启
-     * @see com.qingmeng.enums.user.CloseOrOpenStatusEnum
+     * @see CloseOrOpenStatusEnum
      */
     private Integer invitationConfirmation;
 

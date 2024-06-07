@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.qingmeng.dto.user.UserFriendSettingDTO;
 import com.qingmeng.entity.SysUserFriendSetting;
-import com.qingmeng.enums.system.LogicDeleteEnum;
+import com.qingmeng.enums.common.LogicDeleteEnum;
 import com.qingmeng.mapper.SysUserFriendSettingMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

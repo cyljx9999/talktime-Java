@@ -1,7 +1,7 @@
 package com.qingmeng.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
-import com.qingmeng.enums.system.LogicDeleteEnum;
+import com.qingmeng.enums.common.LogicDeleteEnum;
 import com.qingmeng.enums.user.AccountStatusEnum;
 import com.qingmeng.enums.user.SexEnum;
 import com.qingmeng.enums.user.UsageStatusEnum;

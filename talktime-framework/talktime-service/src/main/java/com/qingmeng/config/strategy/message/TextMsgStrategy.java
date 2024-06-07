@@ -12,7 +12,7 @@ import com.qingmeng.dto.chat.msg.TextMsgDTO;
 import com.qingmeng.entity.ChatMessage;
 import com.qingmeng.entity.SysUser;
 import com.qingmeng.enums.chat.ChatMessageStatusEnum;
-import com.qingmeng.enums.system.OperateEnum;
+import com.qingmeng.enums.common.OperateEnum;
 import com.qingmeng.utils.AssertUtils;
 import com.qingmeng.vo.chat.TextMsgVO;
 import com.qingmeng.vo.chat.child.ReplyMsg;

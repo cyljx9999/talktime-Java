@@ -10,7 +10,7 @@ import com.qingmeng.entity.SysUserApply;
 import com.qingmeng.entity.SysUserFriend;
 import com.qingmeng.entity.SysUserFriendSetting;
 import com.qingmeng.enums.user.ApplyStatusEnum;
-import com.qingmeng.enums.user.ReadStatusEnum;
+import com.qingmeng.enums.chat.ReadStatusEnum;
 import com.qingmeng.utils.CommonUtils;
 import com.qingmeng.vo.common.CommonPageVO;
 import com.qingmeng.vo.user.CheckFriendVO;

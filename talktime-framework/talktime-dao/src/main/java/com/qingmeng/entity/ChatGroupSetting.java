@@ -1,6 +1,7 @@
 package com.qingmeng.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
+import com.qingmeng.enums.common.CloseOrOpenStatusEnum;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -52,7 +53,7 @@ public class ChatGroupSetting implements Serializable {
 
     /**
      * 邀请确认
-     * @see com.qingmeng.enums.user.CloseOrOpenStatusEnum
+     * @see CloseOrOpenStatusEnum
      */
     private Integer invitationConfirmation;
 

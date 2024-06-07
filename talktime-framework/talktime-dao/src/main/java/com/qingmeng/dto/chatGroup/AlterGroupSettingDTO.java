@@ -1,5 +1,6 @@
 package com.qingmeng.dto.chatGroup;
 
+import com.qingmeng.enums.common.CloseOrOpenStatusEnum;
 import com.qingmeng.valid.custom.IntListValue;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
@@ -44,7 +45,7 @@ public class AlterGroupSettingDTO {
     /**
      * 邀请确认 0关闭 1开启
      *
-     * @see com.qingmeng.enums.user.CloseOrOpenStatusEnum
+     * @see CloseOrOpenStatusEnum
      */
     @IntListValue(values = {0, 1})
     private Integer invitationConfirmation;

@@ -5,7 +5,7 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.qingmeng.annotation.SysLog;
 import com.qingmeng.entity.SysOperateLog;
-import com.qingmeng.enums.system.OperateEnum;
+import com.qingmeng.enums.common.OperateEnum;
 import com.qingmeng.event.SysOperateLogEvent;
 import com.qingmeng.utils.CommonUtils;
 import org.aspectj.lang.JoinPoint;

@@ -11,7 +11,7 @@ import com.qingmeng.entity.SysUser;
 import com.qingmeng.entity.SysUserApply;
 import com.qingmeng.entity.SysUserFriendSetting;
 import com.qingmeng.entity.SysUserPrivacySetting;
-import com.qingmeng.enums.user.CloseOrOpenStatusEnum;
+import com.qingmeng.enums.common.CloseOrOpenStatusEnum;
 import com.qingmeng.utils.AssertUtils;
 import com.qingmeng.utils.CommonUtils;
 import org.springframework.stereotype.Component;

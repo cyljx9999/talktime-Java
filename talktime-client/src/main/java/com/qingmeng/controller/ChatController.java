@@ -28,7 +28,7 @@ public class ChatController {
     public CommonResult<?> sendMsg(@Valid @RequestBody ChatMessageDTO chatMessageDTO){
         Long msgId = chatMessageService.sendMsg(chatMessageDTO, StpUtil.getLoginIdAsLong());
         //返回完整消息格式，方便前端展示
-        return CommonResult.success(chatMessageService.getMsgResp(msgId, RequestHolder.get().getUid()));
+        return CommonResult.success(chatMessageService.getChatMessageVO(msgId, StpUtil.getLoginIdAsLong()));
     }
 
 }

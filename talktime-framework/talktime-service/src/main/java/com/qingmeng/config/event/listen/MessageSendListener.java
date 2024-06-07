@@ -30,6 +30,6 @@ public class MessageSendListener {
         Long msgId = event.getMsgId();
         SysRabbitmqLog msgLog = RabbitmqAdapt.getMsgLog(msgId);
         sysRabbitmqLogDao.save(msgLog);
-        rabbitmqProducer.sendReliableMsgBySimpleMode(msgLog.getMsgId(),msgId, RabbitMqConstant.FANOUT_CHAT_QUEUE_NAME);
+        rabbitmqProducer.sendReliableMsg(msgLog.getMsgId(),msgId, RabbitMqConstant.RELIABLE_FANOUT_CHAT_QUEUE_NAME);
     }
 }

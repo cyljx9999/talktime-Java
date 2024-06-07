@@ -1,7 +1,7 @@
 package com.qingmeng.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
-import com.qingmeng.enums.system.OperateEnum;
+import com.qingmeng.enums.common.OperateEnum;
 import lombok.Data;
 
 import java.io.Serializable;

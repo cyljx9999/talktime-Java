@@ -1,7 +1,7 @@
 package com.qingmeng.config.mybatisPlus;
 
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
-import com.qingmeng.enums.system.LogicDeleteEnum;
+import com.qingmeng.enums.common.LogicDeleteEnum;
 import org.apache.ibatis.reflection.MetaObject;
 import org.springframework.stereotype.Component;
 

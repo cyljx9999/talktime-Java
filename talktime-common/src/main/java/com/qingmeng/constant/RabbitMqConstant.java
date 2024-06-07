@@ -8,14 +8,23 @@ package com.qingmeng.constant;
  */
 public class RabbitMqConstant {
     /**
-     * 聊天队列名字
+     * 可靠聊天队列名字
      */
-    public static final String FANOUT_CHAT_QUEUE_NAME = "fanout.chat.queue";
+    public static final String RELIABLE_FANOUT_CHAT_QUEUE_NAME = "reliable.chat.queue";
 
     /**
-     * 交换机名称
+     * 可靠交换机名称
      */
-    public static final String FANOUT_CHAT_EXCHANGE_NAME = "fanout.chat.exchange";
+    public static final String RELIABLE_FANOUT_CHAT_EXCHANGE_NAME = "reliable.chat.exchange";
 
+    /**
+     * 普通聊天队列名字
+     */
+    public static final String COMMON_FANOUT_CHAT_QUEUE_NAME = "common.chat.queue";
+
+    /**
+     * 普通交换机名称
+     */
+    public static final String COMMON_FANOUT_CHAT_EXCHANGE_NAME = "common.chat.exchange";
 
 }

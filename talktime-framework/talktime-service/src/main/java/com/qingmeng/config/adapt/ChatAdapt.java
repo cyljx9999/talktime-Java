@@ -4,7 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import com.qingmeng.config.netty.vo.WsGroupInviteVO;
 import com.qingmeng.entity.*;
 import com.qingmeng.enums.chat.*;
-import com.qingmeng.enums.user.CloseOrOpenStatusEnum;
+import com.qingmeng.enums.common.CloseOrOpenStatusEnum;
 import com.qingmeng.utils.CommonUtils;
 import com.qingmeng.vo.chat.GroupDetailInfoVO;
 import com.qingmeng.vo.user.ManagerInfo;
