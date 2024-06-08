@@ -10,4 +10,14 @@ package com.qingmeng.service;
  */
 public interface SysUserArticleService{
 
+    /**
+     * 物品接收
+     *
+     * @param fromUserId 从用户 ID
+     * @param itemId     商品 ID
+     * @param string     字符串
+     * @author qingmeng
+     * @createTime: 2024/06/08 16:42:24
+     */
+    void itemReceive(Long fromUserId, Long itemId, String string);
 }

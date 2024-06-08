@@ -3,6 +3,7 @@ package com.qingmeng.dao;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.qingmeng.entity.SysUserArticle;
+import com.qingmeng.enums.common.YesOrNoEnum;
 import com.qingmeng.mapper.SysUserArticleMapper;
 import org.springframework.stereotype.Service;
 
@@ -48,5 +49,21 @@ public class SysUserArticleDao extends ServiceImpl<SysUserArticleMapper, SysUser
         wrapper.eq(SysUserArticle::getUserId, userId);
         wrapper.in(SysUserArticle::getArticleId, articleIds);
         return list(wrapper);
+    }
+
+    /**
+     * 按有效物品 ID 获取计数
+     *
+     * @param userId 用户 ID
+     * @param itemId 商品 ID
+     * @return {@link Long }
+     * @author qingmeng
+     * @createTime: 2024/06/08 17:16:26
+     */
+    public Long getCountByValidItemId(Long userId, Long itemId) {
+        return lambdaQuery().eq(SysUserArticle::getUserId, userId)
+                .eq(SysUserArticle::getArticleId, itemId)
+                .eq(SysUserArticle::getArticleId, YesOrNoEnum.NO.getCode())
+                .count();
     }
 }

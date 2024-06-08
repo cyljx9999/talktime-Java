@@ -3,6 +3,11 @@ package com.qingmeng.enums.chat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.util.Arrays;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
 /**
  * @author 清梦
  * @version 1.0.0
@@ -21,4 +26,15 @@ public enum MessageMarkActTypeEnum  {
 
     private final Integer code;
     private final String msg;
+
+
+    private static final Map<Integer, MessageMarkActTypeEnum> CACHE;
+
+    static {
+        CACHE = Arrays.stream(MessageMarkActTypeEnum.values()).collect(Collectors.toMap(MessageMarkActTypeEnum::getCode, Function.identity()));
+    }
+
+    public static MessageMarkActTypeEnum of(Integer type) {
+        return CACHE.get(type);
+    }
 }

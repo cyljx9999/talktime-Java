@@ -3,10 +3,11 @@ package com.qingmeng.config.event.listen;
 import com.qingmeng.config.cache.MsgCache;
 import com.qingmeng.config.event.MessageRecallEvent;
 import com.qingmeng.config.netty.vo.WsMsgRecallVO;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionalEventListener;
+
+import javax.annotation.Resource;
 
 /**
  * @author 清梦
@@ -16,7 +17,7 @@ import org.springframework.transaction.event.TransactionalEventListener;
  */
 @Component
 public class MessageRecallListener {
-    @Autowired
+    @Resource
     private MsgCache msgCache;
 
     @Async("visibleTaskExecutor")

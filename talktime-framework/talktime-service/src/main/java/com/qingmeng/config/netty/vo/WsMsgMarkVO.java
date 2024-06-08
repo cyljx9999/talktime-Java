@@ -49,7 +49,7 @@ public class WsMsgMarkVO {
         /**
          * 被标记的数量
          */
-        private Integer markCount;
+        private Long markCount;
 
         /**
          * 动作类型：1 表示确认，2 表示取消

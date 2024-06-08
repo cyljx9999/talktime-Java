@@ -14,10 +14,10 @@ import java.util.concurrent.ConcurrentHashMap;
  * @createTime 2024年06月04日 21:08:00
  */
 @Component
-public class MessageTypeFactory {
-    private final Map<Integer, MessageStrategy> strategyMap = new ConcurrentHashMap<>();
+public class MessageFactory {
+    private final Map<String, MessageStrategy> strategyMap = new ConcurrentHashMap<>();
 
-    public MessageTypeFactory(Map<Integer, MessageStrategy> strategyMap) {
+    public MessageFactory(Map<String, MessageStrategy> strategyMap) {
         this.strategyMap.putAll(strategyMap);
     }
 
@@ -29,7 +29,7 @@ public class MessageTypeFactory {
      * @author qingmeng
      * @createTime: 2024/06/04 21:09:02
      */
-    public MessageStrategy getStrategyWithType(Integer messageType) {
+    public MessageStrategy getStrategyWithType(String messageType) {
         MessageStrategy applyFriendStrategy = strategyMap.get(messageType);
         Optional.ofNullable(applyFriendStrategy).orElseThrow(() -> new TalkTimeException("不存在该消息类型"));
         return applyFriendStrategy;

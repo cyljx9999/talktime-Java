@@ -1,6 +1,7 @@
 package com.qingmeng.service;
 
 import com.qingmeng.dto.chat.ChatMessageDTO;
+import com.qingmeng.dto.chat.ChatMessageMarkDTO;
 import com.qingmeng.entity.ChatMessage;
 import com.qingmeng.vo.chat.ChatMessageVO;
 
@@ -43,4 +44,14 @@ public interface ChatMessageService {
      * @createTime: 2024/06/07 22:54:47
      */
     ChatMessageVO getChatMessageVO(ChatMessage chatMessage, Long receiveUid);
+
+    /**
+     * 设置消息标记
+     *
+     * @param userId             用户 ID
+     * @param chatMessageMarkDTO 聊天消息 Mark DTO
+     * @author qingmeng
+     * @createTime: 2024/06/08 13:27:32
+     */
+    void setMsgMark(Long userId, ChatMessageMarkDTO chatMessageMarkDTO);
 }

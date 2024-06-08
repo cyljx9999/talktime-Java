@@ -7,14 +7,16 @@ import com.qingmeng.config.cache.ChatGroupRoomCache;
 import com.qingmeng.config.cache.ChatRoomCache;
 import com.qingmeng.config.event.MessageSendEvent;
 import com.qingmeng.config.strategy.message.MessageStrategy;
-import com.qingmeng.config.strategy.message.MessageTypeFactory;
+import com.qingmeng.config.strategy.message.MessageFactory;
+import com.qingmeng.config.strategy.messageMark.MessageMarkFactory;
+import com.qingmeng.config.strategy.messageMark.MessageMarkStrategy;
 import com.qingmeng.dao.ChatFriendRoomDao;
 import com.qingmeng.dao.ChatGroupMemberDao;
 import com.qingmeng.dao.ChatMessageMarkDao;
 import com.qingmeng.dto.chat.ChatMessageDTO;
+import com.qingmeng.dto.chat.ChatMessageMarkDTO;
 import com.qingmeng.entity.*;
-import com.qingmeng.enums.chat.RoomStatusEnum;
-import com.qingmeng.enums.chat.RoomTypeEnum;
+import com.qingmeng.enums.chat.*;
 import com.qingmeng.service.ChatMessageService;
 import com.qingmeng.utils.AssertUtils;
 import com.qingmeng.vo.chat.ChatMessageVO;
@@ -42,11 +44,13 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     @Resource
     private ChatGroupMemberDao chatGroupMemberDao;
     @Resource
-    private MessageTypeFactory messageTypeFactory;
+    private MessageFactory messageTypeFactory;
     @Resource
     private ApplicationEventPublisher applicationEventPublisher;
     @Resource
     private ChatMessageMarkDao chatMessageMarkDao;
+    @Resource
+    private MessageMarkFactory messageMarkFactory;
 
     /**
      * 发送消息
@@ -60,7 +64,8 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     @Override
     public Long sendMsg(ChatMessageDTO chatMessageDTO, Long userId) {
         preCheck(chatMessageDTO, userId);
-        MessageStrategy strategyWithType = messageTypeFactory.getStrategyWithType(chatMessageDTO.getMessageType());
+        MessageTypeEnum messageTypeEnum = MessageTypeEnum.of(chatMessageDTO.getMessageType());
+        MessageStrategy strategyWithType = messageTypeFactory.getStrategyWithType(messageTypeEnum.getStrategyMethod());
         ChatMessage chatMessage = strategyWithType.saveMessage(chatMessageDTO, userId);
         strategyWithType.saveExtraMessage(chatMessage, chatMessageDTO);
         Long msgId = chatMessage.getId();
@@ -96,6 +101,31 @@ public class ChatMessageServiceImpl implements ChatMessageService {
         return CollUtil.getFirst(getBatchMsgVO(Collections.singletonList(chatMessage), receiveUid));
     }
 
+    /**
+     * 设置消息标记
+     *
+     * @param userId             用户 ID
+     * @param chatMessageMarkDTO 聊天消息 Mark DTO
+     * @author qingmeng
+     * @createTime: 2024/06/08 13:27:32
+     */
+    @Override
+    public void setMsgMark(Long userId, ChatMessageMarkDTO chatMessageMarkDTO) {
+
+        MessageMarkTypeEnum messageMarkTypeEnum = MessageMarkTypeEnum.of(chatMessageMarkDTO.getMarkType());
+        MessageMarkStrategy strategyWithType = messageMarkFactory.getStrategyWithType(messageMarkTypeEnum.getStrategyMethod());
+        switch (MessageMarkActTypeEnum.of(chatMessageMarkDTO.getActType())) {
+            case CONFIRM:
+                strategyWithType.mark(userId, chatMessageMarkDTO.getMsgId());
+                break;
+            case CANCEL:
+                strategyWithType.cancelMark(userId, chatMessageMarkDTO.getMsgId());
+                break;
+            default:
+                break;
+        }
+    }
+
     private List<ChatMessageVO> getBatchMsgVO(List<ChatMessage> chatMessages, Long receiveUid) {
         if (CollectionUtil.isEmpty(chatMessages)) {
             return new ArrayList<>();
@@ -105,7 +135,8 @@ public class ChatMessageServiceImpl implements ChatMessageService {
         List<ChatMessageMark> msgMark = chatMessageMarkDao.getValidMarkByMsgIdBatch(msgIds);
         Map<Integer, Object> msgMap = new HashMap<>(2);
         chatMessages.forEach(item -> {
-            MessageStrategy strategyWithType = messageTypeFactory.getStrategyWithType(item.getMessageType());
+            MessageTypeMethodEnum messageTypeMethodEnum = MessageTypeMethodEnum.get(item.getMessageType().toString());
+            MessageStrategy strategyWithType = messageTypeFactory.getStrategyWithType(messageTypeMethodEnum.getValue());
             Object object = strategyWithType.showMsg(item);
             msgMap.put(item.getMessageType(), object);
         });

@@ -3,10 +3,12 @@ package com.qingmeng.config.adapt;
 import cn.hutool.core.bean.BeanUtil;
 import com.qingmeng.config.netty.enums.WSResponseTypeEnum;
 import com.qingmeng.config.netty.vo.*;
+import com.qingmeng.dto.chat.ChatMessageOtherMarkDTO;
 import com.qingmeng.entity.SysUser;
 import com.qingmeng.enums.user.UsageStatusEnum;
 import com.qingmeng.vo.chat.ChatMessageVO;
 import me.chanjar.weixin.mp.bean.result.WxMpQrCodeTicket;
+import org.springframework.beans.BeanUtils;
 
 import java.util.Collections;
 
@@ -166,10 +168,39 @@ public class WsAdapter {
         return wsBaseVO;
     }
 
+    /**
+     * 构建 msg 发送
+     *
+     * @param chatMessageVO 聊天消息 VO
+     * @return {@link WsBaseVO }<{@link ChatMessageVO }>
+     * @author qingmeng
+     * @createTime: 2024/06/08 18:51:28
+     */
     public static WsBaseVO<ChatMessageVO> buildMsgSend(ChatMessageVO chatMessageVO) {
         WsBaseVO<ChatMessageVO> wsBaseResp = new WsBaseVO<>();
         wsBaseResp.setType(WSResponseTypeEnum.MESSAGE.getType());
         wsBaseResp.setData(chatMessageVO);
         return wsBaseResp;
+    }
+
+    /**
+     * 构建 消息标记 发送
+     *
+     * @param dto       DTO
+     * @param markCount 标记计数
+     * @return {@link WsBaseVO }<{@link WsMsgMarkVO }>
+     * @author qingmeng
+     * @createTime: 2024/06/08 18:54:37
+     */
+    public static WsBaseVO<WsMsgMarkVO> buildMsgMarkSend(ChatMessageOtherMarkDTO dto, Long markCount) {
+        WsMsgMarkVO.WsMsgMarkItem item = new WsMsgMarkVO.WsMsgMarkItem();
+        BeanUtils.copyProperties(dto, item);
+        item.setMarkCount(markCount);
+        WsBaseVO<WsMsgMarkVO> wsBaseVO = new WsBaseVO<>();
+        wsBaseVO.setType(WSResponseTypeEnum.MARK.getType());
+        WsMsgMarkVO mark = new WsMsgMarkVO();
+        mark.setMarkList(Collections.singletonList(item));
+        wsBaseVO.setData(mark);
+        return wsBaseVO;
     }
 }

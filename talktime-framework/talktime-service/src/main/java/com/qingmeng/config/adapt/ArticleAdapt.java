@@ -1,6 +1,7 @@
 package com.qingmeng.config.adapt;
 
 import com.qingmeng.entity.SysArticle;
+import com.qingmeng.entity.SysUserArticle;
 import com.qingmeng.entity.SysWearArticleRecord;
 import com.qingmeng.vo.article.SysArticleListVO;
 import com.qingmeng.vo.article.SysArticleVO;
@@ -63,5 +64,21 @@ public class ArticleAdapt {
             list.add(record);
         });
         return list;
+    }
+
+    /**
+     * 获取 物品
+     *
+     * @param articleId 文章编号
+     * @param userId    用户 ID
+     * @return {@link SysUserArticle }
+     * @author qingmeng
+     * @createTime: 2024/06/08 18:33:35
+     */
+    public static SysUserArticle getSysUserArticle(Long articleId, Long userId) {
+        SysUserArticle sysArticle = new SysUserArticle();
+        sysArticle.setArticleId(articleId);
+        sysArticle.setUserId(userId);
+        return sysArticle;
     }
 }

@@ -20,39 +20,40 @@ public enum MessageTypeEnum {
     /**
      * 发短信
      */
-    TEXT(1, "正常消息"),
+    TEXT(1, "正常消息","text"),
     /**
      * 撤回消息
      */
-    RECALL(2, "撤回消息"),
+    RECALL(2, "撤回消息","recall"),
     /**
      * 图片
      */
-    IMG(3, "图片"),
+    IMG(3, "图片","img"),
     /**
      * 文件
      */
-    FILE(4, "文件"),
+    FILE(4, "文件","file"),
     /**
      * 语音
      */
-    SOUND(5, "语音"),
+    SOUND(5, "语音","sound"),
     /**
      * 视频
      */
-    VIDEO(6, "视频"),
+    VIDEO(6, "视频","video"),
     /**
      * 表情符号
      */
-    EMOJI(7, "表情"),
+    EMOJI(7, "表情","emojis"),
     /**
      * 系统
      */
-    SYSTEM(8, "系统消息"),
+    SYSTEM(8, "系统消息","system"),
     ;
 
     private final Integer type;
     private final String desc;
+    private final String strategyMethod;
 
     private static final Map<Integer, MessageTypeEnum> CACHE;
 
@@ -61,7 +62,7 @@ public enum MessageTypeEnum {
                 .collect(Collectors.toMap(MessageTypeEnum::getType, Function.identity()));
     }
 
-    public static MessageTypeEnum getByType(Integer type) {
+    public static MessageTypeEnum of(Integer type) {
         return CACHE.get(type);
     }
 }

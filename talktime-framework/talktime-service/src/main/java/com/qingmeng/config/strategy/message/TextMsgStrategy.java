@@ -12,10 +12,12 @@ import com.qingmeng.dto.chat.msg.TextMsgDTO;
 import com.qingmeng.entity.ChatMessage;
 import com.qingmeng.entity.SysUser;
 import com.qingmeng.enums.chat.ChatMessageStatusEnum;
+import com.qingmeng.enums.chat.MessageTypeMethodEnum;
 import com.qingmeng.enums.common.OperateEnum;
 import com.qingmeng.utils.AssertUtils;
 import com.qingmeng.vo.chat.TextMsgVO;
 import com.qingmeng.vo.chat.child.ReplyMsg;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -41,7 +43,8 @@ public class TextMsgStrategy extends AbstractMessageStrategy{
     @Resource
     private MsgCache msgCache;
     @Resource
-    private MessageTypeFactory messageTypeFactory;
+    @Lazy
+    private MessageFactory messageTypeFactory;
 
 
     /**
@@ -100,7 +103,8 @@ public class TextMsgStrategy extends AbstractMessageStrategy{
             replyMsgVO.setId(replyMessage.getId());
             replyMsgVO.setUserId(replyMessage.getFromUserId());
             replyMsgVO.setMessageType(replyMessage.getMessageType());
-            MessageStrategy strategyWithType = messageTypeFactory.getStrategyWithType(replyMessage.getMessageType());
+            MessageTypeMethodEnum messageTypeMethodEnum = MessageTypeMethodEnum.get(replyMessage.getMessageType().toString());
+            MessageStrategy strategyWithType = messageTypeFactory.getStrategyWithType(messageTypeMethodEnum.getValue());
             replyMsgVO.setBody(strategyWithType.showReplyMsg(replyMessage));
             SysUser replyUser = userCache.get(replyMessage.getFromUserId());
             replyMsgVO.setUserName(replyUser.getUserName());

@@ -1,7 +1,6 @@
 package com.qingmeng.config.adapt;
 
 import cn.hutool.core.bean.BeanUtil;
-import com.qingmeng.config.strategy.message.MessageTypeFactory;
 import com.qingmeng.dto.chat.ChatMessageDTO;
 import com.qingmeng.entity.ChatMessage;
 import com.qingmeng.entity.ChatMessageMark;
@@ -11,7 +10,6 @@ import com.qingmeng.vo.chat.ChatMessageVO;
 import com.qingmeng.vo.chat.child.Message;
 import com.qingmeng.vo.chat.child.MessageMark;
 
-import javax.annotation.Resource;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -22,8 +20,6 @@ import java.util.stream.Collectors;
  * @createTime 2024年06月04日 22:11:00
  */
 public class ChatMessageAdapter {
-    @Resource
-    private MessageTypeFactory messageTypeFactory;
 
     public static ChatMessage buildChatMessageSave(ChatMessageDTO chatMessageDTO, Long userId) {
         ChatMessage chatMessage = new ChatMessage();
@@ -88,6 +84,28 @@ public class ChatMessageAdapter {
                         .orElse(YesOrNoEnum.NO.getCode())
         );
         return mark;
+    }
+
+    /**
+     * 获取聊天消息标记
+     *
+     * @param id     同上
+     * @param userId 用户 ID
+     * @param type   类型
+     * @param msgId  消息 ID
+     * @param status 状态
+     * @return {@link ChatMessageMark }
+     * @author qingmeng
+     * @createTime: 2024/06/08 13:44:10
+     */
+    public static ChatMessageMark getChatMessageMark(Long id,Long userId,Integer type,Long msgId,Integer status) {
+        ChatMessageMark chatMessageMark = new ChatMessageMark();
+        chatMessageMark.setId(id);
+        chatMessageMark.setMsgId(msgId);
+        chatMessageMark.setUserId(userId);
+        chatMessageMark.setType(type);
+        chatMessageMark.setStatus(status);
+        return chatMessageMark;
     }
 
 }
