@@ -25,6 +25,7 @@ public class LikeStrategy extends AbstractMessageMarkStrategy {
         return MessageMarkTypeEnum.UPVOTE;
     }
 
+
     @Override
     public void doMark(Long uid, Long msgId) {
         super.doMark(uid, msgId);
