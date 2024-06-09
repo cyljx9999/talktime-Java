@@ -3,7 +3,7 @@ package com.qingmeng.controller;
 import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.dev33.satoken.stp.StpUtil;
 import com.qingmeng.annotation.SysLog;
-import com.qingmeng.domain.rep.CommonResult;
+import com.qingmeng.domain.vo.CommonResult;
 import com.qingmeng.dto.common.PageDTO;
 import com.qingmeng.dto.user.AgreeApplyFriendDTO;
 import com.qingmeng.dto.user.ApplyFriendDTO;

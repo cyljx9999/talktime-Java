@@ -1,9 +1,15 @@
 package com.qingmeng.dao;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.qingmeng.domain.dto.CursorPageBaseDTO;
+import com.qingmeng.domain.vo.CursorPageBaseVO;
 import com.qingmeng.entity.ChatMessage;
+import com.qingmeng.enums.chat.MessageStatusEnum;
 import com.qingmeng.mapper.ChatMessageMapper;
+import com.qingmeng.utils.CursorUtils;
 import org.springframework.stereotype.Service;
+
+import java.util.Objects;
 
 /**
  * @author 清梦
@@ -29,5 +35,13 @@ public class ChatMessageDao extends ServiceImpl<ChatMessageMapper, ChatMessage> 
                 .gt(ChatMessage::getId, fromId)
                 .le(ChatMessage::getId, toId)
                 .count();
+    }
+
+    public CursorPageBaseVO<ChatMessage> getCursorPage(Long roomId, CursorPageBaseDTO request, Long lastMsgId) {
+        return CursorUtils.getCursorPageByMysql(this, request, wrapper -> {
+            wrapper.eq(ChatMessage::getRoomId, roomId);
+            wrapper.eq(ChatMessage::getStatus, MessageStatusEnum.NORMAL.getCode());
+            wrapper.le(Objects.nonNull(lastMsgId), ChatMessage::getId, lastMsgId);
+        }, ChatMessage::getId);
     }
 }

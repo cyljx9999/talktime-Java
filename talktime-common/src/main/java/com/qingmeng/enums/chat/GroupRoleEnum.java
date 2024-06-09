@@ -21,6 +21,7 @@ public enum GroupRoleEnum {
      */
     GROUP_OWNER(0, "GroupOwner"),
     GROUP_MANAGEMENT(1, "Management"),
+    GROUP_MEMBER(2, "Member"),
     ;
 
     private final Integer code;

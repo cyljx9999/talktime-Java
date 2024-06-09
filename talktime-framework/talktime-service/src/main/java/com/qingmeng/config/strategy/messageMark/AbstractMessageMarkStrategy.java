@@ -1,6 +1,6 @@
 package com.qingmeng.config.strategy.messageMark;
 
-import com.qingmeng.config.adapt.ChatMessageAdapter;
+import com.qingmeng.config.adapt.ChatAdapt;
 import com.qingmeng.config.event.MessageMarkEvent;
 import com.qingmeng.dao.ChatMessageMarkDao;
 import com.qingmeng.dto.chat.ChatMessageOtherMarkDTO;
@@ -81,7 +81,7 @@ public abstract class AbstractMessageMarkStrategy implements MessageMarkStrategy
             return;
         }
         //插入一条新消息,或者修改一条消息
-        ChatMessageMark insertOrUpdate = ChatMessageAdapter.getChatMessageMark(
+        ChatMessageMark insertOrUpdate = ChatAdapt.getChatMessageMark(
                 Optional.ofNullable(oldMark).map(ChatMessageMark::getId).orElse(null),
                 userId,
                 markType,

@@ -1,7 +1,7 @@
 package com.qingmeng.controller;
 
 import com.qingmeng.annotation.SysLog;
-import com.qingmeng.domain.rep.CommonResult;
+import com.qingmeng.domain.vo.CommonResult;
 import com.qingmeng.dto.login.LoginParamDTO;
 import com.qingmeng.dto.login.RegisterDTO;
 import com.qingmeng.service.SysUserService;

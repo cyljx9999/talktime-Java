@@ -1,9 +1,13 @@
 package com.qingmeng.service;
 
-import com.qingmeng.dto.chat.ChatMessageDTO;
-import com.qingmeng.dto.chat.ChatMessageMarkDTO;
+import com.qingmeng.dto.chat.*;
 import com.qingmeng.entity.ChatMessage;
+import com.qingmeng.vo.chat.ChatMessageReadVO;
 import com.qingmeng.vo.chat.ChatMessageVO;
+import com.qingmeng.domain.vo.CursorPageBaseVO;
+import com.qingmeng.vo.chat.MsgReadInfoVO;
+
+import java.util.List;
 
 /**
  * @author 清梦
@@ -54,4 +58,57 @@ public interface ChatMessageService {
      * @createTime: 2024/06/08 13:27:32
      */
     void setMsgMark(Long userId, ChatMessageMarkDTO chatMessageMarkDTO);
+
+    /**
+     * 撤回消息
+     *
+     * @param userId           用户 ID
+     * @param chatRecallMsgDTO 聊天撤回消息 DTO
+     * @author qingmeng
+     * @createTime: 2024/06/09 18:38:03
+     */
+    void recallMsg(Long userId, ChatRecallMsgDTO chatRecallMsgDTO);
+
+    /**
+     * 获取 MSG 阅读信息
+     *
+     * @param userId                 用户 ID
+     * @param chatMessageReadInfoDTO 聊天消息 阅读信息 DTO
+     * @return {@link List }<{@link MsgReadInfoVO }>
+     * @author qingmeng
+     * @createTime: 2024/06/09 19:02:39
+     */
+    List<MsgReadInfoVO> getMsgReadInfo(Long userId, ChatMessageReadInfoDTO chatMessageReadInfoDTO);
+
+    /**
+     * 信息阅读
+     *
+     * @param userId             用户 ID
+     * @param chatMessageReadDTO 聊天消息读取 DTO
+     * @author qingmeng
+     * @createTime: 2024/06/09 19:25:04
+     */
+    void msgRead(Long userId, ChatMessageReadDTO chatMessageReadDTO);
+
+    /**
+     * 消息的已读未读列表
+     *
+     * @param userId                 用户 ID
+     * @param chatMessageReadTypeDTO 聊天消息读取类型 DTO
+     * @return {@link CursorPageBaseVO }<{@link ChatMessageReadVO }>
+     * @author qingmeng
+     * @createTime: 2024/06/09 19:34:26
+     */
+    CursorPageBaseVO<ChatMessageReadVO> getReadPage(Long userId, ChatMessageReadTypeDTO chatMessageReadTypeDTO);
+
+    /**
+     * 获取 msg 页面
+     *
+     * @param chatMessageReadDTO 聊天消息读取 DTO
+     * @param receiveUid             用户 ID
+     * @return {@link CursorPageBaseVO }<{@link ChatMessageVO }>
+     * @author qingmeng
+     * @createTime: 2024/06/09 20:08:56
+     */
+    CursorPageBaseVO<ChatMessageVO> getMsgPage(ChatMessage1DTO chatMessageReadDTO, Long receiveUid);
 }

@@ -1,6 +1,6 @@
 package com.qingmeng.config.strategy.message;
 
-import com.qingmeng.config.adapt.ChatMessageAdapter;
+import com.qingmeng.config.adapt.ChatAdapt;
 import com.qingmeng.dao.ChatMessageDao;
 import com.qingmeng.dto.chat.ChatMessageDTO;
 import com.qingmeng.entity.ChatMessage;
@@ -82,7 +82,7 @@ public abstract class AbstractMessageStrategy implements MessageStrategy {
     @Override
     public ChatMessage saveMessage(ChatMessageDTO chatMessageDTO,Long userId) {
         checkMsg(chatMessageDTO,userId);
-        ChatMessage chatMessage = ChatMessageAdapter.buildChatMessageSave(chatMessageDTO, userId);
+        ChatMessage chatMessage = ChatAdapt.buildChatMessageSave(chatMessageDTO, userId);
         chatMessageDao.save(chatMessage);
         return chatMessage;
     }

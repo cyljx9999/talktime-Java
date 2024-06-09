@@ -1233,6 +1233,11 @@ public class RedisUtils {
         return REDIS_TEMPLATE.opsForZSet().reverseRangeWithScores(key, start, end);
     }
 
+    public static Set<TypedTuple<String>> zReverseRangeWithScores(String key, long pageSize) {
+        return REDIS_TEMPLATE.opsForZSet().reverseRangeByScoreWithScores(key, Double.MIN_VALUE,
+                Double.MAX_VALUE, 0, pageSize);
+    }
+
     /**
      * 根据Score值查询集合元素, 从大到小排序
      *

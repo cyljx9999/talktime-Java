@@ -5,7 +5,7 @@ import cn.dev33.satoken.annotation.SaCheckRole;
 import cn.dev33.satoken.annotation.SaMode;
 import cn.dev33.satoken.stp.StpUtil;
 import com.qingmeng.annotation.SysLog;
-import com.qingmeng.domain.rep.CommonResult;
+import com.qingmeng.domain.vo.CommonResult;
 import com.qingmeng.dto.chatGroup.*;
 import com.qingmeng.service.GroupService;
 import com.qingmeng.vo.chat.GroupDetailInfoVO;

@@ -1,14 +1,18 @@
 package com.qingmeng.controller;
 
 import cn.dev33.satoken.stp.StpUtil;
-import com.qingmeng.domain.rep.CommonResult;
-import com.qingmeng.dto.chat.ChatMessageDTO;
-import com.qingmeng.dto.chat.ChatMessageMarkDTO;
+import com.qingmeng.domain.vo.CommonResult;
+import com.qingmeng.domain.vo.CursorPageBaseVO;
+import com.qingmeng.dto.chat.*;
 import com.qingmeng.service.ChatMessageService;
+import com.qingmeng.vo.chat.ChatMessageReadVO;
+import com.qingmeng.vo.chat.ChatMessageVO;
+import com.qingmeng.vo.chat.MsgReadInfoVO;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * @author 清梦
@@ -21,6 +25,21 @@ import javax.validation.Valid;
 public class ChatController {
     @Resource
     private ChatMessageService chatMessageService;
+
+    /**
+     * 消息列表
+     *
+     * @param chatMessageReadDTO 请求
+     * @return {@link CommonResult }<{@link CursorPageBaseVO }<{@link ChatMessageVO }>>
+     * @author qingmeng
+     * @createTime: 2024/06/09 20:04:58
+     */
+    @GetMapping("/public/msg/page")
+    public CommonResult<CursorPageBaseVO<ChatMessageVO>> getMsgPage(@Valid ChatMessage1DTO chatMessageReadDTO) {
+        CursorPageBaseVO<ChatMessageVO> msgPage = chatMessageService.getMsgPage(chatMessageReadDTO, StpUtil.getLoginIdAsLong());
+        return CommonResult.success(msgPage);
+    }
+
 
     /**
      * 发送消息
@@ -51,5 +70,59 @@ public class ChatController {
         return CommonResult.success();
     }
 
+    /**
+     * 撤回消息
+     *
+     * @param chatRecallMsgDTO 请求
+     * @return {@link CommonResult }<{@link String }>
+     * @author qingmeng
+     * @createTime: 2024/06/09 18:35:41
+     */
+    @PutMapping("/msg/recall")
+    public CommonResult<String> recallMsg(@Valid @RequestBody ChatRecallMsgDTO chatRecallMsgDTO) {
+        chatMessageService.recallMsg(StpUtil.getLoginIdAsLong(), chatRecallMsgDTO);
+        return CommonResult.success();
+    }
+
+    /**
+     * 消息的已读未读列表
+     *
+     * @param chatMessageReadTypeDTO 请求
+     * @author qingmeng
+     * @createTime: 2024/06/09 19:28:16
+     */
+    @GetMapping("/msg/read/page")
+    public CommonResult<CursorPageBaseVO<ChatMessageReadVO>> getReadPage(@Valid ChatMessageReadTypeDTO chatMessageReadTypeDTO) {
+        CursorPageBaseVO<ChatMessageReadVO> cursorPageBaseVO = chatMessageService.getReadPage(StpUtil.getLoginIdAsLong(), chatMessageReadTypeDTO);
+        return CommonResult.success(cursorPageBaseVO);
+    }
+
+    /**
+     * 获取消息的已读未读总数
+     *
+     * @param chatMessageReadInfoDTO 请求
+     * @return {@link CommonResult }<{@link List }<{@link MsgReadInfoVO }>>
+     * @author qingmeng
+     * @createTime: 2024/06/09 18:57:43
+     */
+    @GetMapping("/msg/read")
+    public CommonResult<List<MsgReadInfoVO>> getReadInfo(@Valid ChatMessageReadInfoDTO chatMessageReadInfoDTO) {
+        List<MsgReadInfoVO> list = chatMessageService.getMsgReadInfo(StpUtil.getLoginIdAsLong(), chatMessageReadInfoDTO);
+        return CommonResult.success(list);
+    }
+
+    /**
+     * 消息阅读
+     *
+     * @param chatMessageReadDTO 请求
+     * @return {@link CommonResult }<{@link String }>
+     * @author qingmeng
+     * @createTime: 2024/06/09 19:23:01
+     */
+    @PutMapping("/msg/read")
+    public CommonResult<String> msgRead(@Valid @RequestBody ChatMessageReadDTO chatMessageReadDTO) {
+        chatMessageService.msgRead(StpUtil.getLoginIdAsLong(), chatMessageReadDTO);
+        return CommonResult.success();
+    }
 
 }

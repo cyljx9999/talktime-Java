@@ -2,21 +2,16 @@ package com.qingmeng.config.strategy.message;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.qingmeng.config.cache.UserCache;
-import com.qingmeng.config.event.MessageRecallEvent;
-import com.qingmeng.config.netty.vo.WsMsgRecallVO;
 import com.qingmeng.dao.ChatMessageDao;
 import com.qingmeng.dto.chat.ChatMessageDTO;
 import com.qingmeng.dto.chat.msg.MessageExtra;
 import com.qingmeng.dto.chat.msg.MsgRecallDTO;
 import com.qingmeng.entity.ChatMessage;
 import com.qingmeng.entity.SysUser;
-import com.qingmeng.enums.chat.MessageTypeEnum;
 import com.qingmeng.utils.AssertUtils;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.util.Date;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -33,8 +28,6 @@ public class RecallMsgStrategy extends AbstractMessageStrategy{
     private ChatMessageDao chatMessageDao;
     @Resource
     private UserCache userCache;
-    @Resource
-    private ApplicationEventPublisher applicationEventPublisher;
 
     /**
      * 检查消息
@@ -110,18 +103,5 @@ public class RecallMsgStrategy extends AbstractMessageStrategy{
         update.setExtra(extra);
         extra.setMsgRecallDTO(msgRecall);
         chatMessageDao.updateById(update);
-    }
-
-    public void recall(Long recallUserId, ChatMessage message) {
-        //todo 消息覆盖问题用版本号解决
-        MessageExtra extra = message.getExtra();
-        extra.setMsgRecallDTO(new MsgRecallDTO(recallUserId, new Date()));
-        ChatMessage update = new ChatMessage();
-        update.setId(message.getId());
-        update.setMessageType(MessageTypeEnum.RECALL.getType());
-        update.setExtra(extra);
-        chatMessageDao.updateById(update);
-        applicationEventPublisher.publishEvent(new MessageRecallEvent(this, new WsMsgRecallVO(message.getId(), message.getRoomId(), recallUserId)));
-
     }
 }

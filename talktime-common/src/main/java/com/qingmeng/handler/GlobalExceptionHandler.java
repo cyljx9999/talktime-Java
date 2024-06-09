@@ -3,7 +3,7 @@ package com.qingmeng.handler;
 import cn.dev33.satoken.exception.DisableServiceException;
 import cn.dev33.satoken.exception.NotLoginException;
 import cn.dev33.satoken.exception.NotPermissionException;
-import com.qingmeng.domain.rep.CommonResult;
+import com.qingmeng.domain.vo.CommonResult;
 import com.qingmeng.enums.system.ResultEnum;
 import com.qingmeng.enums.system.TokenEnum;
 import com.qingmeng.exception.TalkTimeException;

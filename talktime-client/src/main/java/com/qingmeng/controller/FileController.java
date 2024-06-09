@@ -3,7 +3,7 @@ package com.qingmeng.controller;
 import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.dev33.satoken.stp.StpUtil;
 import com.qingmeng.annotation.SysLog;
-import com.qingmeng.domain.rep.CommonResult;
+import com.qingmeng.domain.vo.CommonResult;
 import com.qingmeng.dto.file.UploadUrlDTO;
 import com.qingmeng.service.FileService;
 import com.qingmeng.vo.file.MinioVO;

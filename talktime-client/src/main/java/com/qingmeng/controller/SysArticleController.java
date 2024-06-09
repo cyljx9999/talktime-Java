@@ -3,7 +3,7 @@ package com.qingmeng.controller;
 import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.dev33.satoken.stp.StpUtil;
 import com.qingmeng.annotation.SysLog;
-import com.qingmeng.domain.rep.CommonResult;
+import com.qingmeng.domain.vo.CommonResult;
 import com.qingmeng.dto.article.WearArticleDTO;
 import com.qingmeng.service.SysArticleService;
 import com.qingmeng.vo.article.SysArticleListVO;
