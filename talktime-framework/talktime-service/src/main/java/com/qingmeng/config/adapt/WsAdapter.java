@@ -4,6 +4,7 @@ import cn.hutool.core.bean.BeanUtil;
 import com.qingmeng.config.netty.enums.WSResponseTypeEnum;
 import com.qingmeng.config.netty.vo.*;
 import com.qingmeng.dto.chat.ChatMessageOtherMarkDTO;
+import com.qingmeng.entity.SysArticle;
 import com.qingmeng.entity.SysUser;
 import com.qingmeng.enums.user.UsageStatusEnum;
 import com.qingmeng.vo.chat.ChatMessageVO;
@@ -98,7 +99,6 @@ public class WsAdapter {
         wsBaseResp.setType(WSResponseTypeEnum.ONLINE_OFFLINE_NOTIFY.getType());
         WsOnlineOfflineNotifyVO onlineOfflineNotify = new WsOnlineOfflineNotifyVO();
         onlineOfflineNotify.setChangeList(Collections.singletonList(buildOfflineInfo(sysUser)));
-        //todo 统计在线人数;
         wsBaseResp.setData(onlineOfflineNotify);
         return wsBaseResp;
     }
@@ -133,7 +133,6 @@ public class WsAdapter {
         wsBaseVO.setType(WSResponseTypeEnum.ONLINE_OFFLINE_NOTIFY.getType());
         WsOnlineOfflineNotifyVO wsOnlineOfflineNotifyVO = new WsOnlineOfflineNotifyVO();
         wsOnlineOfflineNotifyVO.setChangeList(Collections.singletonList(buildOnlineInfo(sysUser)));
-        //todo 统计在线人数;
         wsBaseVO.setData(wsOnlineOfflineNotifyVO);
         return wsBaseVO;
     }
@@ -202,5 +201,22 @@ public class WsAdapter {
         mark.setMarkList(Collections.singletonList(item));
         wsBaseVO.setData(mark);
         return wsBaseVO;
+    }
+
+    /**
+     * 构建发送物品通知
+     *
+     * @param article 品
+     * @return {@link WsBaseVO }<{@link WsSendItemInform }>
+     * @author qingmeng
+     * @createTime: 2024/06/12 17:21:13
+     */
+    public static WsBaseVO<WsSendItemInform> buildSendUserItemInform(SysArticle article) {
+        WsBaseVO<WsSendItemInform> wsBaseResp = new WsBaseVO<>();
+        wsBaseResp.setType(WSResponseTypeEnum.SYSTEM.getType());
+        WsSendItemInform wsSendItemInform = new WsSendItemInform();
+        wsSendItemInform.setItemName(article.getArticleDescribe());
+        wsBaseResp.setData(wsSendItemInform);
+        return wsBaseResp;
     }
 }

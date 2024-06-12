@@ -5,10 +5,12 @@ import cn.hutool.core.collection.CollectionUtil;
 import com.qingmeng.config.cache.MsgCache;
 import com.qingmeng.config.cache.UserCache;
 import com.qingmeng.constant.SystemConstant;
+import com.qingmeng.dao.ChatGroupManagerDao;
 import com.qingmeng.dao.ChatMessageDao;
 import com.qingmeng.dto.chat.ChatMessageDTO;
 import com.qingmeng.dto.chat.msg.MessageExtra;
 import com.qingmeng.dto.chat.msg.TextMsgDTO;
+import com.qingmeng.entity.ChatGroupManager;
 import com.qingmeng.entity.ChatMessage;
 import com.qingmeng.entity.SysUser;
 import com.qingmeng.enums.chat.ChatMessageStatusEnum;
@@ -45,6 +47,8 @@ public class TextMsgStrategy extends AbstractMessageStrategy{
     @Resource
     @Lazy
     private MessageFactory messageTypeFactory;
+    @Resource
+    private ChatGroupManagerDao chatGroupManagerDao;
 
 
     /**
@@ -74,7 +78,8 @@ public class TextMsgStrategy extends AbstractMessageStrategy{
             AssertUtils.equal((long)atUserIdList.size(), batchCount, "艾特列表存成非群成员");
             boolean atAll = textMsgDTO.getAtUserIdList().contains(0L);
             if (atAll) {
-                // todo 校验是否有权限@所有人
+                ChatGroupManager manager = chatGroupManagerDao.getManager(messageDTO.getRoomId(), userId);
+                AssertUtils.isNotEmpty(manager, "没有权限@所有人");
             }
         }
     }

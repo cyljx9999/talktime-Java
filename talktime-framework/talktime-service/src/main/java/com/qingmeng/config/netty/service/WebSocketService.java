@@ -85,5 +85,14 @@ public interface WebSocketService {
      */
     void sendToUserId(WsBaseVO<?> wsBaseResp, Long userId);
 
+    /**
+     * 获取在线数量
+     *
+     * @return {@link Integer }
+     * @author qingmeng
+     * @createTime: 2024/06/12 17:11:07
+     */
+    Integer getOnlineNum();
+
 }
 

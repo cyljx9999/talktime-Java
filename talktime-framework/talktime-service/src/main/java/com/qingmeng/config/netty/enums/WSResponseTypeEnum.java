@@ -78,6 +78,7 @@ public enum WSResponseTypeEnum {
      * 群聊邀请
      */
     GROUP_INVITE(12, "群聊邀请", WsGroupInviteVO.class),
+    SYSTEM(13, "系统消息",null),
     ;
 
     /**

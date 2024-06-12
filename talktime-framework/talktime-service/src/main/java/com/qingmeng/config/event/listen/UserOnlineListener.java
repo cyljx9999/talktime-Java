@@ -3,6 +3,8 @@ package com.qingmeng.config.event.listen;
 import com.qingmeng.config.adapt.WsAdapter;
 import com.qingmeng.config.cache.UserCache;
 import com.qingmeng.config.netty.service.WebSocketService;
+import com.qingmeng.config.netty.vo.WsBaseVO;
+import com.qingmeng.config.netty.vo.WsOnlineOfflineNotifyVO;
 import com.qingmeng.entity.SysUser;
 import com.qingmeng.enums.user.UsageStatusEnum;
 import com.qingmeng.config.event.UserOnlineEvent;
@@ -36,7 +38,9 @@ public class UserOnlineListener {
         SysUser sysUser = event.getSysUser();
         userCache.online(sysUser.getId(), sysUser.getLastOperateTime());
         //推送给所有在线用户，该用户登录成功
-        webSocketService.sendToAllOnline(WsAdapter.buildOnlineNotifyVO(sysUser));
+        WsBaseVO<WsOnlineOfflineNotifyVO> wsBaseVO = WsAdapter.buildOnlineNotifyVO(sysUser);
+        wsBaseVO.getData().setOnlineNum(webSocketService.getOnlineNum());
+        webSocketService.sendToAllOnline(wsBaseVO);
     }
 
     @Async("visibleTaskExecutor")

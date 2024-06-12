@@ -1,7 +1,9 @@
 package com.qingmeng.service.impl;
 
 import com.qingmeng.config.adapt.ArticleAdapt;
+import com.qingmeng.config.adapt.WsAdapter;
 import com.qingmeng.config.cache.ArticleCache;
+import com.qingmeng.config.netty.service.WebSocketService;
 import com.qingmeng.dao.SysUserArticleDao;
 import com.qingmeng.entity.SysArticle;
 import com.qingmeng.entity.SysUserArticle;
@@ -23,6 +25,8 @@ public class SysUserArticleServiceImpl implements SysUserArticleService {
     private ArticleCache articleCache;
     @Resource
     private SysUserArticleDao sysUserArticleDao;
+    @Resource
+    private WebSocketService webSocketService;
 
     /**
      * 物品接收
@@ -46,6 +50,6 @@ public class SysUserArticleServiceImpl implements SysUserArticleService {
         // 发物品
         SysUserArticle insert = ArticleAdapt.getSysUserArticle(itemId, fromUserId);
         sysUserArticleDao.save(insert);
-        // todo 通知用户
+        webSocketService.sendToUserId(WsAdapter.buildSendUserItemInform(article),fromUserId);
     }
 }

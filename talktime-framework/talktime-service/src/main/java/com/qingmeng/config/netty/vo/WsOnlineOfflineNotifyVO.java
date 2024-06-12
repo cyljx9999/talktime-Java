@@ -26,5 +26,5 @@ public class WsOnlineOfflineNotifyVO {
     /**
      * 在线人数
      */
-    private Long onlineNum;
+    private Integer onlineNum;
 }

@@ -4,6 +4,8 @@ import com.qingmeng.config.adapt.WsAdapter;
 import com.qingmeng.config.cache.UserCache;
 import com.qingmeng.config.event.UserOfflineEvent;
 import com.qingmeng.config.netty.service.WebSocketService;
+import com.qingmeng.config.netty.vo.WsBaseVO;
+import com.qingmeng.config.netty.vo.WsOnlineOfflineNotifyVO;
 import com.qingmeng.entity.SysUser;
 import com.qingmeng.enums.user.UsageStatusEnum;
 import com.qingmeng.service.SysUserService;
@@ -35,7 +37,9 @@ public class UserOfflineListener {
         SysUser sysUser = event.getSysUser();
         userCache.offline(sysUser.getId(), sysUser.getLastOperateTime());
         // 推送给所有在线用户，该用户下线
-        webSocketService.sendToAllOnline(WsAdapter.buildOfflineNotifyVO(sysUser), sysUser.getId());
+        WsBaseVO<WsOnlineOfflineNotifyVO> wsBaseVO = WsAdapter.buildOfflineNotifyVO(sysUser);
+        wsBaseVO.getData().setOnlineNum(webSocketService.getOnlineNum());
+        webSocketService.sendToAllOnline(wsBaseVO, sysUser.getId());
     }
 
     @Async

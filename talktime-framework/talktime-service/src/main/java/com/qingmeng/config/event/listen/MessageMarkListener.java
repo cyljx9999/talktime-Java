@@ -56,7 +56,6 @@ public class MessageMarkListener {
         }
         // 尝试给用户发送一张徽章
         if (MessageMarkTypeEnum.UPVOTE.getCode().equals(dto.getMarkType())) {
-            // todo 绑定 被点赞达人 徽章
             sysUserArticleService.itemReceive(msg.getFromUserId(), 1L,msg.getId().toString());
         }
     }

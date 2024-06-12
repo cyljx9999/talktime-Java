@@ -1,12 +1,10 @@
 package com.qingmeng.config.satoken;
 
 import cn.dev33.satoken.stp.StpInterface;
-import com.qingmeng.dao.ChatGroupManagerDao;
 import com.qingmeng.enums.chat.GroupRoleEnum;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Resource;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -17,14 +15,11 @@ import java.util.List;
  */
 @Component
 public class StpInterfaceImpl implements StpInterface {
-    @Resource
-    private ChatGroupManagerDao chatGroupManagerDao;
 
     /**
      * 返回一个账号所拥有的权限码集合
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public List<String> getPermissionList(Object loginId, String loginType) {
         // todo:获取权限字段列表
         return null;
@@ -36,8 +31,7 @@ public class StpInterfaceImpl implements StpInterface {
      */
     @Override
     public List<String> getRoleList(Object loginId, String loginType) {
-        List<Integer> roleTypeList = chatGroupManagerDao.getRoleTypeList(Long.parseLong(loginType));
-        return GroupRoleEnum.getByCodeList(roleTypeList);
+        return Arrays.asList(GroupRoleEnum.GROUP_OWNER.getMsg(), GroupRoleEnum.GROUP_MANAGEMENT.getMsg());
     }
 
 }

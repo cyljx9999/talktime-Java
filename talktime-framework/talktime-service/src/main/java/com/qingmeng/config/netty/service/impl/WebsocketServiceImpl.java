@@ -221,6 +221,18 @@ public class WebsocketServiceImpl implements WebSocketService {
     }
 
     /**
+     * 获取在线数量
+     *
+     * @return {@link Integer }
+     * @author qingmeng
+     * @createTime: 2024/06/12 17:11:07
+     */
+    @Override
+    public Integer getOnlineNum() {
+        return ONLINE_USERID_MAP.size();
+    }
+
+    /**
      * 扫描登录成功
      *
      * @param loginCode 登录代码
