@@ -3,6 +3,11 @@ package com.qingmeng.enums.chat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.util.Arrays;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
 /**
  * @author 清梦
  * @version 1.0.0
@@ -26,4 +31,15 @@ public enum RoomTypeEnum {
     private final Integer code;
 
     private final String desc;
+
+    private static final Map<Integer, RoomTypeEnum> CACHE;
+
+    static {
+        CACHE = Arrays.stream(RoomTypeEnum.values()).collect(Collectors.toMap(RoomTypeEnum::getCode, Function.identity()));
+    }
+
+    public static RoomTypeEnum of(Integer type) {
+        return CACHE.get(type);
+    }
+
 }

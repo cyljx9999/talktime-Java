@@ -9,6 +9,7 @@ import com.qingmeng.mapper.ChatMessageMapper;
 import com.qingmeng.utils.CursorUtils;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.Objects;
 
 /**
@@ -43,5 +44,21 @@ public class ChatMessageDao extends ServiceImpl<ChatMessageMapper, ChatMessage> 
             wrapper.eq(ChatMessage::getStatus, MessageStatusEnum.NORMAL.getCode());
             wrapper.le(Objects.nonNull(lastMsgId), ChatMessage::getId, lastMsgId);
         }, ChatMessage::getId);
+    }
+
+    /**
+     * 获取 未读取计数
+     *
+     * @param roomId   房间 ID
+     * @param readTime 读取时间
+     * @return {@link Long }
+     * @author qingmeng
+     * @createTime: 2024/06/12 15:24:50
+     */
+    public Long getUnReadCount(Long roomId, Date readTime) {
+        return lambdaQuery()
+                .eq(ChatMessage::getRoomId, roomId)
+                .gt(Objects.nonNull(readTime), ChatMessage::getCreateTime, readTime)
+                .count();
     }
 }

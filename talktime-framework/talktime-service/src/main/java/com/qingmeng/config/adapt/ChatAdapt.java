@@ -388,4 +388,24 @@ public class ChatAdapt {
             return resp;
         }).collect(Collectors.toList());
     }
+
+    public static Set<Long> getFriendUserIdSet(Collection<ChatFriendRoom> values, Long userId) {
+        return values.stream()
+                .map(a -> getFriendUserId(a, userId))
+                .collect(Collectors.toSet());
+    }
+
+
+    /**
+     * 获取好友用户 ID
+     *
+     * @param chatFriendRoom 聊天 好友室
+     * @param userId         用户 ID
+     * @return {@link Long }
+     * @author qingmeng
+     * @createTime: 2024/06/12 15:18:59
+     */
+    public static Long getFriendUserId(ChatFriendRoom chatFriendRoom, Long userId) {
+        return Objects.equals(userId, chatFriendRoom.getUserId()) ? chatFriendRoom.getOtherUserId() : chatFriendRoom.getUserId();
+    }
 }

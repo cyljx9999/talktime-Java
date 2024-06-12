@@ -1,10 +1,12 @@
 package com.qingmeng.service;
 
+import com.qingmeng.domain.dto.CursorPageBaseDTO;
 import com.qingmeng.dto.chat.*;
 import com.qingmeng.entity.ChatMessage;
 import com.qingmeng.vo.chat.ChatMessageReadVO;
 import com.qingmeng.vo.chat.ChatMessageVO;
 import com.qingmeng.domain.vo.CursorPageBaseVO;
+import com.qingmeng.vo.chat.ChatRoomVO;
 import com.qingmeng.vo.chat.MsgReadInfoVO;
 
 import java.util.List;
@@ -111,4 +113,36 @@ public interface ChatMessageService {
      * @createTime: 2024/06/09 20:08:56
      */
     CursorPageBaseVO<ChatMessageVO> getMsgPage(ChatMessage1DTO chatMessageReadDTO, Long receiveUid);
+
+    /**
+     * 获取房间会话列表
+     *
+     * @param request 请求
+     * @param userId  用户 ID
+     * @return {@link CursorPageBaseVO }<{@link ChatRoomVO }>
+     * @author qingmeng
+     * @createTime: 2024/06/12 14:46:12
+     */
+    CursorPageBaseVO<ChatRoomVO> getSessionPage(CursorPageBaseDTO request, Long userId);
+
+    /**
+     * 获取会话详细信息
+     *
+     * @param userId 用户 ID
+     * @param roomId 房间 ID
+     * @return {@link ChatRoomVO }
+     * @author qingmeng
+     * @createTime: 2024/06/12 15:33:46
+     */
+    ChatRoomVO getSessionDetail(Long userId, Long roomId);
+
+    /**
+     * 获取会话详细信息
+     * @param userId   用户 ID
+     * @param friendId 好友 ID
+     * @return {@link ChatRoomVO }
+     * @author qingmeng
+     * @createTime: 2024/06/12 15:37:03
+     */
+    ChatRoomVO getSessionDetailByFriend(Long userId, Long friendId);
 }

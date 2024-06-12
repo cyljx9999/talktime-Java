@@ -1,12 +1,14 @@
 package com.qingmeng.controller;
 
 import cn.dev33.satoken.stp.StpUtil;
+import com.qingmeng.domain.dto.CursorPageBaseDTO;
 import com.qingmeng.domain.vo.CommonResult;
 import com.qingmeng.domain.vo.CursorPageBaseVO;
 import com.qingmeng.dto.chat.*;
 import com.qingmeng.service.ChatMessageService;
 import com.qingmeng.vo.chat.ChatMessageReadVO;
 import com.qingmeng.vo.chat.ChatMessageVO;
+import com.qingmeng.vo.chat.ChatRoomVO;
 import com.qingmeng.vo.chat.MsgReadInfoVO;
 import org.springframework.web.bind.annotation.*;
 
@@ -123,6 +125,48 @@ public class ChatController {
     public CommonResult<String> msgRead(@Valid @RequestBody ChatMessageReadDTO chatMessageReadDTO) {
         chatMessageService.msgRead(StpUtil.getLoginIdAsLong(), chatMessageReadDTO);
         return CommonResult.success();
+    }
+
+    /**
+     * 获取房间会话列表
+     *
+     * @param request 请求
+     * @return {@link CommonResult }<{@link CursorPageBaseVO }<{@link ChatRoomVO }>>
+     * @author qingmeng
+     * @createTime: 2024/06/12 14:45:02
+     */
+    @GetMapping("/session/page")
+    public CommonResult<CursorPageBaseVO<ChatRoomVO>> getRoomPage(@Valid CursorPageBaseDTO request) {
+        CursorPageBaseVO<ChatRoomVO> list = chatMessageService.getSessionPage(request, StpUtil.getLoginIdAsLong());
+        return CommonResult.success(list);
+    }
+
+    /**
+     * 获取会话详细信息
+     *
+     * @param roomId 房间 ID
+     * @return {@link CommonResult }<{@link ChatRoomVO }>
+     * @author qingmeng
+     * @createTime: 2024/06/12 15:33:32
+     */
+    @GetMapping("/session/detail/{roomId}")
+    public CommonResult<ChatRoomVO> getSessionDetail(@PathVariable Long roomId) {
+        ChatRoomVO chatRoomVO = chatMessageService.getSessionDetail(StpUtil.getLoginIdAsLong(), roomId);
+        return CommonResult.success(chatRoomVO);
+    }
+
+    /**
+     * 会话详情(联系人列表发消息用)
+     *
+     * @param request 请求
+     * @return {@link ApiResult }<{@link ChatRoomResp }>
+     * @author qingmeng
+     * @createTime: 2024/06/12 15:35:28
+     */
+    @GetMapping("/session/detail/friend/{friendId}")
+    public CommonResult<ChatRoomVO> getSessionDetailByFriend(@PathVariable Long friendId) {
+        ChatRoomVO chatRoomVO = chatMessageService.getSessionDetailByFriend(StpUtil.getLoginIdAsLong(), friendId);
+        return CommonResult.success(chatRoomVO);
     }
 
 }

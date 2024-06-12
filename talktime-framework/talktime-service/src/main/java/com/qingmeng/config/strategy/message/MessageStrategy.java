@@ -60,7 +60,7 @@ public interface MessageStrategy {
      * @author qingmeng
      * @createTime: 2024/06/04 21:57:14
      */
-    String showContactMsg(ChatMessage msg);
+    String showSessionMsg(ChatMessage msg);
 
     /**
      * 保存额外消息

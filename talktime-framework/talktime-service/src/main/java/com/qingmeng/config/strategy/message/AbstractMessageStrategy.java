@@ -58,7 +58,7 @@ public abstract class AbstractMessageStrategy implements MessageStrategy {
      * @author qingmeng
      * @createTime: 2024/06/04 21:57:14
      */
-    public abstract String showContactMsg(ChatMessage msg);
+    public abstract String showSessionMsg(ChatMessage msg);
 
     /**
      * 保存额外消息

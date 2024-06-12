@@ -73,7 +73,7 @@ public class ImgMsgStrategy extends AbstractMessageStrategy{
      * @createTime: 2024/06/04 21:57:14
      */
     @Override
-    public String showContactMsg(ChatMessage msg) {
+    public String showSessionMsg(ChatMessage msg) {
         return "[图片]";
     }
 
