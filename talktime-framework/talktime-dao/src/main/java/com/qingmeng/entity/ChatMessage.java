@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.annotation.*;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import com.qingmeng.dto.chat.msg.MessageExtra;
 import com.qingmeng.enums.chat.MessageTypeEnum;
-import com.qingmeng.enums.chat.RemindStatusEnum;
+import com.qingmeng.enums.common.OpenStatusEnum;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -53,7 +53,7 @@ public class ChatMessage implements Serializable {
     /**
      * 消息状态 0正常 1删除
      *
-     * @see RemindStatusEnum
+     * @see OpenStatusEnum
      */
     @TableField("status")
     private Integer status;

@@ -43,7 +43,7 @@ public class UserFriendSettingDTO {
 
     /**
      * 提醒状态 0关闭 1开启
-     * @see com.qingmeng.enums.chat.RemindStatusEnum
+     * @see com.qingmeng.enums.common.OpenStatusEnum
      */
     @IntListValue(values = {0, 1})
     private Integer remindStatus;

@@ -7,6 +7,7 @@ import com.qingmeng.dto.chat.ChatMessageDTO;
 import com.qingmeng.entity.*;
 import com.qingmeng.enums.chat.*;
 import com.qingmeng.enums.common.CloseOrOpenStatusEnum;
+import com.qingmeng.enums.common.OpenStatusEnum;
 import com.qingmeng.enums.common.YesOrNoEnum;
 import com.qingmeng.utils.CommonUtils;
 import com.qingmeng.vo.chat.ChatMessageReadVO;
@@ -94,7 +95,7 @@ public class ChatAdapt {
             chatGroupPersonalSetting.setUserId(userId);
             chatGroupPersonalSetting.setTopStatus(MessageTopStatusEnum.NORMAL.getCode());
             chatGroupPersonalSetting.setDisplayNameStatus(DisplayNameStatusEnum.DISPLAY.getCode());
-            chatGroupPersonalSetting.setRemindStatus(RemindStatusEnum.OPEN.getCode());
+            chatGroupPersonalSetting.setRemindStatus(OpenStatusEnum.OPEN.getCode());
             return chatGroupPersonalSetting;
         }).collect(Collectors.toList());
     }

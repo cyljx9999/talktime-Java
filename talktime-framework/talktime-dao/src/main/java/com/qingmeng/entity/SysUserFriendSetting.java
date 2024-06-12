@@ -56,7 +56,7 @@ public class SysUserFriendSetting implements Serializable {
 
     /**
      * 提醒状态 0关闭 1开启
-     * @see com.qingmeng.enums.chat.RemindStatusEnum
+     * @see com.qingmeng.enums.common.OpenStatusEnum
      */
     private Integer remindStatus;
 

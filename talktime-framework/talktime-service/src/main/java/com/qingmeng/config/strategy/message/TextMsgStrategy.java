@@ -2,8 +2,10 @@ package com.qingmeng.config.strategy.message;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollectionUtil;
+import com.github.houbb.sensitive.word.bs.SensitiveWordBs;
 import com.qingmeng.config.cache.MsgCache;
 import com.qingmeng.config.cache.UserCache;
+import com.qingmeng.config.sensitiveWordConfig.CustomSensitiveWordReplace;
 import com.qingmeng.constant.SystemConstant;
 import com.qingmeng.dao.ChatGroupManagerDao;
 import com.qingmeng.dao.ChatMessageDao;
@@ -49,6 +51,10 @@ public class TextMsgStrategy extends AbstractMessageStrategy{
     private MessageFactory messageTypeFactory;
     @Resource
     private ChatGroupManagerDao chatGroupManagerDao;
+    @Resource
+    private SensitiveWordBs sensitiveWordBs;
+    @Resource
+    private CustomSensitiveWordReplace customSensitiveWordReplace;
 
 
     /**
@@ -160,8 +166,8 @@ public class TextMsgStrategy extends AbstractMessageStrategy{
         MessageExtra extra = Optional.ofNullable(msg.getExtra()).orElse(new MessageExtra());
         ChatMessage update = new ChatMessage();
         update.setId(msg.getId());
-        // todo 敏感词过滤
-        update.setContent(textMsgDTO.getContent());
+        String replace = sensitiveWordBs.replace(textMsgDTO.getContent());
+        update.setContent(replace);
         update.setExtra(extra);
         // 如果有回复消息
         if (Objects.nonNull(textMsgDTO.getReplyMsgId())) {
