@@ -2,6 +2,7 @@ package com.qingmeng.constant;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * @author 清梦
@@ -115,6 +116,21 @@ public class SystemConstant {
      */
     public static final Long MANAGEMENT_MAX_COUNT = 3L;
 
+    /**
+     * 零字符串
+     */
     public static final String ZERO_STRING = "0";
+    public static final int ZERO_INT = 0;
+
+    /**
+     * 可以跳转的间隙计数
+     */
     public static final int CAN_CALLBACK_GAP_COUNT = 200;
+
+
+    /**
+     * 链接识别的正则
+     */
+    public static final Pattern PATTERN = Pattern.compile("((http|https)://)?(www.)?([\\w_-]+(?:(?:\\.[\\w_-]+)+))([\\w.,@?^=%&:/~+#-]*[\\w@?^=%&/~+#-])?");
+
 }

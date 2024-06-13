@@ -6,10 +6,12 @@ import com.github.houbb.sensitive.word.bs.SensitiveWordBs;
 import com.qingmeng.config.cache.MsgCache;
 import com.qingmeng.config.cache.UserCache;
 import com.qingmeng.config.sensitiveWordConfig.CustomSensitiveWordReplace;
+import com.qingmeng.config.strategy.urlDiscover.PrioritizedUrlDiscover;
 import com.qingmeng.constant.SystemConstant;
 import com.qingmeng.dao.ChatGroupManagerDao;
 import com.qingmeng.dao.ChatMessageDao;
 import com.qingmeng.dto.chat.ChatMessageDTO;
+import com.qingmeng.dto.chat.UrlInfo;
 import com.qingmeng.dto.chat.msg.MessageExtra;
 import com.qingmeng.dto.chat.msg.TextMsgDTO;
 import com.qingmeng.entity.ChatGroupManager;
@@ -56,6 +58,10 @@ public class TextMsgStrategy extends AbstractMessageStrategy{
     @Resource
     private CustomSensitiveWordReplace customSensitiveWordReplace;
 
+    /**
+     * URL 标题发现
+     */
+    private static final PrioritizedUrlDiscover URL_TITLE_DISCOVER = new PrioritizedUrlDiscover();
 
     /**
      * 检查消息
@@ -166,7 +172,7 @@ public class TextMsgStrategy extends AbstractMessageStrategy{
         MessageExtra extra = Optional.ofNullable(msg.getExtra()).orElse(new MessageExtra());
         ChatMessage update = new ChatMessage();
         update.setId(msg.getId());
-        String replace = sensitiveWordBs.replace(textMsgDTO.getContent());
+        String replace = sensitiveWordBs.replace(textMsgDTO.getContent(),customSensitiveWordReplace);
         update.setContent(replace);
         update.setExtra(extra);
         // 如果有回复消息
@@ -175,9 +181,9 @@ public class TextMsgStrategy extends AbstractMessageStrategy{
             update.setGapCount(gapCount);
             update.setReplyMsgId(textMsgDTO.getReplyMsgId());
         }
-        // todo 判断消息url跳转
-        //Map<String, UrlInfo> urlContentMap = URL_TITLE_DISCOVER.getUrlContentMap(textMsgDTO.getContent());
-        //extra.setUrlContentMap(urlContentMap);
+        // 判断消息url跳转
+        Map<String, UrlInfo> urlContentMap = URL_TITLE_DISCOVER.getUrlContentMap(textMsgDTO.getContent());
+        extra.setUrlContentMap(urlContentMap);
 
         // 艾特功能
         if (CollectionUtil.isNotEmpty(textMsgDTO.getAtUserIdList())) {
