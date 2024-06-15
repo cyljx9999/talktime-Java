@@ -97,4 +97,9 @@ public class RedisConstant {
     public static final String CHAT_SETTING_KEY = "chat:setting:";
     public static final long CHAT_SETTING_EXPIRE = 7L;
 
+    /**
+     * 表情包key和标签包标签列表key
+     */
+    public static final String CHAT_EMOJI_KEY = "chat:emoji:";
+    public static final String CHAT_EMOJI_TAG_KEY = "chat:emojiTag:";
 }

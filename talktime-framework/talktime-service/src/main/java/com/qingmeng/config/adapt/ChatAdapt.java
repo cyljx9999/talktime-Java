@@ -3,6 +3,7 @@ package com.qingmeng.config.adapt;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.qingmeng.config.netty.vo.WsGroupInviteVO;
+import com.qingmeng.dto.chat.ChatEmojiDTO;
 import com.qingmeng.dto.chat.ChatMessageDTO;
 import com.qingmeng.entity.*;
 import com.qingmeng.enums.chat.*;
@@ -408,5 +409,22 @@ public class ChatAdapt {
      */
     public static Long getFriendUserId(ChatFriendRoom chatFriendRoom, Long userId) {
         return Objects.equals(userId, chatFriendRoom.getUserId()) ? chatFriendRoom.getOtherUserId() : chatFriendRoom.getUserId();
+    }
+
+    /**
+     * 构造新增表情包
+     *
+     * @param chatEmojiDTO 聊天表情符号 DTO
+     * @param userId       用户 ID
+     * @return {@link ChatEmoji }
+     * @author qingmeng
+     * @createTime: 2024/06/15 13:31:01
+     */
+    public static ChatEmoji buildInsertChatEmoji(ChatEmojiDTO chatEmojiDTO, Long userId) {
+        ChatEmoji chatEmoji = new ChatEmoji();
+        chatEmoji.setUserId(userId);
+        chatEmoji.setTagId(chatEmojiDTO.getTagId());
+        chatEmoji.setExpressionUrl(chatEmojiDTO.getExpressionUrl());
+        return chatEmoji;
     }
 }
