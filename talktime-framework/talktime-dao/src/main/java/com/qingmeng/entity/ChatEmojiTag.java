@@ -55,14 +55,4 @@ public class ChatEmojiTag implements Serializable {
      * 修改时间
      */
     private Date updateTime;
-
-    /**
-     * 创建人
-     */
-    private String createBy;
-
-    /**
-     * 更新人
-     */
-    private String updateBy;
 }

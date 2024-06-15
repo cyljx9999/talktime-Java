@@ -8,6 +8,7 @@ import com.qingmeng.constant.SystemConstant;
 import com.qingmeng.dao.*;
 import com.qingmeng.dto.chatGroup.*;
 import com.qingmeng.entity.*;
+import com.qingmeng.enums.chat.GroupRoleEnum;
 import com.qingmeng.enums.chat.RoomStatusEnum;
 import com.qingmeng.enums.chat.RoomTypeEnum;
 import com.qingmeng.service.FileService;
@@ -335,6 +336,7 @@ public class GroupServiceImpl implements GroupService {
         }
     }
 
+
     /**
      * 判断是否为管理员
      *
@@ -344,8 +346,25 @@ public class GroupServiceImpl implements GroupService {
      * @author qingmeng
      * @createTime: 2023/12/11 11:16:12
      */
-    private boolean hasGroupManager(Long groupRoomId, Long userId) {
+    @Override
+    public boolean hasGroupManager(Long groupRoomId, Long userId) {
         return Objects.nonNull(chatGroupManagerDao.getManager(groupRoomId, userId));
+    }
+
+    /**
+     * 是否为群主
+     *
+     * @param groupRoomId 团体会议室 ID
+     * @param userId      用户 ID
+     * @return boolean
+     * @author qingmeng
+     * @createTime: 2024/06/15 17:31:25
+     */
+    @Override
+    public boolean hasGroupOwner(Long groupRoomId, Long userId) {
+        ChatGroupManager manager = chatGroupManagerDao.getManager(groupRoomId, userId);
+        AssertUtils.isNull(manager, "非群成员，无效操作");
+        return manager.getRoleType().equals(GroupRoleEnum.GROUP_OWNER.getCode());
     }
 
     /**

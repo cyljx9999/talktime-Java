@@ -63,16 +63,40 @@ public class ChatEmojiCache {
     }
 
     /**
-     * 清除缓存
+     * 清除全部缓存
      *
      * @param userId 用户 ID
      * @author qingmeng
      * @createTime: 2024/06/15 13:38:57
      */
-    public void clearCache(Long userId) {
-        String key = RedisConstant.CHAT_EMOJI_KEY + userId;
-        String key1 = RedisConstant.CHAT_EMOJI_TAG_KEY + userId;
-        RedisUtils.delete(key);
-        RedisUtils.delete(key1);
+    public void clearAllCache(Long userId) {
+        clearEmojiCache(userId);
+        clearEmojiTagCache(userId);
     }
+
+    /**
+     * 清除表情缓存
+     *
+     * @param userId 用户 ID
+     * @author qingmeng
+     * @createTime: 2024/06/15 13:38:57
+     */
+    public void clearEmojiCache(Long userId) {
+        String key = RedisConstant.CHAT_EMOJI_KEY + userId;
+        RedisUtils.delete(key);
+    }
+
+    /**
+     * 清除标签缓存
+     *
+     * @param userId 用户 ID
+     * @author qingmeng
+     * @createTime: 2024/06/15 13:38:57
+     */
+    public void clearEmojiTagCache(Long userId) {
+        String key = RedisConstant.CHAT_EMOJI_TAG_KEY + userId;
+        RedisUtils.delete(key);
+    }
+
+
 }

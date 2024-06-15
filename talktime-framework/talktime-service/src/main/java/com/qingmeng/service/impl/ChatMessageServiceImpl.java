@@ -22,6 +22,7 @@ import com.qingmeng.dto.chat.msg.MsgRecallDTO;
 import com.qingmeng.entity.*;
 import com.qingmeng.enums.chat.*;
 import com.qingmeng.service.ChatMessageService;
+import com.qingmeng.service.GroupService;
 import com.qingmeng.utils.AssertUtils;
 import com.qingmeng.vo.chat.ChatMessageReadVO;
 import com.qingmeng.vo.chat.ChatMessageVO;
@@ -62,6 +63,9 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     private ChatMessageDao chatMessageDao;
     @Resource
     private ChatSessionDao chatSessionDao;
+    @Resource
+    private GroupService groupService;
+
     /**
      * 发送消息
      *
@@ -301,11 +305,11 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     private void checkRecall(Long userId, ChatMessage chatMessage) {
         AssertUtils.isNotEmpty(chatMessage, "消息有误");
         AssertUtils.notEqual(chatMessage.getMessageType(), MessageTypeEnum.RECALL.getType(), "消息无法撤回");
-        // todo 校验权限
-        //boolean hasPower = iRoleService.hasPower(userId, GroupRoleEnum.GROUP_OWNER);
-        //if (hasPower) {
-        //    return;
-        //}
+        // 校验权限
+        boolean hasPower = groupService.hasGroupManager(chatMessage.getRoomId(),userId);
+        if (hasPower) {
+            return;
+        }
         boolean self = Objects.equals(userId, chatMessage.getFromUserId());
         AssertUtils.isTrue(self, "抱歉,您没有权限");
         long between = DateUtil.between(chatMessage.getCreateTime(), new Date(), DateUnit.MINUTE);

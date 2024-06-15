@@ -102,4 +102,6 @@ public class RedisConstant {
      */
     public static final String CHAT_EMOJI_KEY = "chat:emoji:";
     public static final String CHAT_EMOJI_TAG_KEY = "chat:emojiTag:";
+
+    public static final String SENSITIVE_KEY = "system:sensitive";
 }

@@ -107,4 +107,27 @@ public interface GroupService {
      * @createTime: 2023/12/09 14:58:19
      */
     void quitChatGroup(Long userId, Long groupRoomId);
+
+
+    /**
+     * 是否为群管理员
+     *
+     * @param groupRoomId 团体会议室 ID
+     * @param userId      用户 ID
+     * @return boolean
+     * @author qingmeng
+     * @createTime: 2024/06/15 17:31:25
+     */
+    boolean hasGroupManager(Long groupRoomId, Long userId);
+
+    /**
+     * 是否为群主
+     *
+     * @param groupRoomId 团体会议室 ID
+     * @param userId      用户 ID
+     * @return boolean
+     * @author qingmeng
+     * @createTime: 2024/06/15 17:31:25
+     */
+    boolean hasGroupOwner(Long groupRoomId, Long userId);
 }

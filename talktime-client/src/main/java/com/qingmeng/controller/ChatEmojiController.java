@@ -31,8 +31,8 @@ public class ChatEmojiController {
      * @author qingmeng
      * @createTime: 2024/06/15 13:11:39
      */
-    @GetMapping("/emoji/list")
-    public CommonResult<Map<String,Object>> getEmojisPage() {
+    @GetMapping("/list")
+    public CommonResult<Map<String,Object>> getEmojisList() {
         Map<String,Object> map = chatEmojiService.getEmojisList(StpUtil.getLoginIdAsLong());
         return CommonResult.success(map);
     }
@@ -46,7 +46,7 @@ public class ChatEmojiController {
      * @author qingmeng
      * @createTime: 2024/06/15 13:25:30
      */
-    @PostMapping("/emoji/insert")
+    @PostMapping
     public CommonResult<String> insertEmojis(@Valid @RequestBody ChatEmojiDTO chatEmojiDTO) {
         chatEmojiService.insert(chatEmojiDTO, StpUtil.getLoginIdAsLong());
         return CommonResult.success();
@@ -60,7 +60,7 @@ public class ChatEmojiController {
      * @author qingmeng
      * @createTime: 2024/06/15 13:35:23
      */
-    @DeleteMapping("/emoji/delete/{emojiId}")
+    @DeleteMapping("/{emojiId}")
     public CommonResult<String> deleteEmojis(@PathVariable Long emojiId) {
         chatEmojiService.remove(emojiId,  StpUtil.getLoginIdAsLong());
         return CommonResult.success();

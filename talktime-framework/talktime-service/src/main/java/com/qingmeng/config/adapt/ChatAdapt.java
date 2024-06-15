@@ -4,6 +4,7 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.qingmeng.config.netty.vo.WsGroupInviteVO;
 import com.qingmeng.dto.chat.ChatEmojiDTO;
+import com.qingmeng.dto.chat.ChatEmojiTagDTO;
 import com.qingmeng.dto.chat.ChatMessageDTO;
 import com.qingmeng.entity.*;
 import com.qingmeng.enums.chat.*;
@@ -426,5 +427,21 @@ public class ChatAdapt {
         chatEmoji.setTagId(chatEmojiDTO.getTagId());
         chatEmoji.setExpressionUrl(chatEmojiDTO.getExpressionUrl());
         return chatEmoji;
+    }
+
+    /**
+     * 构建聊天表情符号标签
+     *
+     * @param chatEmojiTagDTO 聊天表情符号标签 DTO
+     * @param userId          用户 ID
+     * @return {@link ChatEmojiTag }
+     * @author qingmeng
+     * @createTime: 2024/06/15 17:20:06
+     */
+    public static ChatEmojiTag buildChatEmojiTag(ChatEmojiTagDTO chatEmojiTagDTO, Long userId) {
+        ChatEmojiTag chatEmojiTag = new ChatEmojiTag();
+        chatEmojiTag.setUserId(userId);
+        chatEmojiTag.setTagName(chatEmojiTagDTO.getTagName());
+        return chatEmojiTag;
     }
 }

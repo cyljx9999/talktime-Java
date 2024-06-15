@@ -65,6 +65,7 @@ public class ChatEmojiServiceImpl implements ChatEmojiService {
         AssertUtils.isNotNull(chatEmoji, "表情包已存在");
         ChatEmoji chatEmojiInsert = ChatAdapt.buildInsertChatEmoji(chatEmojiDTO, userId);
         chatEmojiDao.save(chatEmojiInsert);
+        chatEmojiCache.clearEmojiCache(userId);
     }
 
 
@@ -83,6 +84,6 @@ public class ChatEmojiServiceImpl implements ChatEmojiService {
         AssertUtils.isNull(chatEmoji, "表情包Id不存在");
         AssertUtils.equal(chatEmoji.getUserId(), userId, "非本人表情包不能删除");
         chatEmojiDao.removeById(emojiId);
-        chatEmojiCache.clearCache(userId);
+        chatEmojiCache.clearAllCache(userId);
     }
 }

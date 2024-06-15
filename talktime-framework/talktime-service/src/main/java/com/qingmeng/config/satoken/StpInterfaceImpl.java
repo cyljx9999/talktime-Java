@@ -1,10 +1,9 @@
 package com.qingmeng.config.satoken;
 
 import cn.dev33.satoken.stp.StpInterface;
-import com.qingmeng.enums.chat.GroupRoleEnum;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,17 +20,15 @@ public class StpInterfaceImpl implements StpInterface {
      */
     @Override
     public List<String> getPermissionList(Object loginId, String loginType) {
-        // todo:获取权限字段列表
         return null;
     }
 
     /**
-     * 返回一个账号所拥有的群聊角色标识集合
-     * 角色校验仅作用与群聊相关操作
+     * 返回一个账号角色标识集合
      */
     @Override
     public List<String> getRoleList(Object loginId, String loginType) {
-        return Arrays.asList(GroupRoleEnum.GROUP_OWNER.getMsg(), GroupRoleEnum.GROUP_MANAGEMENT.getMsg());
+        return new ArrayList<>();
     }
 
 }
