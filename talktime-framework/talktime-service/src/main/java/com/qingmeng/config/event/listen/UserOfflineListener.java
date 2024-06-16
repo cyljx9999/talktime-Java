@@ -7,7 +7,7 @@ import com.qingmeng.config.netty.service.WebSocketService;
 import com.qingmeng.config.netty.vo.WsBaseVO;
 import com.qingmeng.config.netty.vo.WsOnlineOfflineNotifyVO;
 import com.qingmeng.entity.SysUser;
-import com.qingmeng.enums.user.UsageStatusEnum;
+import com.qingmeng.enums.user.OnlineStatusEnum;
 import com.qingmeng.service.SysUserService;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
@@ -49,7 +49,7 @@ public class UserOfflineListener {
         SysUser update = new SysUser();
         update.setId(sysUser.getId());
         update.setLastOperateTime(sysUser.getLastOperateTime());
-        update.setOnlineStatus(UsageStatusEnum.OFF_LINE.getCode());
+        update.setOnlineStatus(OnlineStatusEnum.OFF_LINE.getCode());
         sysUserService.updateWithId(update);
     }
 }

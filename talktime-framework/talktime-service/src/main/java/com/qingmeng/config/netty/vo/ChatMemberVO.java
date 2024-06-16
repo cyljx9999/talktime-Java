@@ -1,5 +1,6 @@
 package com.qingmeng.config.netty.vo;
 
+import com.qingmeng.enums.user.OnlineStatusEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -26,7 +27,7 @@ public class ChatMemberVO {
     /**
      * 在线状态：0 表示离线 1 表示在线
      *
-     * @see com.qingmeng.enums.user.UsageStatusEnum
+     * @see OnlineStatusEnum
      */
     private Integer activeStatus;
 

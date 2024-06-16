@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.annotation.*;
 import com.qingmeng.enums.common.LogicDeleteEnum;
 import com.qingmeng.enums.user.AccountStatusEnum;
 import com.qingmeng.enums.user.SexEnum;
-import com.qingmeng.enums.user.UsageStatusEnum;
+import com.qingmeng.enums.user.OnlineStatusEnum;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -65,7 +65,7 @@ public class SysUser implements Serializable {
 
     /**
      * 0 不在线 1在线
-     * @see UsageStatusEnum
+     * @see OnlineStatusEnum
      */
     private Integer onlineStatus;
 

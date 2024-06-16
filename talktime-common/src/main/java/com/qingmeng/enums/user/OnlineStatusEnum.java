@@ -11,9 +11,9 @@ import lombok.Getter;
  */
 @Getter
 @AllArgsConstructor
-public enum UsageStatusEnum {
+public enum OnlineStatusEnum {
     /**
-     * 使用状态枚举
+     * 在线状态枚举
      */
     OFF_LINE(0, "离线"),
     ON_LINE(1, "在线"),

@@ -114,7 +114,7 @@ public class FileServiceImpl implements FileService {
      */
     @Override
     public ScanQrcodeInfoVO<?> scanQrcodeInfo(Long userId,ScanQrcodeDTO scanQrcodeDTO) {
-        if (Objects.equals(scanQrcodeDTO.getScanType(), ScanQrcodeEnum.friend.getCode())) {
+        if (Objects.equals(scanQrcodeDTO.getScanType(), ScanQrcodeEnum.FRIEND.getCode())) {
             // 把访问地址转File类型
             File file = CommonUtils.urlToFile(scanQrcodeDTO.getUrl());
             // 解析二维码中的数据

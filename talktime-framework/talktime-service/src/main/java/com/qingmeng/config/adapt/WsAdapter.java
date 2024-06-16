@@ -6,7 +6,7 @@ import com.qingmeng.config.netty.vo.*;
 import com.qingmeng.dto.chat.ChatMessageOtherMarkDTO;
 import com.qingmeng.entity.SysArticle;
 import com.qingmeng.entity.SysUser;
-import com.qingmeng.enums.user.UsageStatusEnum;
+import com.qingmeng.enums.user.OnlineStatusEnum;
 import com.qingmeng.vo.chat.ChatMessageVO;
 import me.chanjar.weixin.mp.bean.result.WxMpQrCodeTicket;
 import org.springframework.beans.BeanUtils;
@@ -115,7 +115,7 @@ public class WsAdapter {
         ChatMemberVO chatMemberVO = new ChatMemberVO();
         BeanUtil.copyProperties(sysUser, chatMemberVO);
         chatMemberVO.setUserId(sysUser.getId());
-        chatMemberVO.setActiveStatus(UsageStatusEnum.OFF_LINE.getCode());
+        chatMemberVO.setActiveStatus(OnlineStatusEnum.OFF_LINE.getCode());
         chatMemberVO.setLastOptTime(sysUser.getLastOperateTime());
         return chatMemberVO;
     }
@@ -149,7 +149,7 @@ public class WsAdapter {
         ChatMemberVO chatMemberVO = new ChatMemberVO();
         BeanUtil.copyProperties(sysUser, chatMemberVO);
         chatMemberVO.setUserId(sysUser.getId());
-        chatMemberVO.setActiveStatus(UsageStatusEnum.ON_LINE.getCode());
+        chatMemberVO.setActiveStatus(OnlineStatusEnum.ON_LINE.getCode());
         chatMemberVO.setLastOptTime(sysUser.getLastOperateTime());
         return chatMemberVO;
     }

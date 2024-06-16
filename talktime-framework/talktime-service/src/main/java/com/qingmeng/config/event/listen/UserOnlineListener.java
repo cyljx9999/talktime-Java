@@ -6,7 +6,7 @@ import com.qingmeng.config.netty.service.WebSocketService;
 import com.qingmeng.config.netty.vo.WsBaseVO;
 import com.qingmeng.config.netty.vo.WsOnlineOfflineNotifyVO;
 import com.qingmeng.entity.SysUser;
-import com.qingmeng.enums.user.UsageStatusEnum;
+import com.qingmeng.enums.user.OnlineStatusEnum;
 import com.qingmeng.config.event.UserOnlineEvent;
 import com.qingmeng.service.SysUserService;
 import lombok.extern.slf4j.Slf4j;
@@ -51,7 +51,7 @@ public class UserOnlineListener {
         update.setId(user.getId());
         update.setLastOperateTime(user.getLastOperateTime());
         update.setIpLocation(user.getIpLocation());
-        update.setOnlineStatus(UsageStatusEnum.ON_LINE.getCode());
+        update.setOnlineStatus(OnlineStatusEnum.ON_LINE.getCode());
         sysUserService.updateWithId(update);
     }
 }

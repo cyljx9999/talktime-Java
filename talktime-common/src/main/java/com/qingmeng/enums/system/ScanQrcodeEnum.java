@@ -16,8 +16,8 @@ public enum ScanQrcodeEnum {
     /**
      * 类型
      */
-    friend(1,"好友"),
-    group(2,"群聊"),
+    FRIEND(1,"好友"),
+    GROUP(2,"群聊"),
     ;
 
     private final int code;
