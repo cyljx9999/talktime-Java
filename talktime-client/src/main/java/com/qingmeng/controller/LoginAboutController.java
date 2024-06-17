@@ -1,6 +1,7 @@
 package com.qingmeng.controller;
 
 import com.qingmeng.annotation.SysLog;
+import com.qingmeng.config.annotation.Decrypt;
 import com.qingmeng.domain.vo.CommonResult;
 import com.qingmeng.dto.login.LoginParamDTO;
 import com.qingmeng.dto.login.RegisterDTO;
@@ -36,6 +37,7 @@ public class LoginAboutController {
      */
     @PostMapping("/login")
     @SysLog(title = "登陆模块",content = "登陆")
+    @Decrypt(value = LoginParamDTO.class)
     public CommonResult<TokenInfoVO> login(@RequestBody LoginParamDTO paramDTO){
         TokenInfoVO info = sysUserService.login(paramDTO);
         return CommonResult.success(info);
@@ -49,7 +51,6 @@ public class LoginAboutController {
      * @createTime: 2023/11/11 14:51:40
      */
     @GetMapping("/getCaptcha")
-    @SysLog(title = "登陆模块",content = "获取系统验证码")
     public CommonResult<CaptchaVO> getCaptcha(){
         CaptchaVO captchaVO = sysUserService.getCaptcha();
         return CommonResult.success(captchaVO);
@@ -66,7 +67,8 @@ public class LoginAboutController {
     @PostMapping("/sendPhoneCode/{phone}")
     @SysLog(title = "登陆模块",content = "获取手机验证码")
     public CommonResult<String> sendPhoneCode(@PathVariable String phone){
-        sysUserService.sendPhone(phone);
+        // 由于短信服务过期，这边直接return
+        //sysUserService.sendPhone(phone);
         return CommonResult.success();
     }
 

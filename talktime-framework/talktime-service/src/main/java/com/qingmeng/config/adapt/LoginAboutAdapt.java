@@ -36,6 +36,7 @@ public class LoginAboutAdapt {
         info.setTokenName(saTokenInfo.getTokenName());
         info.setTokenValue(saTokenInfo.getTokenValue());
         info.setTokenTimeout(saTokenInfo.getTokenTimeout());
+        info.setUserId(Long.parseLong(saTokenInfo.getLoginId().toString()));
         return info;
     }
 

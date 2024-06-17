@@ -57,6 +57,7 @@
         <spring-test.version>5.3.19</spring-test.version>
         <com.belerweb.pinyin4j.version>2.5.1</com.belerweb.pinyin4j.version>
         <com.google.zxing.version>3.5.0</com.google.zxing.version>
+        <fastjson.version>2.0.32</fastjson.version>
     </properties>
 
     <dependencyManagement>
@@ -220,6 +221,11 @@
                 <groupId>com.google.zxing</groupId>
                 <artifactId>core</artifactId>
                 <version>${com.google.zxing.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>fastjson</artifactId>
+                <version>${fastjson.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

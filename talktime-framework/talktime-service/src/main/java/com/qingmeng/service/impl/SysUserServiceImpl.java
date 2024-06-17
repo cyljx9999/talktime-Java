@@ -153,7 +153,7 @@ public class SysUserServiceImpl implements SysUserService {
             image = captchaProducer.createImage(captchaStr);
         }
         // redis缓存
-        RedisUtils.set(verifyKey, code, RedisConstant.CAPTCHA_CODE_EXPIRE, TimeUnit.SECONDS);
+        RedisUtils.set(verifyKey, code, RedisConstant.CAPTCHA_CODE_EXPIRE, TimeUnit.MINUTES);
         // 转换流信息写出
         FastByteArrayOutputStream os = new FastByteArrayOutputStream();
         try {

@@ -63,7 +63,7 @@ public class LoginParamDTO {
      * @see LoginMethodEnum
      */
     @NotNull(groups = {PhoneGroup.class, AccountGroup.class})
-    @StringListValue(values = {"account", "password"}, groups = {PhoneGroup.class, AccountGroup.class})
+    @StringListValue(values = {"account", "phone"}, groups = {PhoneGroup.class, AccountGroup.class})
     private String loginMethod;
 
     /**

@@ -26,4 +26,9 @@ public class TokenInfoVO {
      */
     public Long tokenTimeout;
 
+    /**
+     * 用户 ID
+     */
+    public Long userId;
+
 }

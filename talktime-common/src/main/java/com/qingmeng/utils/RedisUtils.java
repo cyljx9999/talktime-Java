@@ -1,6 +1,7 @@
 package com.qingmeng.utils;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.extra.spring.SpringUtil;
 import org.springframework.data.redis.connection.DataType;
 import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.ScanOptions;
@@ -18,10 +19,13 @@ import java.util.stream.Collectors;
  * @createTime 2023年11月08日 15:36:00
  */
 public class RedisUtils {
+    private static StringRedisTemplate REDIS_TEMPLATE;
 
     private RedisUtils() {}
 
-    private static final StringRedisTemplate REDIS_TEMPLATE = SpringUtils.getBean(StringRedisTemplate.class);
+    static {
+        RedisUtils.REDIS_TEMPLATE = SpringUtil.getBean(StringRedisTemplate.class);
+    }
 
     // -------------------key相关操作---------------------
 
