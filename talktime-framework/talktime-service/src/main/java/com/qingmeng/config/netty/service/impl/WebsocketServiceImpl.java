@@ -27,6 +27,7 @@ import com.qingmeng.utils.RedisUtils;
 import io.netty.channel.Channel;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.mp.api.WxMpService;
 import me.chanjar.weixin.mp.bean.result.WxMpQrCodeTicket;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -50,6 +51,7 @@ import java.util.concurrent.Executor;
  * @createTime 2023年11月13日 11:34:00
  */
 @Service
+@Slf4j
 public class WebsocketServiceImpl implements WebSocketService {
 
     @Value("${sa-token.token-name}")
@@ -124,6 +126,9 @@ public class WebsocketServiceImpl implements WebSocketService {
     @Override
     public void removeConnect(Channel channel) {
         WsChannelExtraDTO wsChannelExtraDTO = CONNECT_WS_MAP.get(channel);
+        if (Objects.isNull(wsChannelExtraDTO)){
+            return;
+        }
         Long userId = wsChannelExtraDTO.getUserId();
         if (Objects.nonNull(userId)) {
             CopyOnWriteArrayList<Channel> channels = ONLINE_USERID_MAP.get(userId);

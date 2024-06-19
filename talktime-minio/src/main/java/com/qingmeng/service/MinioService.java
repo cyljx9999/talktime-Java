@@ -1,21 +1,27 @@
 package com.qingmeng.service;
 
+import cn.hutool.core.date.DatePattern;
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.io.file.FileNameUtil;
 import cn.hutool.core.util.StrUtil;
 import com.qingmeng.adapt.FileAdapt;
 import com.qingmeng.config.MinioProperties;
 import com.qingmeng.dto.file.MinioDTO;
 import com.qingmeng.enums.chat.UploadSceneEnum;
+import com.qingmeng.utils.IdUtils;
 import com.qingmeng.vo.file.MinioVO;
 import io.minio.*;
 import io.minio.http.Method;
 import io.minio.messages.Bucket;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.io.File;
 import java.nio.file.Files;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -96,7 +102,7 @@ public class MinioService {
      */
     @SneakyThrows
     public MinioVO getPreSignedObjectUrl(MinioDTO minioDTO) {
-        String path = minioDTO.getFilePath() + StrUtil.SLASH + minioDTO.getFileName();
+        String path = getPath(minioDTO);
         String uploadUrl = minioClient.getPresignedObjectUrl(
                 GetPresignedObjectUrlArgs.builder()
                         .method(Method.PUT)
@@ -106,6 +112,15 @@ public class MinioService {
                         .build());
         String downloadUrl = getDownloadUrl(minioProperties.getBucketName(), path);
         return FileAdapt.buildMinioVO(uploadUrl, downloadUrl);
+    }
+
+    @NotNull
+    private static String getPath(MinioDTO minioDTO) {
+        Long userId = minioDTO.getUserId();
+        String uuid = IdUtils.fastSimpleUUID();
+        String suffix = FileNameUtil.getSuffix(minioDTO.getFileName());
+        String yearAndMonth = DateUtil.format(new Date(), DatePattern.NORM_MONTH_PATTERN);
+        return minioDTO.getFilePath() + StrUtil.SLASH + yearAndMonth + StrUtil.SLASH + userId + StrUtil.SLASH + uuid + StrUtil.DOT + suffix;
     }
 
     /**
@@ -119,7 +134,7 @@ public class MinioService {
      * @createTime: 2023/12/05 22:49:51
      */
     @SneakyThrows
-    public String uploadFileByStream(Long userId,Integer uploadType,File file) {
+    public String uploadFileByStream(Long userId, Integer uploadType, File file) {
         String bucketName = minioProperties.getBucketName();
         UploadSceneEnum uploadSceneEnum = UploadSceneEnum.get(uploadType);
         String path = uploadSceneEnum.getPath() + StrUtil.SLASH + userId;

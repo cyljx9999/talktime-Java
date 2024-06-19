@@ -8,6 +8,7 @@ import com.aliyun.auth.credentials.Credential;
 import com.aliyun.auth.credentials.provider.StaticCredentialProvider;
 import com.aliyun.sdk.service.dysmsapi20170525.AsyncClient;
 import com.aliyun.sdk.service.dysmsapi20170525.models.SendSmsRequest;
+import com.github.houbb.sensitive.word.bs.SensitiveWordBs;
 import com.google.code.kaptcha.Producer;
 import com.qingmeng.config.adapt.LoginAboutAdapt;
 import com.qingmeng.config.adapt.UserInfoAdapt;
@@ -15,6 +16,9 @@ import com.qingmeng.config.adapt.UserSettingAdapt;
 import com.qingmeng.config.cache.UserCache;
 import com.qingmeng.config.cache.UserFriendSettingCache;
 import com.qingmeng.config.cache.UserSettingCache;
+import com.qingmeng.config.event.SysUserRegisterEvent;
+import com.qingmeng.config.strategy.login.LoginFactory;
+import com.qingmeng.config.strategy.login.LoginStrategy;
 import com.qingmeng.constant.RedisConstant;
 import com.qingmeng.constant.SystemConstant;
 import com.qingmeng.dao.*;
@@ -29,12 +33,9 @@ import com.qingmeng.entity.SysUser;
 import com.qingmeng.entity.SysUserFriendSetting;
 import com.qingmeng.entity.SysUserPrivacySetting;
 import com.qingmeng.enums.user.LoginMethodEnum;
-import com.qingmeng.config.event.SysUserRegisterEvent;
 import com.qingmeng.exception.TalkTimeException;
 import com.qingmeng.service.SysUserFriendService;
 import com.qingmeng.service.SysUserService;
-import com.qingmeng.config.strategy.login.LoginFactory;
-import com.qingmeng.config.strategy.login.LoginStrategy;
 import com.qingmeng.utils.*;
 import com.qingmeng.vo.login.CaptchaVO;
 import com.qingmeng.vo.login.TokenInfoVO;
@@ -54,6 +55,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -101,6 +103,8 @@ public class SysUserServiceImpl implements SysUserService {
     private UserSettingCache userSettingCache;
     @Resource
     private SysUserFriendService sysUserFriendService;
+    @Resource
+    private SensitiveWordBs sensitiveWordBs;
 
     /**
      * 验证码类型
@@ -384,8 +388,11 @@ public class SysUserServiceImpl implements SysUserService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void alterAccount(Long userId, AlterAccountDTO alterAccountDTO) {
+        SysUser userInfoByAccount = sysUserDao.getUserInfoByAccount(alterAccountDTO.getUserAccount());
+        AssertUtils.isNotNull(userInfoByAccount, "该帐户已被占用");
+        checkContent(alterAccountDTO.getUserAccount());
         SysUser sysUser = userCache.get(userId);
-        AssertUtils.isTrue(sysUser.getAlterAccountCount() == 0, "帐户修改次数已用完");
+        AssertUtils.isTrue(sysUser.getAlterAccountCount() != SystemConstant.ZERO_INT, "帐户修改次数已用完");
         sysUserDao.alterAccount(userId,sysUser.getAlterAccountCount() - 1,alterAccountDTO.getUserAccount());
         userCache.delete(userId);
     }
@@ -401,8 +408,28 @@ public class SysUserServiceImpl implements SysUserService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void alterPersonalInfo(Long userId, AlterPersonalInfoDTO alterAccountPersonalInfoDTO) {
+        SysUser userInfoByPhone = sysUserDao.getUserInfoByPhone(alterAccountPersonalInfoDTO.getUserPhone());
+        if (Objects.nonNull(userInfoByPhone)) {
+            AssertUtils.isTrue(userInfoByPhone.getId().equals(userId), "手机号码已被使用");
+        }
+        checkContent(alterAccountPersonalInfoDTO.getUserName());
+        AssertUtils.validateEntity(alterAccountPersonalInfoDTO,false);
         sysUserDao.alterPersonalInfo(userId,alterAccountPersonalInfoDTO);
         userCache.delete(userId);
+    }
+
+
+    /**
+     * 检查内容
+     *
+     * @param content 内容
+     * @author qingmeng
+     * @createTime: 2024/06/19 16:22:10
+     */
+    private void checkContent(String content) {
+        boolean flag = sensitiveWordBs.contains(content);
+        String first = sensitiveWordBs.findFirst(content);
+        AssertUtils.isFalse(flag,"内容含有敏感词-->  "+first);
     }
 
     /**

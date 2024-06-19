@@ -11,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import javax.servlet.http.HttpServletRequest;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.Map;
 
 /**
  * @author 清梦
@@ -91,15 +90,25 @@ public class IpUtils {
      */
     public static String getIpHomeLocal(HttpServletRequest request){
         String ip = getIpAddr(request);
+        return getIP(ip);
+    }
+
+    private static String getIP(String ip) {
+        String result= HttpUtil.get("http://opendata.baidu.com/api.php?query="+ ip +"&co=&resource_id=6006&oe=utf8");
+        JSONObject object = JSONUtil.parseObj(result);
         if (SystemConstant.LOCAL_IP.equals(ip)){
             return "本机ip";
         }
-        String result= HttpUtil.get("http://opendata.baidu.com/api.php?query="+ip+"&co=&resource_id=6006&oe=utf8");
-        JSONObject object = JSONUtil.parseObj(result);
+        if ("0:0:0:0:0:0:0:1".equals(ip)){
+            return "本机ip";
+        }
         if (!SystemConstant.ZERO_STRING.equals(object.get("status"))){
             return "解析失败";
         }
         JSONArray array = JSONUtil.parseArray(object.get("data"));
+        if (array.isEmpty()){
+            return "解析失败";
+        }
         JSONObject entity = JSONUtil.parseObj(array.get(0));
         return entity.get("location").toString();
     }
@@ -113,13 +122,6 @@ public class IpUtils {
      * @createTime: 2023/11/23 16:09:41
      */
     public static String getIpHomeLocal(String ip){
-        if (SystemConstant.LOCAL_IP.equals(ip)){
-            return "内网ip";
-        }
-        String result= HttpUtil.get("https://api.vore.top/api/IPdata?ip="+ip);
-        JSONObject object = JSONUtil.parseObj(result);
-        Map entity = (Map) object.get("adcode");
-        String string = entity.get("n").toString();
-        return string != null ? string : "未知IP";
+        return getIP(ip);
     }
 }

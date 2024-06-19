@@ -8,6 +8,7 @@ import com.qingmeng.dto.file.UploadUrlDTO;
 import com.qingmeng.service.FileService;
 import com.qingmeng.vo.file.MinioVO;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -37,8 +38,7 @@ public class FileController {
      * @createTime: 2023/12/05 23:06:26
      */
     @PostMapping("/getPreSignedUrl")
-    @SysLog(title = "文件模块",content = "获取预签名链接")
-    public CommonResult<MinioVO> getPreSignedUrl(@Valid UploadUrlDTO uploadUrlDTO){
+    public CommonResult<MinioVO> getPreSignedUrl(@RequestBody @Valid UploadUrlDTO uploadUrlDTO){
         MinioVO minioVO = fileService.getPreSignedObjectUrl(StpUtil.getLoginIdAsLong(), uploadUrlDTO);
         return CommonResult.success(minioVO);
     }

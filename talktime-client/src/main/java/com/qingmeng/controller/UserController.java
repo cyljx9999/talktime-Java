@@ -3,6 +3,8 @@ package com.qingmeng.controller;
 import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.dev33.satoken.stp.StpUtil;
 import com.qingmeng.annotation.SysLog;
+import com.qingmeng.config.annotation.Decrypt;
+import com.qingmeng.config.annotation.Encrypt;
 import com.qingmeng.domain.vo.CommonResult;
 import com.qingmeng.dto.login.CheckFriendDTO;
 import com.qingmeng.dto.login.CheckFriendListDTO;
@@ -60,6 +62,7 @@ public class UserController {
      */
     @GetMapping("/getPersonalInfo")
     @SysLog(title = "用户模块",content = "获取个人信息")
+    @Encrypt
     public CommonResult<PersonalInfoVO> getPersonalInfo(){
         PersonalInfoVO personInfo = sysUserService.getPersonalInfo(StpUtil.getLoginIdAsLong());
         return CommonResult.success(personInfo);
@@ -90,7 +93,8 @@ public class UserController {
      */
     @PutMapping("/alterPersonalInfo")
     @SysLog(title = "用户模块",content = "更改个人信息")
-    public CommonResult<String> alterPersonalInfo(@Valid @RequestBody AlterPersonalInfoDTO alterAccountPersonalInfoDTO){
+    @Decrypt(value = AlterPersonalInfoDTO.class)
+    public CommonResult<String> alterPersonalInfo(@RequestBody AlterPersonalInfoDTO alterAccountPersonalInfoDTO){
         sysUserService.alterPersonalInfo(StpUtil.getLoginIdAsLong(),alterAccountPersonalInfoDTO);
         return CommonResult.success("修改成功");
     }

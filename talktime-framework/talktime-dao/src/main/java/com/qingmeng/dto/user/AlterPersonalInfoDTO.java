@@ -42,4 +42,6 @@ public class AlterPersonalInfoDTO {
      */
     @IntListValue(values = {0, 1, 2})
     private Integer userSex;
+
+    private String encryptStr;
 }

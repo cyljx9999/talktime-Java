@@ -133,9 +133,10 @@ public class WxMsgService {
     public void authorize(WxOAuth2UserInfo userInfo) {
         // 查询用户授权信息
         SysUserAuth userAuth = sysUserAuthService.getAuthInfoWithOpenId(userInfo.getOpenid());
+        SysUser sysUser = sysUserDao.getById(userAuth.getUserId());
         // 使用UserAdapter构建要更新的用户信息
         SysUser update = LoginAboutAdapt.buildAuthorizeUser(userAuth.getUserId(), userInfo);
-        if (StrUtil.isBlank(update.getUserAvatar())) {
+        if (StrUtil.isBlank(sysUser.getUserAvatar())) {
             sysUserService.updateWithId(update);
         }
         Integer code = Integer.parseInt(RedisUtils.get(RedisConstant.OPEN_ID_CODE));

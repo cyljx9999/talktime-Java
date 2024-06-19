@@ -9,7 +9,6 @@ import org.springframework.validation.beanvalidation.SpringValidatorAdapter;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Path;
-import java.text.MessageFormat;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -76,12 +75,11 @@ public class AssertUtils {
      *
      * @param expression 条件值
      * @param commonEnum 异常枚举
-     * @param args       异常参数
      * @throws TalkTimeException 如果条件不为真
      */
-    public static void isTrue(boolean expression, CommonEnum commonEnum, Object... args) {
+    public static void isTrue(boolean expression, CommonEnum commonEnum) {
         if (!expression) {
-            throwException(commonEnum, args);
+            throwException(commonEnum, "");
         }
     }
 
@@ -103,12 +101,11 @@ public class AssertUtils {
      *
      * @param expression 条件值
      * @param commonEnum 异常枚举
-     * @param args       异常参数
      * @throws TalkTimeException 如果条件不为假
      */
-    public static void isFalse(boolean expression, CommonEnum commonEnum, Object... args) {
+    public static void isFalse(boolean expression, CommonEnum commonEnum) {
         if (expression) {
-            throwException(commonEnum, args);
+            throwException(commonEnum, "");
         }
     }
 
@@ -210,13 +207,16 @@ public class AssertUtils {
      * 抛出异常。
      *
      * @param commonEnum 异常枚举
-     * @param arg        异常参数
-     * @throws TalkTimeException 异常
+     * @param message    消息
+     * @author qingmeng
+     * @createTime: 2024/06/19 16:46:57
      */
-    private static void throwException(CommonEnum commonEnum, Object... arg) {
+    private static void throwException(CommonEnum commonEnum, String message) {
         if (Objects.isNull(commonEnum)) {
             commonEnum = ResultEnum.REQUEST_ERROR;
+        }else {
+            message = commonEnum.getMsg();
         }
-        throw new TalkTimeException(commonEnum.getCode(), MessageFormat.format(commonEnum.getMsg(), arg));
+        throw new TalkTimeException(commonEnum.getCode(), message);
     }
 }

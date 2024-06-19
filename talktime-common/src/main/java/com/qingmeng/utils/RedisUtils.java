@@ -1114,7 +1114,7 @@ public class RedisUtils {
      * @return 删除的数量
      */
     public static Long zRemove(String key, Object... values) {
-        return REDIS_TEMPLATE.opsForZSet().remove(key, values);
+        return REDIS_TEMPLATE.opsForZSet().remove(key, Arrays.toString(values));
     }
 
     /**
@@ -1322,7 +1322,7 @@ public class RedisUtils {
      * @return score值
      */
     public static Double zScore(String key, Object value) {
-        return REDIS_TEMPLATE.opsForZSet().score(key, value);
+        return REDIS_TEMPLATE.opsForZSet().score(key, value.toString());
     }
 
     /**
