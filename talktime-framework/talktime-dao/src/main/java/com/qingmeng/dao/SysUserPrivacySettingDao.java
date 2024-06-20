@@ -33,9 +33,12 @@ public class SysUserPrivacySettingDao extends ServiceImpl<SysUserPrivacySettingM
         lambdaUpdate()
                 .eq(SysUserPrivacySetting::getUserId, userId)
                 .set(Objects.nonNull(personalPrivacySettingDTO.getAddByAccount()), SysUserPrivacySetting::getAddByAccount, personalPrivacySettingDTO.getAddByAccount())
+                .set(Objects.nonNull(personalPrivacySettingDTO.getAddByPhone()), SysUserPrivacySetting::getAddByPhone, personalPrivacySettingDTO.getAddByPhone())
                 .set(Objects.nonNull(personalPrivacySettingDTO.getAddByCard()), SysUserPrivacySetting::getAddByCard, personalPrivacySettingDTO.getAddByCard())
                 .set(Objects.nonNull(personalPrivacySettingDTO.getAddByGroup()), SysUserPrivacySetting::getAddByGroup, personalPrivacySettingDTO.getAddByGroup())
                 .set(Objects.nonNull(personalPrivacySettingDTO.getAddByQrcode()), SysUserPrivacySetting::getAddByQrcode, personalPrivacySettingDTO.getAddByQrcode())
+                .set(Objects.nonNull(personalPrivacySettingDTO.getFindByAccount()), SysUserPrivacySetting::getFindByAccount, personalPrivacySettingDTO.getFindByAccount())
+                .set(Objects.nonNull(personalPrivacySettingDTO.getFindByPhone()), SysUserPrivacySetting::getFindByPhone, personalPrivacySettingDTO.getFindByPhone())
                 .set(StrUtil.isNotBlank(personalPrivacySettingDTO.getPersonalizedSignature()), SysUserPrivacySetting::getPersonalizedSignature, personalPrivacySettingDTO.getPersonalizedSignature())
                 .set(StrUtil.isNotBlank(personalPrivacySettingDTO.getPatContent()), SysUserPrivacySetting::getPatContent, personalPrivacySettingDTO.getPatContent())
                 .update(new SysUserPrivacySetting());

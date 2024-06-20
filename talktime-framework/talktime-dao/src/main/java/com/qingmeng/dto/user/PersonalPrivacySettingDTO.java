@@ -63,6 +63,21 @@ public class PersonalPrivacySettingDTO {
     /**
      * 拍一拍内容
      */
-    @Length(max = 20)
+    @Length(max = 10)
     private String patContent;
+
+
+    /**
+     * 账号搜索 0 关闭 1 开启
+     * @see CloseOrOpenStatusEnum
+     */
+    @IntListValue(values = {0, 1})
+    private Integer findByAccount;
+
+    /**
+     * 手机号搜索 0 关闭 1 开启
+     * @see CloseOrOpenStatusEnum
+     */
+    @IntListValue(values = {0, 1})
+    private Integer findByPhone;
 }

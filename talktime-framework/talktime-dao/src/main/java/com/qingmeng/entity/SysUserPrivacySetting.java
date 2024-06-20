@@ -63,6 +63,18 @@ public class SysUserPrivacySetting implements Serializable {
     private Integer addByQrcode;
 
     /**
+     * 账号搜索 0 关闭 1 开启
+     * @see CloseOrOpenStatusEnum
+     */
+    private Integer findByAccount;
+
+    /**
+     * 手机号搜索 0 关闭 1 开启
+     * @see CloseOrOpenStatusEnum
+     */
+    private Integer findByPhone;
+
+    /**
      * 个性化签名
      */
     private String personalizedSignature;

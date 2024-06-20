@@ -55,4 +55,15 @@ public class PersonalPrivacySettingVO {
      * 拍一拍内容
      */
     private String patContent;
+
+
+    /**
+     * 账号搜索 0 关闭 1 开启
+     */
+    private Integer findByAccount;
+
+    /**
+     * 手机号搜索 0 关闭 1 开启
+     */
+    private Integer findByPhone;
 }

@@ -35,6 +35,8 @@ public class UserSettingAdapt {
         setting.setAddByGroup(CloseOrOpenStatusEnum.OPEN.getCode());
         setting.setAddByCard(CloseOrOpenStatusEnum.OPEN.getCode());
         setting.setAddByQrcode(CloseOrOpenStatusEnum.OPEN.getCode());
+        setting.setFindByAccount(CloseOrOpenStatusEnum.OPEN.getCode());
+        setting.setFindByPhone(CloseOrOpenStatusEnum.OPEN.getCode());
         return setting;
     }
 
@@ -97,6 +99,8 @@ public class UserSettingAdapt {
         vo.setAddByGroup(setting.getAddByGroup());
         vo.setAddByCard(setting.getAddByCard());
         vo.setAddByQrcode(setting.getAddByQrcode());
+        vo.setFindByAccount(setting.getFindByAccount());
+        vo.setFindByPhone(setting.getFindByPhone());
         vo.setPersonalizedSignature(setting.getPersonalizedSignature());
         vo.setPatContent(setting.getPatContent());
         return vo;
